@@ -1,43 +1,26 @@
 {% load static %}
 <!DOCTYPE html>
-
 <html>
     <head>
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
         <title>
-            Register
+            Register company
         </title>
     </head>
 
     <body>
-       
         <script src="{% static 'js/register_retailer.js' %}"></script>
+        <div class="row">
+            <div class="col-sm-12 col-md-6 col-lg-6 ml-auto mr-auto">
+                <h1 class="text-primary">Company register</h1>
+                <p class="lead">Enter all the details to register for the website</p>
 
-        <div class="container col-lg-6 col-md-8 col-sm-12 mb-5 mt-5">
-            <h1 class="text-primary">Retailer register</h1>
-            <p class="lead">Enter all the details to register for the website</p>
-            <div class="row ml-5 mr-5">
-                <form method="POST" id="retailer register" onsubmit="event.preventDefault(); validate_form();" action="{% url 'mainApp:register_retailer' %}">
-                    
+                <form id="retailer register" action="{% url 'mainApp:register_company' %}" class="ml-5 mr-5" method="POST" onsubmit="event.preventDefault(); validate_form();">
                     {% csrf_token %}
                     <div class="form-group">
-                        <div class="row">
-                            <div class="col-lg-6 col-md-6 col-sm-12">
-                                <label for="first name">
-                                    First name
-                                </label>
-                                <input type="text" id = "first name" name = "first name" placeholder="First Name" class="form-control">
-                            </div>
-
-                            <div class="col-lg-6 col-md-6 col-sm-12">
-                                <label for="Last name">
-                                    Last name
-                                </label>
-                                <input type="text" id = "Last name" name = "Last name" placeholder="Last Name" class="form-control">
-                            </div>
-
-                        </div>
-                    </div>  
+                        <label for="company name">Company name</label>
+                        <input type="text" name="company name" id="company name" class="form-control" placeholder="Company name">                  
+                    </div>
 
                     <div class="row">
                         <div class="col-lg-6 col-md-6 col-sm-12">
@@ -48,34 +31,41 @@
                             </div>
                         </div>
                     </div>
-                    
-                    
+
                     <div class="form-group">
                         <label for="address">Address</label>                                    
-                        <textarea name="address" id="address" wrap="soft" cols="100" rows="3" placeholder="address">
+                        <textarea name="address" id="address" wrap="hard" cols="100" rows="3" placeholder="address">
                         </textarea>
-                    </div>                  
+                    </div>   
 
-                    <div class="form-group">
-                    <label for="state">State</label>
-                    <input type="text" name="state" id="state" class="form-control" placeholder="State">                
+                    <div class="row">
+                        <div class="col-lg-4 col-md-4 col-sm-12">
+                            <div class="form-group">
+                                <label for="state">State</label>
+                                <input type="text" name="state" id="state" class="form-control" placeholder="State">                  
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4 col-md-4 col-sm-12">
+                            <div class="form-group">
+                                <label for="city">City</label>
+                                <input type="text" name="city" id="city" class="form-control" placeholder="City">                  
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4 col-md-4 col-sm-12">
+                            <div class="form-group">
+                                <label for="pincode">PIN code</label>
+                                <input type="text" name="pincode" id="pincode" class="form-control" placeholder="PIN code">                  
+                            </div>
+                        </div>
                     </div>
 
                     <div class="form-group">
-                        <label for="city">City</label>
-                        <input type="text" name="city" id="city" class="form-control" placeholder="City">                
+                        <label for="Email">Email</label>
+                        <input type="text" name="Email" id="Email" class="form-control" placeholder="Email">                  
                     </div>
-
-                    <div class="form-group">
-                        <label for="pincode">Pincode</label>
-                        <input type="text" name="pincode" id="pincode" class="form-control" placeholder="PIN code">                
-                    </div>
-
-                    <div class="form-group">
-                    <label for="Email">Email</label>
-                    <input type="text" name="Email" id="Email" class="form-control" placeholder="Email">                  
-                    </div>
-
+    
                     <div class="form-group">
                         <label for="Password">Enter Password</label>
                         <input type="password" name="Password" id="Password" class="form-control" placeholder="Password" aria-describedby="pass-help">
@@ -87,7 +77,7 @@
                             <br>1 special character
                         </small>                  
                     </div>
-
+    
                     <div class="form-group">
                         <label for="re-password">Re-enter Password</label>
                         <input type="password" name="re-password" id="re-password" class="form-control" placeholder="re-password" aria-describedby="repass-help"> 
@@ -99,7 +89,7 @@
                             <br>1 special character
                         </small>                    
                     </div>
-
+    
                     <p class="lead text-danger" id='pass_not_match' style="display: none;"></p>
 
                     <button class="btn-lg btn-primary" type="submit" onclick="validate_form();" style="width: 100%;">
@@ -113,14 +103,8 @@
                         LOGIN
                     </button>
 
-
-
                 </form>
             </div>
         </div>
-
-
-        
-        
     </body>
 </html>
