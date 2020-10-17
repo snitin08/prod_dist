@@ -1,0 +1,91 @@
+{% extends 'receipt/receipt_base.html'%}
+{% load static %}
+
+{% block title_block %}
+    Create receipt
+{% endblock %}
+
+{% block body_block %}
+
+    <div class="container">
+        
+        
+            <div class="form-inline">
+                <label for="product-name">Product name</label>
+                <input type="text" id="product-name" name="product-name" class="form-control" placeholder="Product name">                
+                <button id="add-product">
+                    <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-file-plus-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" d="M12 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zM8.5 6a.5.5 0 0 0-1 0v1.5H6a.5.5 0 0 0 0 1h1.5V10a.5.5 0 0 0 1 0V8.5H10a.5.5 0 0 0 0-1H8.5V6z"/>
+                    </svg>
+                </button>
+            </div>
+        
+
+        <div id="product-list">
+
+
+        </div>
+
+        <form id="form-create-receipt" method="POST" action="{% url 'mainApp:test_page' %}" onsubmit="event.preventDefault();">
+            {% csrf_token %}
+            <input id="create-receipt" type="submit" value="SUBMIT" onclick="event.preventDefault();">
+        </form>
+    
+    </div>
+
+
+    <script>
+        $(document).ready(function () {
+            var checkCount = 1;
+            console.log(checkCount)
+            $("#add-product").click(function (e) {
+                var product_name = $('#product-name').val();
+                var product_quantity=1;
+                checkCount++;
+                $("#product-list").append('<div class="form-inline">\
+                    <input type="text" id="list-product-name-' + checkCount + '" name="list-product-name" placeholder="Product Name" value="'+product_name+'"/>\
+                    <input name="list-product-quantity" id="list-product-quantity-"'+ checkCount+ '" class="form-control" type="text" value="'+product_quantity+'">\
+                     <a href="#" id="list-product-remove">Remove</a></div>');
+                $("#product-name").val("");
+            });
+    
+            $("#product-list").on("click", "#list-product-remove", function (e) { 
+                e.preventDefault();
+                $(this).parent('div').remove();
+                checkCount--;
+            });
+    
+            $("#create-receipt").click(function (e) {
+                var resultArray = [];
+                $('#product-list').find('div.form-inline').each(function() {
+                    var rowData = {};
+                    rowData['product'] = $(this).find('input[type=text]').val();                
+                    rowData['product-ID'] = $(this).find('input[type=text]').attr('id');
+                    resultArray.push(rowData);
+                });
+                console.log(resultArray);
+
+                $.post("{%  url 'mainApp:test_page' %}" , 
+                    { 
+                    arr: JSON.stringify(resultArray), // <-----------
+                    csrfmiddlewaretoken :  '{{ csrf_token }}' 
+                    }, 
+                    function(data) {
+                        if(data.status == 1){ // meaning that everyhting went ok
+                           // do something
+                           window.location='{% url "mainApp:index" %}';
+                        }
+                        else{
+                           alert(data.message)
+                           // do your redirect
+                           
+                        }   
+                    });
+
+
+            });
+        });
+    </script>
+
+{% endblock %}
+

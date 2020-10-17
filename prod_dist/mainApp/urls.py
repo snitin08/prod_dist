@@ -11,4 +11,8 @@ urlpatterns = [
     path('register/distributor/', views.register_distributor,name='register_distributor'),
     path('register/retailer/', register_retailer,name='register_retailer'),
     path('regiser/success/',register_success,name="register_success"),
+    path('login/',views.login_user,name='login'),
+    path('logout/',views.logout_user,name='logout'),
+
+    path('test_page/',views.test_page,name='test_page'),
 ]

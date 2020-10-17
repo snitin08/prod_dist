@@ -1,0 +1,62 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+        <title>
+            Login
+        </title>
+    </head>
+
+    <!-- Content -->
+
+    <body>
+
+        <script src="{% static 'js/login.js' %}"></script>
+
+        <div class="container" style="justify-content: center;">
+
+            <div class="row m-5">
+
+                <div class="col-lg-4 col-md-6 col-sm-12 ml-auto mr-auto">
+
+                    <form method="POST" action="{% url 'mainApp:login' %}" id="login-form" onsubmit="event.preventDefault(); validate_login();">
+
+                        {% csrf_token %}
+                        <div class="form-group">
+                          <label for="email">Email</label>
+                          <input type="text" name="email" id="email" class="form-control" placeholder="Email" aria-describedby="email-help" value="{{data.email}}">
+                          <small id="email-help" class="text-danger">{{messages.email}}</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="password">Password</label>
+                            <input type="password" name="password" id="password" class="form-control" placeholder="password" aria-describedby="password-help">
+                            <small id="password-help" class="text-danger">{{messages.password}}</small>
+                        </div>
+
+                        <div class="form-group">
+                          <label for="type">Select the type of user</label>
+                          <select id="type" name="type">
+                              <option value="company" id="company">Company</option>
+                              <option value="distributor" id="distributor">Distributor</option>
+                              <option value="retailer" id="retailer">Retailer</option>
+                          </select>
+
+                        </div>
+
+                        <button type="submit" class="btn-success btn-lg" style="text-align: center; width: 100%;">LOGIN</button>
+
+                        <h3 class="lead" style="text-align: center;">Don't have an account??</h3>
+
+                        <a href="{% url 'mainApp:index' %}" class="btn-lg btn-primary" style="text-align: center; width: 100%; margin: 0px;" role="button">REGISTER</a>
+                        
+                    </form>
+
+                </div>
+            </div>
+
+        </div>
+    </body>
+</html>
