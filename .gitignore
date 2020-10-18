@@ -1,2 +1,3 @@
 prod_dist/db.sqlite3
 .vscode/settings.json
+prod_dist/prod_dist/constants.py
