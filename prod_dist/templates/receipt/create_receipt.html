@@ -7,28 +7,35 @@
 
 {% block body_block %}
 
-    <div class="container">
+    <link rel="stylesheet" href="{% static 'css/receipt/create_receipt.css' %}" type="text/css">
+    <div class="container mt-5" style="text-align: center;">
         
-        
-            <div class="form-inline">
-                <label for="product-name">Product name</label>
-                <input type="text" id="product-name" name="product-name" class="form-control" placeholder="Product name">                
-                <button id="add-product">
-                    <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-file-plus-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                        <path fill-rule="evenodd" d="M12 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zM8.5 6a.5.5 0 0 0-1 0v1.5H6a.5.5 0 0 0 0 1h1.5V10a.5.5 0 0 0 1 0V8.5H10a.5.5 0 0 0 0-1H8.5V6z"/>
-                    </svg>
+        <form onsubmit="event.preventDefault();">
+            <div class="form-inline" style="text-align: center;">
+                
+                <input type="text" id="product-name" name="product-name" class="form-control m-2" placeholder="Product name">
+                <input type="text" id="product-quantity" name="product-quantity" class="form-control m-2" placeholder="Product quantity">
+                <input type="text" id="product-tax" name="product-tax" class="form-control m-2" placeholder="Product tax">
+                <input type="text" id="product-price" name="product-price" class="form-control m-2" placeholder="Product price">                                
+                <button id="add-product" type="submit">
+                    <i class="fa fa-plus" aria-hidden="true"></i>
+                    Add
                 </button>
             </div>
-        
+        </form>
 
+        <h1 style="text-align: center;" class="my-5">Product list</h1>
         <div id="product-list">
 
 
         </div>
 
+        
         <form id="form-create-receipt" method="POST" action="{% url 'mainApp:test_page' %}" onsubmit="event.preventDefault();">
             {% csrf_token %}
-            <input id="create-receipt" type="submit" value="SUBMIT" onclick="event.preventDefault();">
+            <div class="form-group" style="text-align: center;">
+                <input id="create-receipt" type="submit" value="SUBMIT" onclick="event.preventDefault();" class="btn btn-lg btn-success m-5" style="text-align: center;">
+            </div>
         </form>
     
     </div>
@@ -40,13 +47,26 @@
             console.log(checkCount)
             $("#add-product").click(function (e) {
                 var product_name = $('#product-name').val();
-                var product_quantity=1;
+                var product_quantity=$("#product-quantity").val();
+                var product_tax=$("#product-tax").val();
+                var product_price=$("#product-price").val();
+                console.log(product_name,product_quantity,product_tax);
                 checkCount++;
-                $("#product-list").append('<div class="form-inline">\
-                    <input type="text" id="list-product-name-' + checkCount + '" name="list-product-name" placeholder="Product Name" value="'+product_name+'"/>\
-                    <input name="list-product-quantity" id="list-product-quantity-"'+ checkCount+ '" class="form-control" type="text" value="'+product_quantity+'">\
-                     <a href="#" id="list-product-remove">Remove</a></div>');
+                $("#product-list").append(
+                    '<div class="form-inline">\
+                        <input type="text" id="list-product-name-' + checkCount + '" name="list-product-name" class="form-control m-2" placeholder="Product Name" value="'+product_name+'"/>\
+                        <input name="list-product-quantity" id="list-product-quantity-"'+ checkCount+ '" class="form-control m-2" type="text" value="'+product_quantity+'"  placeholder="Product quantity">\
+                        <input name="list-product-tax" id="list-product-tax-"'+ checkCount+ '" class="form-control m-2" type="text" value="'+product_tax+'"  placeholder="Product Tax">\
+                        <input name="list-product-price" id="list-product-price-"'+ checkCount+ '" class="form-control m-2" type="text" value="'+product_price+'"  placeholder="Product Price">\
+                        <a href="#" id="list-product-remove" class="form-control m-2 bg-danger text-white">\
+                            <i class="fas fa-trash-alt">X</i>\
+                        </a>\
+                    </div>'
+                );
                 $("#product-name").val("");
+                $("#product-quantity").val("");
+                $("#product-tax").val("");
+                $("#product-price").val("");
             });
     
             $("#product-list").on("click", "#list-product-remove", function (e) { 
@@ -59,8 +79,12 @@
                 var resultArray = [];
                 $('#product-list').find('div.form-inline').each(function() {
                     var rowData = {};
-                    rowData['product'] = $(this).find('input[type=text]').val();                
-                    rowData['product-ID'] = $(this).find('input[type=text]').attr('id');
+                    
+                    rowData['product'] = $(this).find('[name="list-product-name"]').val();
+                    rowData['product_quantity'] = $(this).find('[name="list-product-quantity"]').val();
+                    rowData['product_tax'] = $(this).find('[name="list-product-tax"]').val();
+                    rowData['product_price'] = $(this).find('[name="list-product-price"]').val();
+                    rowData['product_ID'] = $(this).find('input[type=text]').attr('id');
                     resultArray.push(rowData);
                 });
                 console.log(resultArray);
@@ -73,7 +97,7 @@
                     function(data) {
                         if(data.status == 1){ // meaning that everyhting went ok
                            // do something
-                           window.location='{% url "mainApp:index" %}';
+                           //window.location='{% url "mainApp:index" %}';
                         }
                         else{
                            alert(data.message)
