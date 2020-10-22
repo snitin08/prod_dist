@@ -177,14 +177,4 @@ def logout_user(request):
     del request.session['user']
     return redirect('mainApp:index')
 
-def test_page(request):
-    import json.decoder
-    if request.method=='POST':
-        arr = request.POST.get('arr')
-        dict_ = json.loads(arr)
-        print(dict_)
-        response = {'status': 1, 'message': "Ok"} # for ok
-        return HttpResponse(json.dumps(response), content_type='application/json')
-        
-    else:
-        return render(request,'receipt/create_receipt.html',{})
+
