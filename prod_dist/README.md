@@ -22,6 +22,14 @@ SQLite3 is used for storing the authentication information.
 
 This allows the user to extract information from a receipt or create a new receipt by adding products.
 
+There is a separate django app called receipt which manages these functions.
+
+### Create receipt
+The template file for this activity is 
+```bash
+templates/receipt/create_receipt.html
+```
+
 # Running the website
 ```bash
 cd prod_dist

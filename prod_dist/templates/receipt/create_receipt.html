@@ -13,7 +13,7 @@
         <form onsubmit="event.preventDefault();">
             <div class="form-inline my-5" style="text-align: center;">
                 
-                <input type="text" id="product-name" name="product-name" class="form-control m-2" placeholder="Product name">
+                <input type="text" id="product-name" name="product-name" class="form-control m-2" placeholder="Product name" list="productList" onchange="fillProductDetails();">
                 <input type="text" id="product-quantity" name="product-quantity" class="form-control m-2" placeholder="Product quantity">
                 <input type="text" id="product-tax" name="product-tax" class="form-control m-2" placeholder="Product tax">
                 <input type="text" id="product-price" name="product-price" class="form-control m-2" placeholder="Product price">                                
@@ -23,6 +23,20 @@
                 </button>
             </div>
         </form>
+
+
+        <datalist id="productList" onchange="fillProductDetails();">
+            <option price="10" value="HTML"></option>
+            <option price="10" value="CSS" />
+            <option price="10" value="JavaScript" />
+            <option price="10" value="SQL" />
+            <option price="10" value="PHP" />
+            <option price="10" value="jQuery" />
+            <option price="10" value="Bootstrap" />
+            <option price="10" value="Angular" />
+            <option price="10" value="ASP.NET" />
+            <option price="10" value="XML" />
+        </datalist>
 
         <h1 style="text-align: center;" class="my-5">Product list</h1>
         <div id="product-list" class="my-5">
@@ -54,6 +68,27 @@
 
 
     <script>
+
+        function fillProductDetails()
+        {
+            const Value = document.getElementById('product-name').value;            
+            const selectedOption = document.querySelector('option[value="' + Value + '"]');
+            
+            var price = selectedOption.getAttribute("price");
+            var priceField = document.getElementById("product-price");
+            priceField.value = price;
+        }
+
+        function productListFill(id)
+        {
+            const Value = document.getElementById('list-product-name-'+id).value;            
+            const selectedOption = document.querySelector('option[value="' + Value + '"]');
+            
+            var price = selectedOption.getAttribute("price");
+            var priceField = document.getElementById("list-product-price-"+id);
+            priceField.value = price;
+        }
+
         function calculate()
         {
             console.log("Calculate function");
@@ -74,7 +109,7 @@
             {
                 price = parseFloat(product_list_price[i].value);
                 tax = parseFloat(product_list_tax[i].value);
-                quantity = parseInt(product_list_quantity[i].value);
+                quantity = parseFloat(product_list_quantity[i].value);
 
                 console.log(quantity,tax,price);
 
@@ -89,7 +124,11 @@
         }
         $(document).ready(function () {
             var checkCount = 1;
-            console.log(checkCount)
+            console.log(checkCount);
+
+
+            
+
             $("#add-product").click(function (e) {
                 var product_name = $('#product-name').val();
                 var product_quantity=$("#product-quantity").val();
@@ -102,7 +141,7 @@
 
                      $("#product-list").append(
                         '<div class="form-inline my-5">\
-                            <input type="text" id="list-product-name-' + checkCount + '" name="list-product-name" class="form-control m-2" placeholder="Product Name" value="'+product_name+'" onchange="calculate();"/>\
+                            <input type="text" id="list-product-name-' + checkCount + '" name="list-product-name" class="form-control m-2" placeholder="Product Name" value="'+product_name+'" onchange="calculate();" list="productList" onChange="productListFill('+checkCount+');"/>\
                             <input name="list-product-quantity" id="list-product-quantity-"'+ checkCount+ '" class="form-control m-2" type="text" value="'+product_quantity+'"  placeholder="Product quantity" onchange="calculate();">\
                             <input name="list-product-tax" id="list-product-tax-"'+ checkCount+ '" class="form-control m-2" type="text" value="'+product_tax+'"  placeholder="Product Tax" onchange="calculate();">\
                             <input name="list-product-price" id="list-product-price-"'+ checkCount+ '" class="form-control m-2" type="text" value="'+product_price+'"  placeholder="Product Price" onchange="calculate();">\
