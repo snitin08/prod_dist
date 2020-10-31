@@ -1,0 +1,10 @@
+#add-user-form{
+    position: relative;
+    margin: 0 auto;
+    top: 25%;
+    display: none;
+    border: 3px solid black;
+    max-width: 50%;
+    padding: 10px;
+    background-color: white;
+}
