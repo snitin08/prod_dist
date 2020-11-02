@@ -177,8 +177,4 @@ def logout_user(request):
     del request.session['user']
     return redirect('mainApp:index')
 
-def company_distributors(request):
-    return render(request,'company/company_distributors.html',{})
 
-def distributor_retailers(request):
-    return render(request,'distributor/distributor_retailers.html',{})

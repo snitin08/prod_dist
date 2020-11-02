@@ -14,7 +14,4 @@ urlpatterns = [
     path('login/',views.login_user,name='login'),
     path('logout/',views.logout_user,name='logout'),
 
-    # company urls
-    path('company/distributors/',views.company_distributors,name='company_distributors'),
-    path('distributor/retailers/',views.distributor_retailers,name='distributor_retailers'),
 ]
