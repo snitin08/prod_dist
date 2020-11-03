@@ -45,8 +45,9 @@
             <p class="lead">
                 Select the distributor to add
             </p>
-            <form>
+            <form method="POST">
                 <!-- <div class="form-inline"> -->
+                    {% csrf_token %}
                     <input type="text" class="form-control m-2" list="distributor-list"/>    
                             
                 <!-- </div> -->

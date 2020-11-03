@@ -9,7 +9,7 @@
 <div class="container">
     <script src="{% static 'js/register_retailer.js' %}"></script>
     <div class="row">
-        <div class="col-sm-12 col-md-6 col-lg-4 ml-auto mr-auto">
+        <div class="col-sm-12 col-md-6 col-lg-6 ml-auto mr-auto">
             <h1 class="text-primary">Company edit</h1>
             
             <form id="retailer register" action="{% url 'mainApp:register_company' %}" class="ml-auto mr-auto" method="POST" onsubmit="event.preventDefault();">
@@ -33,7 +33,7 @@
                 <div class="form-group">
                     <label for="address">Address</label>
                     <br>                                    
-                    <textarea name="address" id="address" wrap="soft" cols="50" rows="3" placeholder="address">{{data.address}}</textarea>
+                    <textarea class="form-control" name="address" id="address" wrap="soft" cols="50" rows="3" placeholder="address">{{data.address}}</textarea>
                     </textarea>
                 </div>   
 
