@@ -16,7 +16,7 @@
                 {% csrf_token %}
                 <div class="form-group">
                     <label for="company name">Company name</label>
-                    <input type="text" name="company name" id="company name" class="form-control" placeholder="Company name" value="{{data.company_name}}" aria-describedby="company-help">                  
+                    <input type="text" name="company name" id="company name" class="form-control" placeholder="Company name" value="{{data.company_name}}" aria-describedby="company-help" readonly>                  
                     <small class="text-danger" id='company-help'>{{messages.company}}</small>                  
                 </div>
 

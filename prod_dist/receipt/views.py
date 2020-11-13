@@ -12,3 +12,12 @@ def create_receipt(request):
         
     else:
         return render(request,'receipt/create_receipt.html',{})
+
+def receipt_list(request):
+    return render(request,'receipt/receipt_list.html',{})
+
+def receipt_detail(request):
+    return render(request,'receipt/receipt_detail.html',{})
+
+def receipt_product_detail(request):
+    return render(request,'receipt/receipt_product_detail.html',{})
