@@ -12,7 +12,7 @@
         <div class="col-sm-12 col-md-6 col-lg-6 ml-auto mr-auto">
             <h1 class="text-primary">Company edit</h1>
             
-            <form id="retailer register" action="{% url 'mainApp:register_company' %}" class="ml-auto mr-auto" method="POST" onsubmit="event.preventDefault();">
+            <form id="company_edit" action="{% url 'company:company_edit' company_name=data.company_name %}" class="ml-auto mr-auto" method="POST" onsubmit="event.preventDefault(); update();">
                 {% csrf_token %}
                 <div class="form-group">
                     <label for="company name">Company name</label>
@@ -68,6 +68,29 @@
         </div>
     </div>
 </div>
+
+<script>
+    function update()
+    {
+        
+        var mobile_number = document.getElementById("Mobile");
+        console.log(mobile_number.value);
+        if((mobile_number.value).length!=10)
+        {
+            var mobile_help = document.getElementById('mobile-help');
+            mobile_help.innerHTML = "Mobile number should have 10 digits.";
+            mobile_help.className='text-danger';
+            mobile_help.style.display = 'block';
+        }
+        else
+        {
+            var mobile_help = document.getElementById('mobile-help');
+            mobile_help.innerHTML = "";
+            var update_form = document.getElementById('company_edit');
+            update_form.submit();
+        }
+    }
+</script>
 
 
 {% endblock %}

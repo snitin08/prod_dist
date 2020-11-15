@@ -12,74 +12,99 @@
             Exisiting distributors
         </h1>
         <div id="distributor-table">
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Contact</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td scope="row">Rajesh</td>
-                        <td>rajesk@example.com</td>
-                        <td>1234567890</td>
-                    </tr>
-                    <tr>
-                        <td scope="row">Rajesh</td>
-                        <td>rajesk@example.com</td>
-                        <td>1234567890</td>
-                    </tr>
-                </tbody>
-            </table>
+
+            {% if existing_distributors %}
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Contact</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for distributor in existing_distributors %}
+                            <tr>
+                                <td scope="row">{{distributor.first_name}} {{distributor.last_name}}</td>
+                                <td>{{distributor.email}}</td>
+                                <td>{{distributor.mobile}}</td>
+                                <td>
+                                    <a href="{% url 'company:company_distributor_remove' company_name=company_name distributor_id=distributor.id %}">
+                                        REMOVE
+                                    </a>
+                                </td>
+                            </tr>  
+                        {% endfor %}                      
+                    </tbody>
+                </table>
+            {% endif %}
         </div>
 
-        <button type="button" class="btn btn-primary" onclick="add_distributor();">
-            Add distributor
-        </button>
+        {% if non_associated_distributors %}
+            <button type="button" class="btn btn-primary" onclick="add_distributor();">
+                Add distributor
+            </button>
+        {% endif %}
     </div>
 
+        {% if non_associated_distributors %}
+            <div id="add-user-form" style="display: none;" class="p-5">
+                <p class="lead">
+                    Select the distributor to add
+                </p>
+                <form method="POST" 
+                    action="{% url 'company:company_distributors' company_name=company_name %}"  
+                    id='add_distributor_form'
+                    onsubmit="event.preventDefault(); submit_add_distributor();"
+                >
+                    <!-- <div class="form-inline"> -->
+                        {% csrf_token %}
+                        <input type="text" name='add_distributor_name' id='add_distributor_name' class="form-control m-2" list="distributor-list"/>    
+                        <input type="hidden" name='add_distributor_id' id='add_distributor_id'>
+                    <!-- </div> -->
+
+                    
+                    <button type="submit" class="btn btn-lg btn-success m-2" style="text-align: center;">
+                        Add distributor
+                    </button>
+
+                    <button class="btn btn-lg btn-danger m-2" id="close-add-distributor-form" 
+                    onclick="document.getElementById('close-add-distributor-form').style.display='none'">
+                        Cancel
+                    </button>
+                    
+                </form>
+
+                <datalist id="distributor-list">
+                    {% for distributor in non_associated_distributors %}
+                        <option value="{{distributor.first_name}} {{distributor.last_name}}" distributor_id='{{distributor.id}}'/>                    
+                    {% endfor %}
+                </datalist>  
+                
+            </div>
         
-        <div id="add-user-form" style="display: none;" class="p-5">
-            <p class="lead">
-                Select the distributor to add
-            </p>
-            <form method="POST">
-                <!-- <div class="form-inline"> -->
-                    {% csrf_token %}
-                    <input type="text" class="form-control m-2" list="distributor-list"/>    
-                            
-                <!-- </div> -->
-
-                
-                <button type="submit" class="btn btn-lg btn-success m-2" style="text-align: center;">
-                    Add distributor
-                </button>
-
-                <button class="btn btn-lg btn-danger m-2" id="close-add-distributor-form" 
-                onclick="document.getElementById('close-add-distributor-form').style.display='none'">
-                    Cancel
-                </button>
-                
-            </form>
-
-            <datalist id="distributor-list">
-                <option value="Rajesh"/>
-                <option value="Suresh"/>
-                <option value="Ramesh"/>
-            </datalist>  
-            
-        </div>
     
 
 
-    <script>
-        function add_distributor()
-        {
-            var add_user_form = document.getElementById("add-user-form");
-            add_user_form.style.display = "block";
-            $(".container").fadeOut(200);
-        }
-    </script>
+            <script>
+                
+                function add_distributor()
+                {
+                    var add_user_form = document.getElementById("add-user-form");
+                    add_user_form.style.display = "block";
+                    $(".container").fadeOut(200);
+                }
+
+                function submit_add_distributor()
+                {
+                    const Value = document.getElementById('add_distributor_name').value;            
+                    const selectedOption = document.querySelector('option[value="' + Value + '"]');
+                    
+                    var distributor_id = selectedOption.getAttribute("distributor_id");
+                    var hiddenField = document.getElementById("add_distributor_id");
+                    hiddenField.value= distributor_id;
+                    document.getElementById('add_distributor_form').submit();
+                }
+            </script>
+        {% endif %}
 {% endblock %}
