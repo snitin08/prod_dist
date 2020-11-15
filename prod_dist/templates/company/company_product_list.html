@@ -8,40 +8,49 @@
 {% block body_block %}
 
     <div class="container m-5">
-        <div id="product_table">
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Sl No.</th>
-                        <th>Product name</th>
-                        <th>Product price</th>
-                        <th>Product tax</th>
-                        <th>Product discount</th>                
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td scope="row">1</td>
-                        <td>XYZ</td>
-                        <td>20</td>
-                        <td>2</td>
-                        <td>0</td>
-                    </tr>
-                    <tr>
-                        <td scope="row">1</td>
-                        <td>ABC</td>
-                        <td>30</td>
-                        <td>2</td>
-                        <td>0</td>
-                    </tr>
-                </tbody>
-            </table>        
+        
 
-            <button class="btn btn-primary btn-lg" id="btn_add_product" onclick="add_product();">Add product</button>
+            <div id="product_table">
+                {% if company_products %}
 
-        </div>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Sl No.</th>
+                                <th>Product name</th>
+                                <th>Product distributor price</th>
+                                <th>Product MRP</th>
+                                <th>Product tax</th>
+                                <th>Product discount</th>                
+                            </tr>
+                        </thead>
+                        <tbody>
 
-        <form style="display: none;" id="form-add-product" method="POST">
+                            {% for product in company_products %}
+                                <tr>
+                                    <td scope="row">{{forloop.counter}}</td>
+                                    <td>{{product.product_name}}</td>
+                                    <td>{{product.product_distributor_price}}</td>
+                                    <td>{{product.product_mrp}}</td>
+                                    <td>{{product.product_tax}}</td>
+                                    <td>{{product.product_discount}}</td>
+                                    <td>
+                                        <a href="{% url 'company:company_product_remove' company_name=company_name product_id=product.id %}">
+                                            REMOVE
+                                        </a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>        
+            `   {% endif %}
+
+                <button class="btn btn-primary btn-lg" id="btn_add_product" onclick="add_product();">Add product</button>
+
+            </div>
+        
+
+        <form style="display: none;" id="form-add-product" method="POST" action="{% url 'company:company_product_list' company_name=company_name %}">
 
             {% csrf_token %}
             <p class="lead">Enter the product details</p>

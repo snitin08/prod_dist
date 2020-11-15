@@ -164,7 +164,7 @@ def login_user(request):
         if user is not None:
             request.session['user'] = user.email
             print(user.email)
-            return redirect('mainApp:register_success')
+            return HttpResponse('<h1>Login success</h1>')
         else:
             messages={}
             messages['email'] = "No such email id was found. Register if you haven't registered yet"
