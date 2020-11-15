@@ -69,7 +69,7 @@
                     </button>
 
                     <button class="btn btn-lg btn-danger m-2" id="close-add-distributor-form" 
-                    onclick="document.getElementById('close-add-distributor-form').style.display='none'">
+                    onclick="close_distributor_form()">
                         Cancel
                     </button>
                     
@@ -93,6 +93,13 @@
                     var add_user_form = document.getElementById("add-user-form");
                     add_user_form.style.display = "block";
                     $(".container").fadeOut(200);
+                }
+
+                function close_distributor_form()
+                {
+                    var add_user_form = document.getElementById("add-user-form");
+                    add_user_form.style.display = "none";
+                    $(".container").fadeIn(200);
                 }
 
                 function submit_add_distributor()
