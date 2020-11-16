@@ -6,20 +6,20 @@ from functools import wraps
 def CompanyAuthenticated(function):
   
     def wrap(request, *args, **kwargs):   
-        try:     
-            if request.session['user']:
-                company = Company.objects.filter(company_name=kwargs['company_name']).first()
-                if company:
-                    if company.email == request.session['user']:           
-                        return function(request, *args, **kwargs)
-                    else:
-                        return HttpResponse('<h1> Access denied </h1>')
+        #try:     
+        if request.session['user']:
+            company = Company.objects.filter(company_name=kwargs['company_name']).first()
+            if company:
+                if company.email == request.session['user']:           
+                    return function(request, *args, **kwargs)
                 else:
-                    return HttpResponse('<h1>No company named '+kwargs['company_name']+'</h1>')
+                    return HttpResponse('<h1> Access denied </h1>')
             else:
-                return redirect('mainApp:login')
-        except:
+                return HttpResponse('<h1>No company named '+kwargs['company_name']+'</h1>')
+        else:
             return redirect('mainApp:login')
+        # except:
+        #     return redirect('mainApp:login')
     return wrap
 
 @CompanyAuthenticated
@@ -122,6 +122,7 @@ def company_product_list(request,company_name):
                     "company_products":company_products,
                     "company_name":company_name,
                 })
+
             else:
                 return HttpResponse('<h1>No company found</h1>')
         else:
@@ -151,5 +152,44 @@ def company_product_remove(request,company_name,product_id):
         return HttpResponse('<h1>Access denied </h1>')
 
 @CompanyAuthenticated
-def company_product_detail(request):
-    return render(request,'company/company_product_detail.html',{})
+def company_product_detail(request,company_name,product_id):
+
+    if request.method=='GET':
+        product = CompanyProducts.objects.filter(id=product_id).first()
+        
+        if product:
+            
+            if not str(product.product_company)==company_name:
+                return HttpResponse("<h1>Access denied</h1>")
+            else:
+                return render(request,'company/company_product_detail.html',{
+                    "product":product,
+                    "company_name":company_name
+                })
+        else:
+            return HttpResponse("<h1>No product found</h1>")
+    else:
+        data = request.POST
+        print(data)
+
+        product = CompanyProducts.objects.filter(id=product_id)
+        
+        if product.first():
+            
+            if not str(product.first().product_company)==company_name:
+                return HttpResponse("<h1>Access denied</h1>")
+            else:
+                product.update(
+                    product_name = data['product name'],
+                    product_distributor_price = data['product distributor price'],
+                    product_mrp = data['product mrp'],
+                    product_tax = data['product tax'],
+                    product_discount = data['product discount'],
+                )
+                return redirect('company:company_product_detail',company_name=company_name,product_id=product_id)
+        else:
+            return HttpResponse("<h1>No product found</h1>")
+
+
+
+        

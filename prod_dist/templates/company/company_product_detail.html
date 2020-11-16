@@ -9,29 +9,34 @@
 
     <div class="container">
 
-        <form id="form-add-product" method="POST">
+        <form id="form-add-product" method="POST" action="{% url 'company:company_product_detail' company_name=company_name product_id=product.id %}">
 
             {% csrf_token %}
             <p class="lead">Update the details if required</p>
 
             <div class="form-group">
               <label for="product name">Product name</label>
-              <input type="text" name="product name" id="product name" class="form-control" placeholder="Product name">              
+              <input type="text" name="product name" id="product name" class="form-control" placeholder="Product name" value="{{product.product_name}}">              
             </div>
 
             <div class="form-group">
-                <label for="product price">Product price</label>
-                <input type="text" name="product price" id="product price" class="form-control" placeholder="Product price">              
+                <label for="product distributor price">Product distributor price</label>
+                <input type="text" name="product distributor price" id="product distributor price" class="form-control" placeholder="Product distributor price" value="{{product.product_distributor_price}}">              
+            </div>
+
+            <div class="form-group">
+                <label for="product mrp">Product MRP</label>
+                <input type="text" name="product mrp" id="product mrp" class="form-control" placeholder="Product mrp" value="{{product.product_mrp}}">              
             </div>
 
             <div class="form-group">
                 <label for="product tax">Product tax</label>
-                <input type="text" name="product tax" id="product tax" class="form-control" placeholder="Product tax">              
+                <input type="text" name="product tax" id="product tax" class="form-control" placeholder="Product tax" value="{{product.product_tax}}">              
             </div>
 
             <div class="form-group">
                 <label for="product discount">Product discount</label>
-                <input type="text" name="product discount" id="product discount" class="form-control" placeholder="Product discount">              
+                <input type="text" name="product discount" id="product discount" class="form-control" placeholder="Product discount" value="{{product.product_discount}}">              
             </div>
 
             <button type="submit" class="btn btn-lg btn-warning">UPDATE PRODUCT</button>

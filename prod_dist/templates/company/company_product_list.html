@@ -29,7 +29,11 @@
                             {% for product in company_products %}
                                 <tr>
                                     <td scope="row">{{forloop.counter}}</td>
-                                    <td>{{product.product_name}}</td>
+                                    <td>
+                                        <a href="{% url 'company:company_product_detail' company_name=company_name product_id=product.id %}">
+                                            {{product.product_name}}
+                                        </a>
+                                    </td>
                                     <td>{{product.product_distributor_price}}</td>
                                     <td>{{product.product_mrp}}</td>
                                     <td>{{product.product_tax}}</td>
