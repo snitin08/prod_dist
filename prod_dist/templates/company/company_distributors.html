@@ -76,14 +76,16 @@
                 </form>
 
                 <datalist id="distributor-list">
+
                     {% for distributor in non_associated_distributors %}
                         <option value="{{distributor.first_name}} {{distributor.last_name}}" distributor_id='{{distributor.id}}'/>                    
                     {% endfor %}
+
                 </datalist>  
                 
             </div>
         
-    
+
 
 
             <script>
