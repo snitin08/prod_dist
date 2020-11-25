@@ -8,7 +8,8 @@
 {% block body_block %}
 
 
-    <!-- <script src="{% static 'js/register_retailer.js' %}"></script> -->
+    
+    <script src="{% static 'js/distributor/distributor_edit.js' %}"> </script>
 
     <div class="container">
         <div class="row">
@@ -16,7 +17,7 @@
                 <h1 class="text-primary">Distributor Edit</h1>
                 <p class="lead">Edit the necessary details</p>
                 
-                    <form method="POST" id="retailer register" onsubmit="event.preventDefault();" action="{% url 'mainApp:register_distributor' %}">
+                    <form method="POST" id="distributor_edit_form" onsubmit="event.preventDefault(); validate_form();" action="{% url 'distributor:distributor_edit' distributor_id=data.id %}">
                         
                         {% csrf_token %}
                         <div class="form-group">

@@ -11,30 +11,28 @@
         <h1>
             Exisiting companies
         </h1>
-        <div id="company-table">
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Contact</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td scope="row">Rajesh</td>
-                        <td>rajesk@example.com</td>
-                        <td>1234567890</td>
-                    </tr>
-                    <tr>
-                        <td scope="row">Rajesh</td>
-                        <td>rajesk@example.com</td>
-                        <td>1234567890</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
+        {% if associated_companies %}
+            <div id="company-table">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Contact</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for company in associated_companies %}
+                            <tr>
+                                <td scope="row">{{company.company_name}}</td>
+                                <td>{{company.email}}</td>
+                                <td>{{company.mobile}}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% endif %}
     </div>    
                
 {% endblock %}

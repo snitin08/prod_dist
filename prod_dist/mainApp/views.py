@@ -163,6 +163,8 @@ def login_user(request):
 
         if user is not None:
             request.session['user'] = user.email
+            request.session['id'] = user.id
+            request.session['type'] = t
             print(user.email)
             return HttpResponse('<h1>Login success</h1>')
         else:
