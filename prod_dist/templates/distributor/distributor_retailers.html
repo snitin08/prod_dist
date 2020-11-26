@@ -12,27 +12,32 @@
             Exisiting retailers
         </h1>
         <div id="retailer-table">
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Contact</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td scope="row">Rajesh</td>
-                        <td>rajesk@example.com</td>
-                        <td>1234567890</td>
-                    </tr>
-                    <tr>
-                        <td scope="row">Rajesh</td>
-                        <td>rajesk@example.com</td>
-                        <td>1234567890</td>
-                    </tr>
-                </tbody>
-            </table>
+            {% if associated_retailers %}
+                
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Contact</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for retailer in associated_retailers %}
+                            <tr>
+                                <td scope="row">{{retailer.first_name}} {{retailer.last_name}}</td>
+                                <td>{{retailer.email}}</td>
+                                <td>{{retailer.mobile}}</td>
+                                <td>
+                                    <a href="{% url 'distributor:distributor_retailer_remove' distributor_id=distributor.id retailer_id=retailer.id %}">
+                                        REMOVE
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}    
+                    </tbody>
+                </table>
+            {% endif %}
         </div>
 
         <button type="button" class="btn btn-primary" onclick="add_retailer();">
@@ -40,36 +45,42 @@
         </button>
     </div>
 
-        
-        <div id="add-user-form" style="display: none;" class="p-5">
-            <p class="lead">
-                Select the retailer to add
-            </p>
-            <form>
-                <!-- <div class="form-inline"> -->
-                    <input type="text" class="form-control m-2" list="retailer-list"/>    
-                            
-                <!-- </div> -->
+        {% if non_associated_retailers %}
+            <div id="add-user-form" style="display: none;" class="p-5">
+                <p class="lead">
+                    Select the retailer to add
+                </p>
+                <form method="POST" 
+                onsubmit="event.preventDefault(); submit_form();"
+                id="retailer_form"
+                action="{% url 'distributor:distributor_retailers' distributor_id=distributor.id %}">
+                    {% csrf_token %}
+                    <!-- <div class="form-inline"> -->
+                        <input type="text" class="form-control m-2" list="retailer-list" id="retailer_name" name="retailer_name"/>    
+                                
+                    <!-- </div> -->
+                        <input type="hidden" value="" name="add_retailer_id" id="add_retailer_id">
+                    
+                    <button type="submit" class="btn btn-lg btn-success m-2" style="text-align: center;">
+                        Add retailer
+                    </button>
 
+                    <button type="button" class="btn btn-lg btn-danger m-2" id="close-add-retailer-form" 
+                    onclick="close_add_retailer_form();">
+                        Cancel
+                    </button>
+                    
+                </form>
+
+                <datalist id="retailer-list">
+                    
+                    {% for retailer in non_associated_retailers %}
+                        <option value="{{retailer.first_name}} {{retailer.last_name}}" retailer_id = "{{retailer.id}}"/>                           
+                    {% endfor %}
+                </datalist>  
                 
-                <button type="submit" class="btn btn-lg btn-success m-2" style="text-align: center;">
-                    Add retailer
-                </button>
-
-                <button class="btn btn-lg btn-danger m-2" id="close-add-retailer-form" 
-                onclick="document.getElementById('close-add-retailer-form').style.display='none'">
-                    Cancel
-                </button>
-                
-            </form>
-
-            <datalist id="retailer-list">
-                <option value="Rajesh"/>
-                <option value="Suresh"/>
-                <option value="Ramesh"/>
-            </datalist>  
-            
-        </div>
+            </div>
+        {% endif %}
     
 
 
@@ -79,6 +90,24 @@
             var add_user_form = document.getElementById("add-user-form");
             add_user_form.style.display = "block";
             $(".container").fadeOut(200);
+        }
+
+        function close_add_retailer_form()
+        {
+            var add_user_form = document.getElementById("add-user-form");
+            add_user_form.style.display = "none";
+            $(".container").fadeIn(100);
+        }
+
+        function submit_form()
+        {
+            var add_retailer_form = document.getElementById("retailer_form");
+            var retailer_name = document.getElementById("retailer_name").value;
+            var options = document.querySelector("option[value='"+retailer_name+"']");
+            const retailer_id = options.getAttribute("retailer_id");
+            var add_retailer_id = document.getElementById("add_retailer_id");
+            add_retailer_id.value = retailer_id;
+            add_retailer_form.submit()
         }
     </script>
 {% endblock %}

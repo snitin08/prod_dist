@@ -13,10 +13,11 @@
         <form onsubmit="event.preventDefault();">
             <div class="form-inline my-5" style="text-align: center;">
                 
-                <input type="text" id="product-name" name="product-name" class="form-control m-2" placeholder="Product name" list="productList" onchange="fillProductDetails();">
-                <input type="text" id="product-quantity" name="product-quantity" class="form-control m-2" placeholder="Product quantity">
-                <input type="text" id="product-tax" name="product-tax" class="form-control m-2" placeholder="Product tax">
-                <input type="text" id="product-price" name="product-price" class="form-control m-2" placeholder="Product price">                                
+                <input type="text" id="product-name" name="product-name" class="form-control m-1" placeholder="Product name" list="productList" onchange="fillProductDetails();">
+                <input type="text" id="product-quantity" name="product-quantity" class="form-control m-1" placeholder="Product quantity">
+                <input type="text" id="product-tax" name="product-tax" class="form-control m-1" placeholder="Product tax">
+                <input type="text" id="product-price" name="product-price" class="form-control m-1" placeholder="Product price">
+                <input type="text" id="product-discount" name="product-discount" class="form-control m-1" placeholder="Product discount">                                
                 <button id="add-product" type="submit">
                     <i class="fa fa-plus" aria-hidden="true"></i>
                     Add
@@ -25,19 +26,19 @@
         </form>
 
 
-        <datalist id="productList" onchange="fillProductDetails();">
-            <option price="10" value="HTML"></option>
-            <option price="10" value="CSS" />
-            <option price="10" value="JavaScript" />
-            <option price="10" value="SQL" />
-            <option price="10" value="PHP" />
-            <option price="10" value="jQuery" />
-            <option price="10" value="Bootstrap" />
-            <option price="10" value="Angular" />
-            <option price="10" value="ASP.NET" />
-            <option price="10" value="XML" />
-        </datalist>
-
+        {% if request.session.type == "Company" %}
+            <datalist id="productList" onchange="fillProductDetails();">
+                {% for product in products %}
+                    <option price="{{product.product_distributor_price}}" value="{{product.product_name}}" tax="{{product.product_tax}}" discount="{{product.product_discount}}"/>           
+                {% endfor %}
+            </datalist>
+        {% elif request.session.type == "distributor" %}
+            <datalist id="productList" onchange="fillProductDetails();">
+                {% for product in products %}
+                    <option price="{{product.product_mrp}}" value="{{product.product_name}}" tax="{{product.product_tax}}" discount="{{product.product_discount}}"/>           
+                {% endfor %}
+            </datalist>
+        {% endif %}
         <h1 style="text-align: center;" class="my-5">Product list</h1>
         <div id="product-list" class="my-5">
 
@@ -54,11 +55,33 @@
             <p class="lead">
                 Total Price: &#x20B9 <span id="total-price">0.00</span>
             </p>
+            <p class="lead">
+                Total Discount: &#x20B9 <span id="total-discount">0.00</span>
+            </p>
         </div>
 
         
         <form id="form-create-receipt" method="POST" action="{% url 'receipt:create_receipt' %}" onsubmit="event.preventDefault();">
             {% csrf_token %}
+
+            {% if request.session.type == "Company" %}
+                <div class="form-group">
+                    <label for="user_to">Select a distributor</label>
+                    <select name="user_to" id="user_to">
+                        <option value=1>Distributor 1</option>
+                        <option value=2>Distributor 2</option>
+                    </select>
+                </div>
+            {% else %}
+                <div class="form-group">
+                    <label for="user_to">Select a retailer</label>
+                    <select name="user_to" id="user_to">
+                        <option value=1>Retailer 1</option>
+                        <option value=2>Retailer 2</option>
+                    </select>
+                </div>
+            {% endif %}
+
             <div class="form-group" style="text-align: center;">
                 <input id="create-receipt" type="submit" value="SUBMIT" onclick="event.preventDefault();" class="btn btn-lg btn-success m-5" style="text-align: center;">
             </div>
@@ -75,18 +98,35 @@
             const selectedOption = document.querySelector('option[value="' + Value + '"]');
             
             var price = selectedOption.getAttribute("price");
+            var tax = selectedOption.getAttribute("tax");
+            var discount = selectedOption.getAttribute("discount");
+
             var priceField = document.getElementById("product-price");
+            var taxField = document.getElementById("product-tax");
+            var discountField = document.getElementById("product-discount");
+
             priceField.value = price;
+            taxField.value = tax;
+            discountField.value = discount;
         }
 
         function productListFill(id)
         {
             const Value = document.getElementById('list-product-name-'+id).value;            
             const selectedOption = document.querySelector('option[value="' + Value + '"]');
+            console.log(id,Value);
             
             var price = selectedOption.getAttribute("price");
+            var tax = selectedOption.getAttribute("tax");
+            var discount = selectedOption.getAttribute("discount");
+
             var priceField = document.getElementById("list-product-price-"+id);
+            var taxField = document.getElementById("list-product-tax-"+id);
+            var discountField = document.getElementById("list-product-discount-"+id);
+            
             priceField.value = price;
+            taxField.value = tax;
+            discountField.value = discount;
         }
 
         function calculate()
@@ -97,12 +137,14 @@
             product_list_quantity = product_list.children("input[name='list-product-quantity']");
             product_list_tax = product_list.children("input[name='list-product-tax']");
             product_list_price = product_list.children("input[name='list-product-price']");
+            product_list_discount = product_list.children("input[name='list-product-discount']");
 
             console.log(product_list_quantity);
             
             var total_tax = 0;
             var subtotal = 0;
             var total_price = 0;
+            var total_discount = 0;
 
             var i;
             for(i=0;i<product_list_price.length;i++)
@@ -110,17 +152,20 @@
                 price = parseFloat(product_list_price[i].value);
                 tax = parseFloat(product_list_tax[i].value);
                 quantity = parseFloat(product_list_quantity[i].value);
+                discount = parseFloat(product_list_discount[i].value);
 
                 console.log(quantity,tax,price);
 
                 total_tax+=quantity*tax;
                 subtotal+=quantity*price;
+                total_discount+=discount*quantity;
             }
-            total_price=total_tax+subtotal;
+            total_price=total_tax+subtotal-total_discount;
 
             $("#subtotal").text(""+subtotal);
             $("#total-tax").text(""+total_tax);
             $("#total-price").text(""+total_price);
+            $("#total-discount").text(""+total_discount);
         }
         $(document).ready(function () {
             var checkCount = 1;
@@ -134,6 +179,7 @@
                 var product_quantity=$("#product-quantity").val();
                 var product_tax=$("#product-tax").val();
                 var product_price=$("#product-price").val();
+                var product_discount=$("#product-discount").val();
                 
                 checkCount++;
                 if(product_name!="" && product_price!="" && product_quantity!="" && product_tax!="")
@@ -141,10 +187,11 @@
 
                      $("#product-list").append(
                         '<div class="form-inline my-5">\
-                            <input type="text" id="list-product-name-' + checkCount + '" name="list-product-name" class="form-control m-2" placeholder="Product Name" value="'+product_name+'" onchange="calculate();" list="productList" onChange="productListFill('+checkCount+');"/>\
-                            <input name="list-product-quantity" id="list-product-quantity-"'+ checkCount+ '" class="form-control m-2" type="text" value="'+product_quantity+'"  placeholder="Product quantity" onchange="calculate();">\
-                            <input name="list-product-tax" id="list-product-tax-"'+ checkCount+ '" class="form-control m-2" type="text" value="'+product_tax+'"  placeholder="Product Tax" onchange="calculate();">\
-                            <input name="list-product-price" id="list-product-price-"'+ checkCount+ '" class="form-control m-2" type="text" value="'+product_price+'"  placeholder="Product Price" onchange="calculate();">\
+                            <input type="text" id="list-product-name-' + checkCount + '" name="list-product-name" class="form-control m-2" placeholder="Product Name" value="'+product_name+'" onchange="productListFill('+checkCount+'); calculate();" list="productList" onChange="productListFill('+checkCount+');"/>\
+                            <input name="list-product-quantity" id="list-product-quantity-'+ checkCount+ '" class="form-control m-2" type="text" value="'+product_quantity+'"  placeholder="Product quantity" onchange="calculate();">\
+                            <input name="list-product-tax" id="list-product-tax-'+ checkCount+ '" class="form-control m-2" type="text" value="'+product_tax+'"  placeholder="Product Tax" onchange="calculate();">\
+                            <input name="list-product-price" id="list-product-price-'+ checkCount+ '" class="form-control m-2" type="text" value="'+product_price+'"  placeholder="Product Price" onchange="calculate();">\
+                            <input name="list-product-discount" id="list-product-discount-'+ checkCount+ '" class="form-control m-2" type="text" value="'+product_discount+'"  placeholder="Product discount" onchange="calculate();">\
                             <a href="#" id="list-product-remove" class="form-control m-2 bg-danger text-white">\
                                 <i class="fa fa-trash-alt">X</i>\
                             </a>\
@@ -154,6 +201,7 @@
                     $("#product-quantity").val("");
                     $("#product-tax").val("");
                     $("#product-price").val("");
+                    $("#product-discount").val("");
 
                     calculate();
                 }
@@ -175,6 +223,7 @@
                     rowData['product_quantity'] = $(this).find('[name="list-product-quantity"]').val();
                     rowData['product_tax'] = $(this).find('[name="list-product-tax"]').val();
                     rowData['product_price'] = $(this).find('[name="list-product-price"]').val();
+                    rowData['product_discount'] = $(this).find('[name="list-product-discount"]').val();
                     rowData['product_ID'] = $(this).find('input[type=text]').attr('id');
                     resultArray.push(rowData);
                 });
