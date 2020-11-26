@@ -186,7 +186,7 @@ def company_product_detail(request,company_name,product_id):
                     product_tax = data['product tax'],
                     product_discount = data['product discount'],
                 )
-                return redirect('company:company_product_detail',company_name=company_name,product_id=product_id)
+                return redirect('company:company_product_list',company_name=company_name)
         else:
             return HttpResponse("<h1>No product found</h1>")
 
