@@ -1,0 +1,85 @@
+{% extends 'company/company_base.html' %}
+{% load static %}
+
+{% block title_block %}
+    Company distributors
+{% endblock %}
+
+{% block body_block %}
+    <link rel="stylesheet" href="{% static 'css/company/company_distributors.css' %}">
+    <div class="container">
+        <h1>
+            Exisiting distributors
+        </h1>
+        <div id="distributor-table">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Contact</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td scope="row">Rajesh</td>
+                        <td>rajesk@example.com</td>
+                        <td>1234567890</td>
+                    </tr>
+                    <tr>
+                        <td scope="row">Rajesh</td>
+                        <td>rajesk@example.com</td>
+                        <td>1234567890</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <button type="button" class="btn btn-primary" onclick="add_distributor();">
+            Add distributor
+        </button>
+    </div>
+
+        
+        <div id="add-user-form" style="display: none;" class="p-5">
+            <p class="lead">
+                Select the distributor to add
+            </p>
+            <form method="POST">
+                <!-- <div class="form-inline"> -->
+                    {% csrf_token %}
+                    <input type="text" class="form-control m-2" list="distributor-list"/>    
+                            
+                <!-- </div> -->
+
+                
+                <button type="submit" class="btn btn-lg btn-success m-2" style="text-align: center;">
+                    Add distributor
+                </button>
+
+                <button class="btn btn-lg btn-danger m-2" id="close-add-distributor-form" 
+                onclick="document.getElementById('close-add-distributor-form').style.display='none'">
+                    Cancel
+                </button>
+                
+            </form>
+
+            <datalist id="distributor-list">
+                <option value="Rajesh"/>
+                <option value="Suresh"/>
+                <option value="Ramesh"/>
+            </datalist>  
+            
+        </div>
+    
+
+
+    <script>
+        function add_distributor()
+        {
+            var add_user_form = document.getElementById("add-user-form");
+            add_user_form.style.display = "block";
+            $(".container").fadeOut(200);
+        }
+    </script>
+{% endblock %}

@@ -1,0 +1,40 @@
+{% extends 'distributor/distributor_base.html' %}
+{% load static %}
+
+{% block title_block %}
+    Distributor companies
+{% endblock %}
+
+{% block body_block %}
+    <link rel="stylesheet" href="{% static 'css/company/company_distributors.css' %}">
+    <div class="container">
+        <h1>
+            Exisiting companies
+        </h1>
+        <div id="company-table">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Contact</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td scope="row">Rajesh</td>
+                        <td>rajesk@example.com</td>
+                        <td>1234567890</td>
+                    </tr>
+                    <tr>
+                        <td scope="row">Rajesh</td>
+                        <td>rajesk@example.com</td>
+                        <td>1234567890</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div>    
+               
+{% endblock %}

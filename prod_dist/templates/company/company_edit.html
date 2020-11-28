@@ -1,0 +1,73 @@
+{% extends 'company/company_base.html' %}
+{% load static %}
+
+{% block title_block %}
+    Company edit
+{% endblock %}
+
+{% block body_block %}
+<div class="container">
+    <script src="{% static 'js/register_retailer.js' %}"></script>
+    <div class="row">
+        <div class="col-sm-12 col-md-6 col-lg-6 ml-auto mr-auto">
+            <h1 class="text-primary">Company edit</h1>
+            
+            <form id="retailer register" action="{% url 'mainApp:register_company' %}" class="ml-auto mr-auto" method="POST" onsubmit="event.preventDefault();">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="company name">Company name</label>
+                    <input type="text" name="company name" id="company name" class="form-control" placeholder="Company name" value="{{data.company_name}}" aria-describedby="company-help">                  
+                    <small class="text-danger" id='company-help'>{{messages.company}}</small>                  
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-6 col-md-6 col-sm-12">
+                        <div class="form-group">
+                            <label for="Mobile">Mobile</label>
+                            <input type="text" name="Mobile" id="Mobile" class="form-control" placeholder="Mobile" aria-describedby="mobile-help" value="{{data.mobile}}">
+                            <small class="text-muted" style="display: none;" id='mobile-help'></small>                  
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="address">Address</label>
+                    <br>                                    
+                    <textarea class="form-control" name="address" id="address" wrap="soft" cols="50" rows="3" placeholder="address">{{data.address}}</textarea>
+                    </textarea>
+                </div>   
+
+                <div class="row">
+                    <div class="col-lg-4 col-md-4 col-sm-12">
+                        <div class="form-group">
+                            <label for="state">State</label>
+                            <input type="text" name="state" id="state" class="form-control" placeholder="State" value="{{data.state}}">                  
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-4 col-sm-12">
+                        <div class="form-group">
+                            <label for="city">City</label>
+                            <input type="text" name="city" id="city" class="form-control" placeholder="City" value="{{data.city}}">                  
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-4 col-sm-12">
+                        <div class="form-group">
+                            <label for="pincode">PIN code</label>
+                            <input type="text" name="pincode" id="pincode" class="form-control" placeholder="PIN code" value="{{data.pincode}}">                  
+                        </div>
+                    </div>
+                </div>
+
+                <div style="text-align: center;">
+                    <button type="submit" class="btn btn-lg btn-warning" style="text-align: center;">UPDATE</button>
+                </div>
+                
+            </form>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}

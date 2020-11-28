@@ -1,0 +1,83 @@
+{% extends 'distributor/distributor_base.html' %}
+{% load static %}
+
+{% block title_block %}
+    Distributor edit
+{% endblock %}
+
+{% block body_block %}
+
+
+    <!-- <script src="{% static 'js/register_retailer.js' %}"></script> -->
+
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12 col-md-6 col-lg-6 ml-auto mr-auto">
+                <h1 class="text-primary">Distributor Edit</h1>
+                <p class="lead">Edit the necessary details</p>
+                
+                    <form method="POST" id="retailer register" onsubmit="event.preventDefault();" action="{% url 'mainApp:register_distributor' %}">
+                        
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-lg-6 col-md-6 col-sm-12">
+                                    <label for="first name">
+                                        First name
+                                    </label>
+                                    <input type="text" id = "first name" name = "first name" placeholder="First Name" class="form-control" value="{{data.first_name}}">
+                                </div>
+
+                                <div class="col-lg-6 col-md-6 col-sm-12">
+                                    <label for="Last name">
+                                        Last name
+                                    </label>
+                                    <input type="text" id = "Last name" name = "Last name" placeholder="Last Name" class="form-control" value="{{data.last_name}}">
+                                </div>
+
+                            </div>
+                        </div>  
+
+                        <div class="row">
+                            <div class="col-lg-6 col-md-6 col-sm-12">
+                                <div class="form-group">
+                                    <label for="Mobile">Mobile</label>
+                                    <input type="text" name="Mobile" id="Mobile" class="form-control" placeholder="Mobile" aria-describedby="mobile-help" value="{{data.mobile}}">
+                                    <small class="text-muted" style="display: none;" id='mobile-help'></small>                  
+                                </div>
+                            </div>
+                        </div>
+                        
+                        
+                        <div class="form-group">
+                            <label for="address">Address</label>                                    
+                            <textarea class="form-control" name="address" id="address" wrap="soft" cols="100" rows="3" placeholder="address">
+                                {{data.address}}
+                            </textarea>
+                        </div>                  
+
+                        <div class="form-group">
+                            <label for="state">State</label>
+                            <input type="text" name="state" id="state" class="form-control" placeholder="State" value="{{data.state}}">                
+                        </div>
+
+                        <div class="form-group">
+                            <label for="city">City</label>
+                            <input type="text" name="city" id="city" class="form-control" placeholder="City" value="{{data.city}}">                
+                        </div>
+
+                        <div class="form-group">
+                            <label for="pincode">Pincode</label>
+                            <input type="text" name="pincode" id="pincode" class="form-control" placeholder="PIN code" value="{{data.pincode}}">                
+                        </div>
+
+                        <div style="text-align: center;">
+                            <button type="submit" class="btn btn-lg btn-warning">UPDATE</button>
+                        </div>
+                    </form>
+                
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

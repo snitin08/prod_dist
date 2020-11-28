@@ -1,0 +1,34 @@
+#add-product {
+    
+        background-color: blue; /* Blue background */
+        border: none; /* Remove borders */
+        color: white; /* White text */
+        font-size: large;
+        padding: 6px 6px;
+        cursor: pointer; /* Mouse pointer on hover */
+        
+            
+}
+
+#add-product:hover {
+    background-color: RoyalBlue;
+  }
+
+.fa-trash-alt{
+    border: none; /* Remove borders */
+    color: white; /* White text */
+    font-size: large;
+    
+    cursor: pointer; /* Mouse pointer on hover */
+    background-color: red;
+}
+
+.fa-trash-alt:hover{
+    background-color:crimson;
+}
+
+#product-list{
+    height: 300px;
+    border: 1px solid black;
+}
+
