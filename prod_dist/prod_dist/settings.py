@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 
 import os
 from .constants import secret_key
+import mongoengine
+
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -39,6 +41,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'mainApp',
+    'company',
+    'distributor',
+    'retailer',
+    'receipt',
+    'rest_framework_mongoengine'
 ]
 
 MIDDLEWARE = [
@@ -79,7 +86,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
+    },
+    
 }
 
 
@@ -125,5 +133,13 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
-
 ]
+
+MONGO_USER = 'nishith-admin'
+MONGO_PASS = 'password'
+MONGO_HOST = 'localhost'
+MONGO_NAME = 'receipt_data'
+MONGO_DATABASE_HOST = \
+'mongodb://%s:%s@%s/%s' \
+% (MONGO_USER, MONGO_PASS, MONGO_HOST, MONGO_NAME)
+mongoengine.connect(MONGO_NAME)

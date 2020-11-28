@@ -8,33 +8,38 @@
 {% block body_block %}
     
     <div class="container">
-        <h1>
-            Exisiting distributors
-        </h1>
-        <div id="company-table">
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Contact</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td scope="row">Rajesh</td>
-                        <td>rajesk@example.com</td>
-                        <td>1234567890</td>
-                    </tr>
-                    <tr>
-                        <td scope="row">Rajesh</td>
-                        <td>rajesk@example.com</td>
-                        <td>1234567890</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
 
+        {% if associated_distributors %}
+            <h1>
+                Exisiting distributors
+            </h1>
+            <div id="company-table">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Contact</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for distributor in associated_distributors %}
+                            <tr>
+                                <td scope="row">{{distributor.first_name}} {{distributor.last_name}}</td>
+                                <td>{{distributor.email}}</td>
+                                <td>{{distributor.mobile}}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="jumbotron">
+                <h1 class="text-danger" style="text-align: center;">
+                    You have no associated distributors
+                </h1>
+            </div>
+        {% endif %}
     </div>    
                
 {% endblock %}

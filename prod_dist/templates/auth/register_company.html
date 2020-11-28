@@ -11,11 +11,11 @@
     <body>
         <script src="{% static 'js/register_retailer.js' %}"></script>
         <div class="row">
-            <div class="col-sm-12 col-md-6 col-lg-6 ml-auto mr-auto">
+            <div class="col-sm-12 col-md-6 col-lg-4 ml-auto mr-auto">
                 <h1 class="text-primary">Company register</h1>
                 <p class="lead">Enter all the details to register for the website</p>
 
-                <form id="retailer register" action="{% url 'mainApp:register_company' %}" class="ml-5 mr-5" method="POST" onsubmit="event.preventDefault(); validate_form();">
+                <form id="retailer register" action="{% url 'mainApp:register_company' %}" class="ml-auto mr-auto" method="POST" onsubmit="event.preventDefault(); validate_form();">
                     {% csrf_token %}
                     <div class="form-group">
                         <label for="company name">Company name</label>
@@ -34,8 +34,9 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="address">Address</label>                                    
-                        <textarea name="address" id="address" wrap="hard" cols="100" rows="3" placeholder="address">{{data.address}}</textarea>
+                        <label for="address">Address</label>
+                        <br>                                    
+                        <textarea name="address" id="address" wrap="soft" cols="50" rows="3" placeholder="address">{{data.address}}</textarea>
                         </textarea>
                     </div>   
 
@@ -75,8 +76,7 @@
                             <br>1 uppercase character
                             <br>1 lowercase character
                             <br>minimum length of 6 characters
-                            <br>1 number
-                            <br>1 special character
+                            <br>1 number                        
                         </small>                  
                     </div>
     
@@ -87,8 +87,7 @@
                             <br>1 uppercase character
                             <br>1 lowercase character
                             <br>minimum length of 6 characters
-                            <br>1 number
-                            <br>1 special character
+                            <br>1 number                        
                         </small>                    
                     </div>
     

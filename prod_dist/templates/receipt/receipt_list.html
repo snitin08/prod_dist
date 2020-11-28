@@ -1,0 +1,75 @@
+{% extends 'receipt/receipt_base.html'%}
+{% load static %}
+
+{% block title_block %}
+    Receipt list
+{% endblock %}
+
+{% block body_block %}
+
+    <div class="container">
+        <div id="sent_receipts" class="m-5 p-5">
+
+            <h1>Sent receipts</h1>
+            <table class="table">
+                <thead>
+                    <tr class="bg-primary">
+                        <th>Sl. No.</th>
+                        <th>Receipt number</th>
+                        <th>Receipt date</th>
+                        <th>Distributor name</th>
+                        <th>Subtotal</th>
+                        <th>Tax</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody style="overflow: scroll; max-height: 10px;">
+                    <tr>
+                        <td scope="row">1</td>
+                        <td>943436</td>
+                        <td>02/11/2020</td>
+                        <td>Rajesh</td>
+                        <td>20</td>
+                        <td>2</td>
+                        <td>22</td>
+                    </tr>      
+                    
+                </tbody>
+            </table>
+        </div>
+
+        <div id="received_receipts" class="m-5 p-5">
+
+            <h1>Received receipts</h1>
+            <table class="table">
+                <thead>
+                    <tr class="bg-primary">
+                        <th>Sl. No.</th>
+                        <th>Receipt number</th>
+                        <th>Receipt date</th>
+                        <th>Distributor name</th>
+                        <th>Subtotal</th>
+                        <th>Tax</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody style="overflow: scroll; max-height: 400px;">
+
+
+                    <tr>
+                        <td scope="row">1</td>
+                        <td>943436</td>
+                        <td>02/11/2020</td>
+                        <td>Rahul</td>
+                        <td>20</td>
+                        <td>2</td>
+                        <td>22</td>
+                    </tr>    
+                                        
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+
+{% endblock %}

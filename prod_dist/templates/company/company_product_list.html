@@ -8,83 +8,115 @@
 {% block body_block %}
 
     <div class="container m-5">
-        <div id="product_table">
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Sl No.</th>
-                        <th>Product name</th>
-                        <th>Product price</th>
-                        <th>Product tax</th>
-                        <th>Product discount</th>                
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td scope="row">1</td>
-                        <td>Tomato chips</td>
-                        <td>20</td>
-                        <td>2</td>
-                        <td>0</td>
-                    </tr>
-                    <tr>
-                        <td scope="row">1</td>
-                        <td>Potato chips</td>
-                        <td>30</td>
-                        <td>2</td>
-                        <td>0</td>
-                    </tr>
-                </tbody>
-            </table>        
+        
 
-            <button class="btn btn-primary btn-lg" id="btn_add_product" onclick="add_product();">Add product</button>
+            <div id="product_table">
+                {% if company_products %}
 
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Sl No.</th>
+                                <th>Product name</th>
+                                <th>Product distributor price</th>
+                                <th>Product MRP</th>
+                                <th>Product tax</th>
+                                <th>Product discount</th>                
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            {% for product in company_products %}
+                                <tr>
+                                    <td scope="row">{{forloop.counter}}</td>
+                                    <td>
+                                        <a href="{% url 'company:company_product_detail' company_name=company_name product_id=product.id %}">
+                                            {{product.product_name}}
+                                        </a>
+                                    </td>
+                                    <td>{{product.product_distributor_price}}</td>
+                                    <td>{{product.product_mrp}}</td>
+                                    <td>{{product.product_tax}}</td>
+                                    <td>{{product.product_discount}}</td>
+                                    <td>
+                                        <a href="{% url 'company:company_product_remove' company_name=company_name product_id=product.id %}">
+                                            REMOVE
+                                        </a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>        
+            `   {% endif %}
+
+                <button class="btn btn-primary btn-lg" id="btn_add_product" onclick="add_product();">Add product</button>
+
+            </div>
+        
+
+        <div id="form-div" style="display: none;">
+
+            <form id="form-add-product" method="POST" 
+                action="{% url 'company:company_product_list' company_name=company_name %}"
+                onsubmit="event.preventDefault(); submit_form();"
+            >
+            
+
+                {% csrf_token %}
+                <p class="lead">Enter the product details</p>
+
+                <div class="form-group">
+                    <label for="product name">Product name</label>
+                    <input type="text" name="product name" id="product name" class="form-control" placeholder="Product name">              
+                </div>
+
+                <div class="form-group">
+                    <label for="product price">Product distributor price</label>
+                    <input type="text" name="product distributor price" id="product distributor price" class="form-control" placeholder="Product distributor price">              
+                </div>
+
+                <div class="form-group">
+                    <label for="product price">Product MRP</label>
+                    <input type="text" name="product MRP" id="product MRP" class="form-control" placeholder="Product MRP">              
+                </div>
+
+                <div class="form-group">
+                    <label for="product tax">Product tax</label>
+                    <input type="text" name="product tax" id="product tax" class="form-control" placeholder="Product tax">              
+                </div>
+
+                <div class="form-group">
+                    <label for="product discount">Product discount</label>
+                    <input type="text" name="product discount" id="product discount" class="form-control" placeholder="Product discount">              
+                </div>
+
+                
+                <button type="button" onclick="close_add_product_form();" class="btn btn-lg btn-danger m-2">CANCEL</button>
+                <button type="submit" class="btn btn-lg btn-success">Add product</button>
+            </form>
+            
         </div>
-
-        <form style="display: none;" id="form-add-product" method="POST">
-
-            {% csrf_token %}
-            <p class="lead">Enter the product details</p>
-
-            <div class="form-group">
-              <label for="product name">Product name</label>
-              <input type="text" name="product name" id="product name" class="form-control" placeholder="Product name">              
-            </div>
-
-            <div class="form-group">
-                <label for="product price">Product price</label>
-                <input type="text" name="product price" id="product price" class="form-control" placeholder="Product price">              
-            </div>
-
-            <div class="form-group">
-                <label for="product tax">Product tax</label>
-                <input type="text" name="product tax" id="product tax" class="form-control" placeholder="Product tax">              
-            </div>
-
-            <div class="form-group">
-                <label for="product discount">Product discount</label>
-                <input type="text" name="product discount" id="product discount" class="form-control" placeholder="Product discount">              
-            </div>
-
-            <button type="submit" class="btn btn-lg btn-success">ADD PRODUCT</button>
-            <button onclick="close_add_product_form();" class="btn btn-lg btn-danger">CANCEL</button>
-        </form>
-
     </div>
 
     <script>
         function add_product()
         {
-            var add_product_form = document.getElementById("form-add-product");
-            add_product_form.style.display="block";
             $("#product_table").fadeOut(100);
+            var add_product_form = document.getElementById("form-div");
+            add_product_form.style.display="block";
+            
         }
 
         function close_add_product_form()
         {
-            var add_product_form = document.getElementById("form-add-product");
+            var add_product_form = document.getElementById("form-div");
             add_product_form.style.display="none";
+            $("#product_table").fadeIn(100);
+        }
 
+        function submit_form()
+        {
+            document.getElementById('form-add-product').submit();
         }
     </script>
 
