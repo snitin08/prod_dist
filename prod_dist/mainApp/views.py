@@ -2,8 +2,15 @@ from django.shortcuts import render, HttpResponse, redirect
 from .models import Company,Distributor,Retailer
 from .models import CustomBackend
 from django.contrib.auth import login,logout
+from .fill_data import *
 
 # Create your views here.
+def createData(request):
+    createCompany(5)
+    createDistributor(5)
+    createRetailer(5)
+    return redirect('mainApp:index')
+
 def index(request):
     if request.session.get('UID')==None:
         print(request.session.get('user'))
@@ -165,6 +172,13 @@ def login_user(request):
             request.session['user'] = user.email
             request.session['id'] = user.id
             request.session['type'] = t
+            if t=='company':
+                request.session['company_name'] = user.company_name
+                return redirect("company:company_product_list",company_name=user.company_name)
+            elif t=='distributor':
+                return redirect("distributor:distributor_retailers",distributor_id=user.id)
+            else:
+                return redirect("retailer:retailer_distributors",retailer_id=user.id)
             print(user.email)
             return HttpResponse('<h1>Login success</h1>')
         else:
@@ -177,6 +191,11 @@ def login_user(request):
 
 def logout_user(request):
     del request.session['user']
+    del request.session['id'] 
+    if request.session['type']=="Company":
+        del request.session['company_name']
+    del request.session['type']
+
     return redirect('mainApp:index')
 
 

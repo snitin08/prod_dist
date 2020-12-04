@@ -12,9 +12,9 @@ def create_receipt(request):
         return HttpResponse(json.dumps(response), content_type='application/json')
         
     else:
-        return render(request,'receipt/create_receipt.html',{})
+        
         print(request.session['type'])
-        if request.session['type']=='Company':
+        if request.session['type']=='company':
             email = request.session['user']
             company_id = Company.objects.get(email=email).id
             products = CompanyProducts.objects.filter(product_company=company_id)

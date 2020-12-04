@@ -19,14 +19,13 @@
                 <input type="text" id="product-price" name="product-price" class="form-control m-1" placeholder="Product price">
                 <input type="text" id="product-discount" name="product-discount" class="form-control m-1" placeholder="Product discount">                                
                 <button id="add-product" type="submit">
-                    <i class="fa fa-plus" aria-hidden="true"></i>
-                    Add
+                    <i class="fa fa-plus" aria-hidden="true"></i>                    
                 </button>
             </div>
         </form>
 
 
-        {% if request.session.type == "Company" %}
+        {% if request.session.type == "company" %}
             <datalist id="productList" onchange="fillProductDetails();">
                 {% for product in products %}
                     <option price="{{product.product_distributor_price}}" value="{{product.product_name}}" tax="{{product.product_tax}}" discount="{{product.product_discount}}"/>           
@@ -64,7 +63,7 @@
         <form id="form-create-receipt" method="POST" action="{% url 'receipt:create_receipt' %}" onsubmit="event.preventDefault();">
             {% csrf_token %}
 
-            {% if request.session.type == "Company" %}
+            {% if request.session.type == "company" %}
                 <div class="form-group">
                     <label for="user_to">Select a distributor</label>
                     <select name="user_to" id="user_to">
@@ -193,7 +192,7 @@
                             <input name="list-product-price" id="list-product-price-'+ checkCount+ '" class="form-control m-2" type="text" value="'+product_price+'"  placeholder="Product Price" onchange="calculate();">\
                             <input name="list-product-discount" id="list-product-discount-'+ checkCount+ '" class="form-control m-2" type="text" value="'+product_discount+'"  placeholder="Product discount" onchange="calculate();">\
                             <a href="#" id="list-product-remove" class="form-control m-2 bg-danger text-white">\
-                                <i class="fa fa-trash-alt">X</i>\
+                                <i class="fa fa-trash" aria-hidden="true"></i>\
                             </a>\
                         </div>'
                     );

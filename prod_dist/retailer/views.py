@@ -11,9 +11,9 @@ def retailerAuthenticated(function):
                     if retailer.email == request.session['user']:           
                         return function(request, *args, **kwargs)
                     else:
-                        return HttpResponse('<h1> Access denied </h1>')
+                        return render(request,'general/404.html',{})
                 else:
-                    return HttpResponse('<h1>No retailer having id '+str(kwargs.get("retailer_id"))+'</h1>')
+                    return render(request,'general/404.html',{})
             else:
                 return redirect('mainApp:login')
         except:

@@ -11,9 +11,9 @@ def distributorAuthenticated(function):
                     if distributor.email == request.session['user']:           
                         return function(request, *args, **kwargs)
                     else:
-                        return HttpResponse('<h1> Access denied </h1>')
+                        return render(request,'general/404.html',{})
                 else:
-                    return HttpResponse('<h1>No distributor having id '+str(kwargs.get("distributor_id"))+'</h1>')
+                    return render(request,'general/404.html',{})
             else:
                 return redirect('mainApp:login')
         except:

@@ -1,17 +1,4 @@
 from django.shortcuts import render
-
-# Create your views here.
-def company_edit(request):
-    return render(request,'company/company_edit.html',{})
-
-def company_distributors(request):
-    return render(request,'company/company_distributors.html',{})
-
-def company_product_list(request):
-    return render(request,'company/company_product_list.html',{})
-
-def company_product_detail(request):
-    return render(request,'company/company_product_detail.html',{})
 from django.shortcuts import render, HttpResponse, redirect
 from mainApp.models import Company, Distributor, Retailer, CompanyProducts
 from functools import wraps
@@ -20,20 +7,20 @@ from functools import wraps
 def CompanyAuthenticated(function):
   
     def wrap(request, *args, **kwargs):   
-        try:     
-            if request.session['user']:
-                company = Company.objects.filter(company_name=kwargs['company_name']).first()
-                if company:
-                    if company.email == request.session['user']:           
-                        return function(request, *args, **kwargs)
-                    else:
-                        return HttpResponse('<h1> Access denied </h1>')
+        #try:     
+        if request.session['user']:
+            company = Company.objects.filter(company_name=kwargs['company_name']).first()
+            if company:
+                if company.email == request.session['user']:           
+                    return function(request, *args, **kwargs)
                 else:
-                    return HttpResponse('<h1>No company named '+kwargs['company_name']+'</h1>')
+                    return render(request,'general/404.html',{})
             else:
-                return redirect('mainApp:login')
-        except:
+                return redirect('mainApp:404')
+        else:
             return redirect('mainApp:login')
+        # except:
+        #     return redirect('mainApp:login')
     return wrap
 
 @CompanyAuthenticated
@@ -76,6 +63,7 @@ def company_edit(request,company_name):
                 data['city'] = company.city
                 data['pincode'] = company.pincode
 
+                print(request.session.company_name)
                 return render(request,'company/company_edit.html',{"data":data})
             """
             else:
