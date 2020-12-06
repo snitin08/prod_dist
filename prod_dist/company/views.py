@@ -7,20 +7,20 @@ from functools import wraps
 def CompanyAuthenticated(function):
   
     def wrap(request, *args, **kwargs):   
-        #try:     
-        if request.session['user']:
-            company = Company.objects.filter(company_name=kwargs['company_name']).first()
-            if company:
-                if company.email == request.session['user']:           
-                    return function(request, *args, **kwargs)
+        try:     
+            if request.session['user']:
+                company = Company.objects.filter(company_name=kwargs['company_name']).first()
+                if company:
+                    if company.email == request.session['user']:           
+                        return function(request, *args, **kwargs)
+                    else:
+                        return render(request,'general/404.html',{})
                 else:
-                    return render(request,'general/404.html',{})
+                    return redirect('mainApp:404')
             else:
-                return redirect('mainApp:404')
-        else:
+                return redirect('mainApp:login')
+        except:
             return redirect('mainApp:login')
-        # except:
-        #     return redirect('mainApp:login')
     return wrap
 
 @CompanyAuthenticated

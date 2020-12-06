@@ -18,6 +18,7 @@ def create_receipt(request):
             email = request.session['user']
             company_id = Company.objects.get(email=email).id
             products = CompanyProducts.objects.filter(product_company=company_id)
+            extend_page="company/company_base.html"
             print(products)
         elif request.session['type']=='distributor':
             email = request.session['user']
@@ -25,8 +26,12 @@ def create_receipt(request):
             companies = distributor.company_set.all()
             products = CompanyProducts.objects.filter(product_company__in=companies)
             print(products)
+            extend_page="distributor/distributor_base.html"
+        else:
+            return render(request,'general/404.html',{})
         return render(request,'receipt/create_receipt.html',{
-            "products":products
+            "products":products,
+            "extend_page":extend_page,
         })
 
 def receipt_list(request):
