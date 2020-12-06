@@ -9,6 +9,24 @@
 
     <link rel="stylesheet" href="{% static 'css/receipt/create_receipt.css' %}" type="text/css">
     <div class="container my-5" style="text-align: center;">
+
+        {% if request.session.type == "company" %}
+                <div class="form-group">
+                    <label for="user_to" style="display: block; font-size: 24px; text-align: left;">Select a distributor</label>
+                    <select name="user_to" id="user_to" >
+                        <option value=1>Distributor 1</option>
+                        <option value=2>Distributor 2</option>
+                    </select>
+                </div>
+        {% else %}
+            <div class="form-group">
+                <label for="user_to" style="display: block; font-size: 24px;">Select a retailer</label>
+                <select name="user_to" id="user_to" >
+                    <option value=1>Retailer 1</option>
+                    <option value=2>Retailer 2</option>
+                </select>
+            </div>
+        {% endif %}
         
         <form onsubmit="event.preventDefault();">
             <div class="form-inline my-5" style="text-align: center;">
@@ -61,25 +79,7 @@
 
         
         <form id="form-create-receipt" method="POST" action="{% url 'receipt:create_receipt' %}" onsubmit="event.preventDefault();">
-            {% csrf_token %}
-
-            {% if request.session.type == "company" %}
-                <div class="form-group">
-                    <label for="user_to">Select a distributor</label>
-                    <select name="user_to" id="user_to">
-                        <option value=1>Distributor 1</option>
-                        <option value=2>Distributor 2</option>
-                    </select>
-                </div>
-            {% else %}
-                <div class="form-group">
-                    <label for="user_to">Select a retailer</label>
-                    <select name="user_to" id="user_to">
-                        <option value=1>Retailer 1</option>
-                        <option value=2>Retailer 2</option>
-                    </select>
-                </div>
-            {% endif %}
+            {% csrf_token %}            
 
             <div class="form-group" style="text-align: center;">
                 <input id="create-receipt" type="submit" value="SUBMIT" onclick="event.preventDefault();" class="btn btn-lg btn-success m-5" style="text-align: center;">

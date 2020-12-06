@@ -71,7 +71,10 @@
 
                         {% if request.session.user %}
                             <li class="nav-item">
-                                <a class="nav-link" href="{% url 'mainApp:logout' %}">Logout</a>
+                                <a class="nav-link" href="{% url 'mainApp:logout' %}">                                                               
+                                    <span>Logout</span>                               
+                                    <i class="fa fa-sign-out-alt" style="color: white;"> </i>              
+                                </a>
                             </li>
                         {% else %}
                             <li class="nav-item">

@@ -38,7 +38,7 @@
 
                         <div class="form-group">
                           <label for="type">Select the type of user</label>
-                          <select id="type" name="type">
+                          <select id="type" name="type" class="custom-select custom-select-sm">
                               <option value="company" id="company">Company</option>
                               <option value="distributor" id="distributor">Distributor</option>
                               <option value="retailer" id="retailer">Retailer</option>
@@ -50,7 +50,7 @@
 
                         <h3 class="lead" style="text-align: center;">Don't have an account??</h3>
 
-                        <a href="{% url 'mainApp:index' %}" class="btn-lg btn-primary" style="text-align: center; width: 100%; margin: 0px;" role="button">REGISTER</a>
+                        <a href="{% url 'mainApp:index' %}" class="btn-lg btn-primary" style="text-align: center; display: block;" role="button">REGISTER</a>
                         
                     </form>
 
