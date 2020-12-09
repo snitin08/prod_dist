@@ -7,16 +7,27 @@
 
 {% block body_block %}
 
+    <style>
+        #product_table_inner{
+            max-height: 400px;
+            overflow: hidden; 
+            padding: 5px; 
+            margin-bottom: 10px;
+        }
+
+        #product_table_inner:hover {
+            overflow-y: scroll;
+        }
+    </style>
+    
+
     <div class="container">
-        
-
+        {% if company_products %}
             <div id="product_table">
-                {% if company_products %}
-
+                <div id="product_table_inner">
                     <h1 
                         style="display: block; 
-                        text-align: center; 
-                        background-color: rgba(182, 180, 180,0.2);
+                        text-align: center;                     
                         padding: 5px;  ">
                         Product List
                     </h1>
@@ -53,12 +64,21 @@
                                 </tr>
                             {% endfor %}
                         </tbody>
-                    </table>        
-            `   {% endif %}
-
+                    </table>
+                </div>
                 <button class="btn btn-primary btn-lg" id="btn_add_product" onclick="add_product();">Add product</button>
-
             </div>
+        {% else %}
+            <div id="product_table">
+                <div class="jumbotron">
+                    <h1 class="text-danger">You do not have any products.</h1>
+                    <hr class="my-2">
+                    <p class="lead">Click on add product to create your catalog</p>                                                            
+                </div>
+                <button class="btn btn-primary btn-lg" id="btn_add_product" onclick="add_product();">Add product</button>
+            </div>       
+    `   {% endif %}
+
         
 
         <div id="form-div" style="display: none;">
@@ -67,8 +87,7 @@
                 action="{% url 'company:company_product_list' company_name=company_name %}"
                 onsubmit="event.preventDefault(); submit_form();"
             >
-            
-
+  
                 {% csrf_token %}
                 <p class="lead">Enter the product details</p>
 
@@ -125,6 +144,7 @@
         {
             document.getElementById('form-add-product').submit();
         }
+        
     </script>
 
 {% endblock %}

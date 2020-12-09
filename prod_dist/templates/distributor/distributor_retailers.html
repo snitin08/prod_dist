@@ -8,12 +8,12 @@
 {% block body_block %}
     <link rel="stylesheet" href="{% static 'css/company/company_distributors.css' %}">
     <div class="container">
-        <h1>
-            Exisiting retailers
-        </h1>
-        <div id="retailer-table">
-            {% if associated_retailers %}
-                
+        
+        {% if associated_retailers %}
+            <h1>
+                Exisiting retailers
+            </h1>
+            <div id="retailer-table">
                 <table class="table">
                     <thead>
                         <tr>
@@ -37,8 +37,15 @@
                         {% endfor %}    
                     </tbody>
                 </table>
-            {% endif %}
-        </div>
+            </div>
+        {% else %}
+            <div class="jumbotron">
+                <h1 class="text-danger">You do not have any associated retailers</h1> 
+                <hr style="display: block; color: gray; margin: 2px; padding: 2px;">
+                <p class="text-muted">Click on add retailer to find retailers</p>               
+            </div>
+        {% endif %}
+        
 
         <button type="button" class="btn btn-primary" onclick="add_retailer();">
             Add retailer

@@ -41,12 +41,25 @@
                 
             }
 
+            ::-webkit-scrollbar {
+                width: 10px;  /* Remove scrollbar space */
+                background: rgb(155, 152, 152);  /* Optional: just make scrollbar invisible */
+               border-radius: 5px;
+            }
+
+            .nav-active {
+                border-bottom: 5px solid white;                
+            }
+
 
         </style>
 
         <div class="container-fluid p-5">
             <nav class="navbar navbar-expand-lg">
-                <a class="navbar-brand" style="font-size: x-large;" href="{% url 'company:company_product_list' company_name=request.session.company_name %}">{{request.session.company_name}}</a>
+                <a class="navbar-brand" style="font-size: x-large;" href="{% url 'company:company_product_list' company_name=request.session.company_name %}">
+                    <i class="fa fa-home" style="color: white;"></i>
+                    {{request.session.company_name}}
+                </a>
                 
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon">
@@ -66,14 +79,18 @@
                         </li>
 
                         <li class="nav-item">
+                            <a class="nav-link" href="{% url 'company:company_distributors' company_name=request.session.company_name %}">Distributors</a>
+                        </li>
+
+                        <li class="nav-item">
                             <a class="nav-link" href="{% url 'company:company_product_list' company_name=request.session.company_name %}">Products</a>
                         </li>
 
                         {% if request.session.user %}
                             <li class="nav-item">
                                 <a class="nav-link" href="{% url 'mainApp:logout' %}">                                                               
-                                    <span>Logout</span>                               
-                                    <i class="fa fa-sign-out-alt" style="color: white;"> </i>              
+                                    <i class="fa fa-sign-out" style="color: white;"> </i>  
+                                    <span>Logout</span>                                                                               
                                 </a>
                             </li>
                         {% else %}

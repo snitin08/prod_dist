@@ -28,9 +28,12 @@
 }
 
 #product-list{
-    height: 300px;
-    overflow: scroll;
-    border: 1px solid black;
+    max-height: 300px;
+    overflow: hidden;
+} 
+
+#product-list:hover {
+    overflow-y: scroll;
 }
 
 select {

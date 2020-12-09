@@ -6,4 +6,5 @@ app_name = 'receipt'
 
 urlpatterns = [
     path('create_receipt/',views.create_receipt,name='create_receipt'),
+    path('request_receipt/',views.request_receipt,name='request_receipt'),
 ]

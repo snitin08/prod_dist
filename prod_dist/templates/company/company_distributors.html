@@ -8,12 +8,14 @@
 {% block body_block %}
     <link rel="stylesheet" href="{% static 'css/company/company_distributors.css' %}">
     <div class="container">
-        <h1>
-            Exisiting distributors
-        </h1>
+        
         <div id="distributor-table">
 
             {% if existing_distributors %}
+
+                <h1>
+                    Exisiting distributors
+                </h1>
                 <table class="table">
                     <thead>
                         <tr>
@@ -37,6 +39,12 @@
                         {% endfor %}                      
                     </tbody>
                 </table>
+            {% else %}
+                <div class="jumbotron">
+                    <h1 class="text-danger">You do not have any associated distributors</h1>
+                    <hr class="my-2">
+                    <p class="lead"></p>                                    
+                </div>
             {% endif %}
         </div>
 

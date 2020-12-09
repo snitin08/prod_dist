@@ -45,7 +45,10 @@
 
         <div class="container-fluid p-5">
             <nav class="navbar navbar-expand-lg">
-                <a class="navbar-brand" style="font-size: x-large;" href="{% url 'distributor:distributor_retailers' distributor_id=request.session.id %}">Home</a>
+                <a class="navbar-brand" style="font-size: x-large;" href="{% url 'distributor:distributor_retailers' distributor_id=request.session.id %}">
+                    <i class="fa fa-home" style="color: white;"></i>
+                    Home
+                </a>
                 
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon">
@@ -65,12 +68,19 @@
                         </li>
 
                         <li class="nav-item">
+                            <a class="nav-link" href="{% url 'distributor:distributor_retailers' distributor_id=request.session.id %}">Retailers</a>
+                        </li>
+
+                        <li class="nav-item">
                             <a class="nav-link" href="{% url 'distributor:distributor_companies' distributor_id=request.session.id %}">Companies</a>
                         </li>
 
                         {% if request.session.user %}
                             <li class="nav-item">
-                                <a class="nav-link" href="{% url 'mainApp:logout' %}">Logout</a>
+                                <a class="nav-link" href="{% url 'mainApp:logout' %}">
+                                    <i class="fa fa-sign-out" style="color: white;"> </i>  
+                                    Logout
+                                </a>
                             </li>
                         {% else %}
                             <li class="nav-item">

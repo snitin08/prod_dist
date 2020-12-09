@@ -5,7 +5,7 @@ from company import views
 app_name = 'company'
 
 urlpatterns = [
-    
+    path('<str:company_name>/',views.company_product_list,name='index'),
     path('edit/<str:company_name>',views.company_edit,name='company_edit'),
     path('<str:company_name>/distributors/',views.company_distributors,name='company_distributors'),
     path('<str:company_name>/distributor/remove/<int:distributor_id>',views.company_distributor_remove,name='company_distributor_remove'),

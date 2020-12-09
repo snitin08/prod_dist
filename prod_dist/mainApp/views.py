@@ -4,6 +4,21 @@ from .models import CustomBackend
 from django.contrib.auth import login,logout
 from .fill_data import *
 
+def notAuthenticated(function):
+
+    def wrap(request,*args,**kwargs):
+        if request.session.get('user'):
+            t = request.session.get('type')
+            if t=='company':
+                return redirect('company:company_product_list',company_name=request.session['company_name'])
+            elif t=='distributor':
+                return redirect('distributor:distributor_retailers',distributor_id=request.session['id'])
+            elif t=='retailer':
+                return redirect('retailer:retailer_distributors',retailer_id=request.session['id'])
+        else:
+            return function(request,*args,**kwargs)
+    return wrap
+
 # Create your views here.
 def createData(request):
     createCompany(5)
@@ -11,11 +26,13 @@ def createData(request):
     createRetailer(5)
     return redirect('mainApp:index')
 
+@notAuthenticated
 def index(request):
-    if request.session.get('UID')==None:
+    if not request.session.get('user'):
         print(request.session.get('user'))
         return render(request,'auth/register.html',{})
-
+        
+@notAuthenticated
 def register_retailer(request):
     if request.method == 'GET':
         return render(request,'auth/register_retailer.html',{})
@@ -48,7 +65,7 @@ def register_retailer(request):
             retailer = Retailer.objects.create_retailer(email,mobile,address,state,
                                                             city,pincode,first_name,last_name,password)
             if retailer is not None:
-                return redirect('mainApp:register_success')
+                return redirect('mainApp:login')
             else:
                 return render(request,'auth/register_retailer.html',{})
         else:
@@ -60,7 +77,8 @@ def register_retailer(request):
                 }
             )
 
-def register_company(request):
+@notAuthenticated
+def register_company(request):    
     if request.method == 'GET':
         return render(request,'auth/register_company.html',{})
     else:
@@ -95,7 +113,7 @@ def register_company(request):
             company = Company.objects.create_company(email,company_name,mobile,address,
                                                         state,city,pincode,password)
             if company is not None:
-                return redirect('mainApp:register_success')
+                return redirect('mainApp:login')
             else:
                 return render(request,'auth/register_company.html',{})
         else:
@@ -106,10 +124,9 @@ def register_company(request):
                 messages['company'] = 'There is already a company with that name'
             print(messages)
             return render(request,'auth/register_company.html',{"messages":messages,"data":collected_data})
-        
 
-
-def register_distributor(request):
+@notAuthenticated
+def register_distributor(request):    
     if request.method == 'GET':
         return render(request,'auth/register_distributor.html',{})
     else:
@@ -143,7 +160,7 @@ def register_distributor(request):
                                                             city,pincode,first_name,last_name,password)
 
             if distributor is not None:
-                return redirect('mainApp:register_success')
+                return redirect('mainApp:login')
             else:
                 return render(request,'auth/register_distributor.html',{})
         else:
@@ -153,10 +170,12 @@ def register_distributor(request):
                 "messages":messages,
                 "data":collected_data,
             })
-    
+
+
 def register_success(request):
     return HttpResponse("<h1> Register Success!! </h1>")
 
+@notAuthenticated
 def login_user(request):
 
     if request.method=='POST':

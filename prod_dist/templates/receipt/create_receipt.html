@@ -14,16 +14,18 @@
                 <div class="form-group">
                     <label for="user_to" style="display: block; font-size: 24px; text-align: left;">Select a distributor</label>
                     <select name="user_to" id="user_to" >
-                        <option value=1>Distributor 1</option>
-                        <option value=2>Distributor 2</option>
+                        {% for user in users %}
+                            <option value="{{user.id}}">{{user.first_name}} {{user.last_name}}</option>
+                        {% endfor %}
                     </select>
                 </div>
         {% else %}
             <div class="form-group">
                 <label for="user_to" style="display: block; font-size: 24px;">Select a retailer</label>
                 <select name="user_to" id="user_to" >
-                    <option value=1>Retailer 1</option>
-                    <option value=2>Retailer 2</option>
+                    {% for user in users %}
+                        <option value="{{user.id}}">{{user.first_name}} {{user.last_name}}</option>
+                    {% endfor %}
                 </select>
             </div>
         {% endif %}
@@ -91,6 +93,7 @@
 
     <script>
 
+
         function fillProductDetails()
         {
             const Value = document.getElementById('product-name').value;            
@@ -108,6 +111,8 @@
             taxField.value = tax;
             discountField.value = discount;
         }
+
+        
 
         function productListFill(id)
         {
@@ -170,9 +175,6 @@
             var checkCount = 1;
             console.log(checkCount);
 
-
-            
-
             $("#add-product").click(function (e) {
                 var product_name = $('#product-name').val();
                 var product_quantity=$("#product-quantity").val();
@@ -214,7 +216,8 @@
             });
     
             $("#create-receipt").click(function (e) {
-                var resultArray = [];
+                var resultArray = {};
+                resultArray['products']= [];
                 $('#product-list').find('div.form-inline').each(function() {
                     var rowData = {};
                     
@@ -224,8 +227,14 @@
                     rowData['product_price'] = $(this).find('[name="list-product-price"]').val();
                     rowData['product_discount'] = $(this).find('[name="list-product-discount"]').val();
                     rowData['product_ID'] = $(this).find('input[type=text]').attr('id');
-                    resultArray.push(rowData);
+                    resultArray['products'].push(rowData);
                 });
+                var user_to = document.getElementById("user_to").value;
+                resultArray['user_to'] = user_to;
+                resultArray['subtotal']=document.getElementById("subtotal").innerHTML;
+                resultArray['total_tax']=document.getElementById("total-tax").innerHTML;
+                resultArray['total_price']=document.getElementById("total-price").innerHTML;
+                resultArray['total_discount']=document.getElementById("total-discount").innerHTML;
                 console.log(resultArray);
 
                 $.post("{%  url 'receipt:create_receipt' %}" , 
