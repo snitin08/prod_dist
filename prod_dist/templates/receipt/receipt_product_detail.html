@@ -7,18 +7,27 @@
 
 {% block body_block %}
 
+    <link rel="stylesheet" href="{% static 'css/receipt/receipt_product_detail.css' %}">
     <div class="container">
 
         <div id="product_detail" class="m-5 p-3">
             <h1 style="text-align: center;">Product detail</h1>
-            <p>Product receipt: </p>
-            <p>Product name: </p>
-            <p>Product company: </p>
-            <p>Product distributor: </p>            
-            <p>Product price: </p>
-            <p>Product tax: </p>
-            <p>Product discount: </p>
-            <p>Product defective: </p>
+            <p>Receipt: </p>
+            <p>Name: </p>
+            <p>Company: </p>
+            <p>Distributor: </p>            
+            <p>Price: </p>
+            <p>Tax: </p>
+            <p>Discount: </p>
+            <p>Condition: <i class="fa fa-check non-defective" aria-hidden="true"></i></p>
+
+            <!-- Defective product -->
+                <p>Condition: 
+                    <i class="fa fa-times defective" aria-hidden="true"></i>
+                    <small class="text-danger">The product was damaged.</small>
+                </p>
+                
+            <!-- end defective product status -->
         </div>
 
     </div>

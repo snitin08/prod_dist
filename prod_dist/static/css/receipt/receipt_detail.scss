@@ -1,0 +1,33 @@
+$small: 500px;
+$medium: 800px;
+
+#receipt_product_list{
+    @media screen and (max-width: $small){
+        max-width: 400px;
+        overflow-x: scroll;   
+    }
+
+    @media screen and (min-width: $medium) {
+        max-width: $medium;
+        overflow-x: scroll;
+    }
+
+}
+
+
+
+p {
+    font-size: 1.75em;
+}
+
+.receipt_product_list_header {
+    box-shadow: 1px 1px 1px 1px rgb(189, 186, 186);
+}
+
+.defective {
+    color: red;
+}
+
+.non-defective {
+    color: green;
+}

@@ -1,0 +1,45 @@
+body,html {
+    margin: 0;
+    padding: 0;
+}
+* {
+    box-sizing: border-box;
+}
+
+.product_status_accepted {
+    
+    color: green;
+    border-radius: 50px;
+    margin:10px;
+    padding: 10px;
+}
+
+.product_status_defective {
+    
+    color: red;
+    border-radius: 50px;
+    margin:10px;
+    padding: 10px;
+}
+
+#sent_receipts {
+    max-height: 500px;
+    overflow-y: auto;
+    max-width: 100%;
+    overflow-x: auto;
+}
+
+#received_receipts {
+    max-height: 500px;
+    overflow-y: auto;
+    max-width: 100%;
+    overflow-x: auto;
+}
+
+.defective {
+    color: red;
+}
+
+.non-defective {
+    color: green;
+}

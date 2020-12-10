@@ -1,5 +1,5 @@
 from django.shortcuts import render, HttpResponse, redirect
-from mainApp.models import Distributor, Retailer, Company
+from mainApp.models import Distributor, Retailer, Company, CompanyProducts
 # Create your views here.
 def distributorAuthenticated(function):
   
@@ -89,3 +89,4 @@ def distributor_companies(request,distributor_id):
         "associated_companies":distributor_companies,
         "distributor":distributor,
     })
+

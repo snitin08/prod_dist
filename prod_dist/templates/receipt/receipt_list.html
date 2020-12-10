@@ -7,10 +7,10 @@
 
 {% block body_block %}
 
+    <link rel="stylesheet" href="{% static 'css/receipt/receipt_list.css' %}">
     <div class="container">
-        <div id="sent_receipts" class="m-5 p-5">
-
-            <h1>Sent receipts</h1>
+        <h1>Sent receipts</h1>
+        <div id="sent_receipts">
             <table class="table">
                 <thead>
                     <tr class="bg-primary">
@@ -21,6 +21,7 @@
                         <th>Subtotal</th>
                         <th>Tax</th>
                         <th>Total</th>
+                        <th>Status</th>
                     </tr>
                 </thead>
                 <tbody style="overflow: scroll; max-height: 10px;">
@@ -29,18 +30,33 @@
                         <td>943436</td>
                         <td>02/11/2020</td>
                         <td>Rajesh</td>
-                        <td>20</td>
-                        <td>2</td>
-                        <td>22</td>
-                    </tr>      
+                        <td>&#8377 20</td>
+                        <td>&#8377 2</td>
+                        <td>&#8377 22</td>
+                        <td class="product_status_accepted">
+                            <i class="fa fa-check non-defective" aria-hidden="true"></i> Accepted
+                        </td>                        
+                    </tr> 
+                    <tr>
+                        <td scope="row">1</td>
+                        <td>943436</td>
+                        <td>02/11/2020</td>
+                        <td>Rajesh</td>
+                        <td>&#8377 20</td>
+                        <td>&#8377 2</td>
+                        <td>&#8377 22</td>
+                        <td class="product_status_defective">
+                            <i class="fa fa-times defective" aria-hidden="true"></i> Defective
+                        </td>                        
+                    </tr>  
+                       
                     
                 </tbody>
             </table>
         </div>
 
-        <div id="received_receipts" class="m-5 p-5">
-
-            <h1>Received receipts</h1>
+        <h1>Received receipts</h1>
+        <div id="received_receipts">
             <table class="table">
                 <thead>
                     <tr class="bg-primary">
@@ -61,9 +77,9 @@
                         <td>943436</td>
                         <td>02/11/2020</td>
                         <td>Rahul</td>
-                        <td>20</td>
-                        <td>2</td>
-                        <td>22</td>
+                        <td>&#8377 20</td>
+                        <td>&#8377 2</td>
+                        <td>&#8377 22</td>
                     </tr>    
                                         
                 </tbody>
