@@ -3,6 +3,7 @@ from .models import Company,Distributor,Retailer
 from .models import CustomBackend
 from django.contrib.auth import login,logout
 from .fill_data import *
+from django.db import IntegrityError
 
 def notAuthenticated(function):
 
@@ -48,6 +49,7 @@ def register_retailer(request):
         pincode = data.get('pincode')
         email = data.get('Email')
         password = data.get('Password')
+        gst_number = data.get('gst number')
 
         collected_data = {
             "first_name":first_name,
@@ -59,15 +61,23 @@ def register_retailer(request):
             "pincode":pincode,
             "email":email,
             "password":password,
+            "gst_number":gst_number,
         }
         obj = Retailer.objects.filter(email=email)
         if obj.first()==None:
-            retailer = Retailer.objects.create_retailer(email,mobile,address,state,
-                                                            city,pincode,first_name,last_name,password)
-            if retailer is not None:
-                return redirect('mainApp:login')
-            else:
-                return render(request,'auth/register_retailer.html',{})
+            try:
+                retailer = Retailer.objects.create_retailer(email,mobile,address,state,
+                                                                city,pincode,first_name,last_name,password,
+                                                                gst_number=gst_number)
+                if retailer is not None:
+                    return redirect('mainApp:login')
+            except IntegrityError as e:                
+                return render(request,'auth/register_retailer.html',{
+                    "messages":{
+                        "gst":"GST number must be unique"
+                    },
+                    "data": collected_data                    
+                })
         else:
             messages = {}
             messages['email'] = "This email is already taken"
@@ -92,6 +102,7 @@ def register_company(request):
         pincode = data.get('pincode')
         email = data.get('Email')
         password = data.get('Password')
+        gst_number = data.get('gst number')
 
         collected_data = {
             "company_name":company_name,            
@@ -102,6 +113,7 @@ def register_company(request):
             "pincode":pincode,
             "email":email,
             "password":password,
+            "gst_number":gst_number,
         }
 
         
@@ -110,12 +122,18 @@ def register_company(request):
         
         if o.first()==None and e.first()==None:
             print("Inside if")
-            company = Company.objects.create_company(email,company_name,mobile,address,
-                                                        state,city,pincode,password)
-            if company is not None:
-                return redirect('mainApp:login')
-            else:
-                return render(request,'auth/register_company.html',{})
+            try:
+                company = Company.objects.create_company(email,company_name,mobile,address,
+                                                            state,city,pincode,password,gst_number=gst_number)
+                if company is not None:
+                    return redirect('mainApp:login')
+            except IntegrityError as e:
+                return render(request,'auth/register_company.html',{
+                    "messages":{
+                        "gst":"GST number must be unique"
+                    },
+                    "data":collected_data
+                })
         else:
             messages = {}
             if e:
@@ -141,6 +159,7 @@ def register_distributor(request):
         pincode = data.get('pincode')
         email = data.get('Email')
         password = data.get('Password')
+        gst_number = data.get('gst number')
         collected_data = {
             "first_name":first_name,
             "last_name":last_name,
@@ -151,18 +170,25 @@ def register_distributor(request):
             "pincode":pincode,
             "email":email,
             "password":password,
+            "gst_number":gst_number,
         }
 
         obj = Distributor.objects.filter(email=email)
 
         if obj.first()==None:
-            distributor = Distributor.objects.create_distributor(email,mobile,address,state,
-                                                            city,pincode,first_name,last_name,password)
+            try:
+                distributor = Distributor.objects.create_distributor(email,mobile,address,state,
+                                                                city,pincode,first_name,last_name,password,gst_number=gst_number)
 
-            if distributor is not None:
-                return redirect('mainApp:login')
-            else:
-                return render(request,'auth/register_distributor.html',{})
+                if distributor is not None:
+                    return redirect('mainApp:login')
+            except IntegrityError as e:
+                return render(request,'auth/register_distributor.html',{
+                    "messages":{
+                        "gst":"GST number should be unique"
+                    },
+                    "data":collected_data
+                })
         else:
             messages={}
             messages['email'] = "This email has been taken"

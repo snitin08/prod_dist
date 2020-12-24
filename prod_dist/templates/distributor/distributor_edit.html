@@ -26,14 +26,16 @@
                                     <label for="first name">
                                         First name
                                     </label>
-                                    <input type="text" id = "first name" name = "first name" placeholder="First Name" class="form-control" value="{{data.first_name}}">
+                                    <input type="text" id = "first name" 
+                                    required="required"
+                                    name = "first_name" placeholder="First Name" class="form-control" value="{{data.first_name}}">
                                 </div>
 
                                 <div class="col-lg-6 col-md-6 col-sm-12">
                                     <label for="Last name">
                                         Last name
                                     </label>
-                                    <input type="text" id = "Last name" name = "Last name" placeholder="Last Name" class="form-control" value="{{data.last_name}}">
+                                    <input type="text" id = "Last name" name = "last_name" placeholder="Last Name" class="form-control" value="{{data.last_name}}">
                                 </div>
 
                             </div>
@@ -42,8 +44,19 @@
                         <div class="row">
                             <div class="col-lg-6 col-md-6 col-sm-12">
                                 <div class="form-group">
+                                    <label for="gst number">GST Number</label>
+                                    <input type="text" required="required" name="gst_number" id="gst number" class="form-control" placeholder="GST number" value="{{data.gst_number}}" aria-describedby="gst-help">                  
+                                    <small class="text-danger" id='gst-help'>{{messages.gst}}</small>                  
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-6 col-md-6 col-sm-12">
+                                <div class="form-group">
                                     <label for="Mobile">Mobile</label>
-                                    <input type="text" name="Mobile" id="Mobile" class="form-control" placeholder="Mobile" aria-describedby="mobile-help" value="{{data.mobile}}">
+                                    <input type="text" required="required" title="Mobile number should be 10 digits" pattern="[0-9]{10}"
+                                    name="mobile" id="Mobile" class="form-control" placeholder="Mobile" aria-describedby="mobile-help" value="{{data.mobile}}">
                                     <small class="text-muted" style="display: none;" id='mobile-help'></small>                  
                                 </div>
                             </div>
@@ -52,24 +65,28 @@
                         
                         <div class="form-group">
                             <label for="address">Address</label>                                    
-                            <textarea class="form-control" name="address" id="address" wrap="soft" cols="100" rows="3" placeholder="address">
+                            <textarea class="form-control" name="address" id="address" required="required"
+                            wrap="soft" cols="100" rows="3" placeholder="address">
                                 {{data.address}}
                             </textarea>
                         </div>                  
 
                         <div class="form-group">
                             <label for="state">State</label>
-                            <input type="text" name="state" id="state" class="form-control" placeholder="State" value="{{data.state}}">                
+                            <input type="text" name="state" id="state" required="required"
+                            class="form-control" placeholder="State" value="{{data.state}}">                
                         </div>
 
                         <div class="form-group">
                             <label for="city">City</label>
-                            <input type="text" name="city" id="city" class="form-control" placeholder="City" value="{{data.city}}">                
+                            <input type="text" name="city" id="city" required="required"
+                            class="form-control" placeholder="City" value="{{data.city}}">                
                         </div>
 
                         <div class="form-group">
                             <label for="pincode">Pincode</label>
-                            <input type="text" name="pincode" id="pincode" class="form-control" placeholder="PIN code" value="{{data.pincode}}">                
+                            <input type="text" name="pincode" id="pincode" required="required"
+                            class="form-control" placeholder="PIN code" value="{{data.pincode}}">                
                         </div>
 
                         <div style="text-align: center;">

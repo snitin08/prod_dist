@@ -3,9 +3,9 @@ from django.contrib.auth.models import (
     BaseUserManager, AbstractBaseUser
 )
 # Create your models here.
-from django.contrib.auth.backends import BaseBackend
+from django.contrib.auth.backends import ModelBackend #BaseBackend
 
-class CustomBackend(BaseBackend):
+class CustomBackend(ModelBackend):
     def authenticate(self,request,username=None, password=None,usertype="None"):
         lookup_model=None
         if usertype=='retailer':
@@ -37,7 +37,8 @@ class CustomBackend(BaseBackend):
 
 class RetailerManager(BaseUserManager):
     def create_retailer(self,email,mobile,
-                        address,state,city,pincode,first_name,last_name=None,password=None):
+                        address,state,city,pincode,
+                        first_name,last_name=None,password=None,gst_number=''):
         if not email:
             raise ValueError('Users must have an email address')
 
@@ -49,7 +50,8 @@ class RetailerManager(BaseUserManager):
             address=address,
             state=state,
             city=city,
-            pincode=pincode
+            pincode=pincode,
+            gst_number=gst_number,
         )
 
         user.set_password(password)
@@ -73,6 +75,7 @@ class Retailer(AbstractBaseUser):
     state = models.CharField(max_length=50)
     city = models.CharField(max_length=50)
     pincode = models.CharField(max_length=10)
+    gst_number = models.CharField(max_length=50,unique=True,default="")
     
     objects = RetailerManager()
 
@@ -96,7 +99,8 @@ class Retailer(AbstractBaseUser):
 
 class DistributorManager(BaseUserManager):
     def create_distributor(self,email,mobile,
-                        address,state,city,pincode,first_name,last_name=None,password=None):
+                        address,state,city,pincode,first_name,
+                        last_name=None,password=None,gst_number=''):
         if not email:
             raise ValueError('Users must have an email address')
 
@@ -108,7 +112,8 @@ class DistributorManager(BaseUserManager):
             address=address,
             state=state,
             city=city,
-            pincode=pincode
+            pincode=pincode,
+            gst_number=gst_number,
         )
 
         user.set_password(password)
@@ -132,6 +137,7 @@ class Distributor(AbstractBaseUser):
     state = models.CharField(max_length=50)
     city = models.CharField(max_length=50)
     pincode = models.CharField(max_length=10)
+    gst_number = models.CharField(max_length=50,unique=True,default="")
     distributor_retailers = models.ManyToManyField(Retailer,db_table='distributes')
     
     objects = DistributorManager()
@@ -155,7 +161,7 @@ class Distributor(AbstractBaseUser):
 
 class CompanyManager(BaseUserManager):
     def create_company(self,email,company_name,mobile,
-                        address,state,city,pincode,password=None):
+                        address,state,city,pincode,password,gst_number):
         if not email:
             raise ValueError('Users must have an email address')
 
@@ -166,7 +172,8 @@ class CompanyManager(BaseUserManager):
             address=address,
             state=state,
             city=city,
-            pincode=pincode
+            pincode=pincode,
+            gst_number=gst_number,
         )
 
         user.set_password(password)
@@ -190,7 +197,7 @@ class Company(AbstractBaseUser):
     city = models.CharField(max_length=50)
     pincode = models.CharField(max_length=10)
     company_distributors = models.ManyToManyField(Distributor,db_table='supplies')
-    
+    gst_number = models.CharField(max_length=50,unique=True,default="")
     objects = CompanyManager()
 
     USERNAME_FIELD = 'email'
@@ -214,7 +221,17 @@ class Company(AbstractBaseUser):
 class CompanyProducts(models.Model):
     product_name = models.CharField(max_length=50)
     product_distributor_price = models.FloatField()
-    product_mrp = models.FloatField()
-    product_tax = models.FloatField()
+    product_distributor_margin = models.FloatField()
+    product_retailer_price = models.FloatField()
+    product_retailer_margin = models.FloatField()    
+    product_mrp = models.FloatField()    
     product_discount = models.FloatField()
     product_company = models.ForeignKey(Company,on_delete=models.CASCADE)
+    cg_gst = models.FloatField()
+    sg_gst = models.FloatField()
+    total_tax = models.FloatField()
+    hsn_code = models.CharField(max_length=50,null=False,blank=False,default="")
+    fssai_number = models.CharField(max_length=50,blank=True,null=True)
+
+    def __str__(self):
+        return self.product_name

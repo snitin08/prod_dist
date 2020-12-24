@@ -24,7 +24,7 @@
     <div class="container">
         {% if company_products %}
             <div id="product_table">
-                <div id="product_table_inner">
+                <div id="product_table_inner" style="max-width: 100%; overflow-x: auto; max-height: 500px; overflow-y: auto;">
                     <h1 
                         style="display: block; 
                         text-align: center;                     
@@ -35,11 +35,13 @@
                         <thead>
                             <tr>
                                 <th>Sl No.</th>
-                                <th>Product name</th>
-                                <th>Product distributor price</th>
-                                <th>Product MRP</th>
-                                <th>Product tax</th>
-                                <th>Product discount</th>                
+                                <th>Name</th>
+                                <th>Distributor price</th>
+                                <th>MRP</th>
+                                <th>Tax (in %)</th>
+                                <th>Discount</th>
+                                <th>HSN Code</th>                
+                                <th>FSSAI Number</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -54,8 +56,10 @@
                                     </td>
                                     <td>{{product.product_distributor_price}}</td>
                                     <td>{{product.product_mrp}}</td>
-                                    <td>{{product.product_tax}}</td>
+                                    <td>{{product.total_tax}}</td>
                                     <td>{{product.product_discount}}</td>
+                                    <td>{{product.hsn_code}}</td>
+                                    <td>{{product.fssai_number}}</td>
                                     <td>
                                         <a href="{% url 'company:company_product_remove' company_name=company_name product_id=product.id %}">
                                             REMOVE
@@ -92,30 +96,60 @@
                 <p class="lead">Enter the product details</p>
 
                 <div class="form-group">
-                    <label for="product name">Product name</label>
-                    <input type="text" name="product name" id="product name" class="form-control" placeholder="Product name">              
+                    <label for="product_name">Product name</label>
+                    <input type="text" name="product_name" required="required" id="product_name" class="form-control" placeholder="Product name">              
                 </div>
 
                 <div class="form-group">
-                    <label for="product price">Product distributor price</label>
-                    <input type="text" name="product distributor price" id="product distributor price" class="form-control" placeholder="Product distributor price">              
+                    <label for="product_distributor_price">Product distributor price</label>
+                    <input type="number" min="0" step="any" name="product_distributor_price" class="form-control" required="required" id="product_distributor_price" placeholder="Distributor price">              
                 </div>
 
                 <div class="form-group">
-                    <label for="product price">Product MRP</label>
-                    <input type="text" name="product MRP" id="product MRP" class="form-control" placeholder="Product MRP">              
+                    <label for="product_distributor_margin">Product distributor margin (in %)</label>
+                    <input type="number" min="0" max="100" step="any" name="product_distributor_margin" required="required" id="product_distributor_margin" class="form-control" placeholder="Product distributor margin">              
                 </div>
 
                 <div class="form-group">
-                    <label for="product tax">Product tax</label>
-                    <input type="text" name="product tax" id="product tax" class="form-control" placeholder="Product tax">              
+                    <label for="product_retailer_price">Product Retailer Price</label>
+                    <input type="number" min="0" step="any" name="product_retailer_price" required="required" id="product_retailer_price" class="form-control" placeholder="Product Retailer price">              
                 </div>
 
                 <div class="form-group">
-                    <label for="product discount">Product discount</label>
-                    <input type="text" name="product discount" id="product discount" class="form-control" placeholder="Product discount">              
+                    <label for="product_retailer_margin">Product Retailer Margin (in %)</label>
+                    <input type="number" min="0" max="100" step="any" name="product_retailer_margin" required="required" id="product_retailer_margin" class="form-control" placeholder="Product Retailer margin">              
                 </div>
 
+                <div class="form-group">
+                    <label for="product_mrp">Product MRP</label>
+                    <input type="number" min="0" step="any" name="product_mrp" required="required" id="product_mrp" class="form-control" placeholder="Product MRP">              
+                </div>                
+
+                <div class="form-group">
+                    <label for="product_discount">Product Discount</label>
+                    <input type="number" min="0" step="any" name="product_discount" required="required" id="product_discount" class="form-control" placeholder="Product Discount">              
+                </div> 
+
+                <div class="form-group">
+                    <label for="cg_gst">Central GST Tax</label>
+                    <input type="number" min="0" max="100" step="any" name="cg_gst" required="required" id="cg_gst" class="form-control" placeholder="Central GST Tax">              
+                </div> 
+
+                <div class="form-group">
+                    <label for="sg_gst">State GST Tax</label>
+                    <input type="number" min="0" max="100" step="any" name="sg_gst" required="required" id="sg_gst" class="form-control" placeholder="State GST Tax">              
+                </div> 
+
+                <div class="form-group">
+                    <label for="hsn_code">HSN code</label>
+                    <input type="text" name="hsn_code" required="required" id="hsn_code" class="form-control" placeholder="HSN code">              
+                </div> 
+
+                <div class="form-group">
+                    <label for="fssai_number">FSSAI number</label>
+                    <input type="text" name="fssai_number" id="fssai_number" class="form-control" placeholder="FSSAI number">              
+                </div> 
+                
                 
                 <button type="button" onclick="close_add_product_form();" class="btn btn-lg btn-danger m-2">CANCEL</button>
                 <button type="submit" class="btn btn-lg btn-success">Add product</button>

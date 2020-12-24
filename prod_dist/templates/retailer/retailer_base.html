@@ -63,6 +63,10 @@
                         </li>
 
                         <li class="nav-item">
+                            <a class="nav-link" href="{% url 'retailer:retailer_edit' retailer_id=request.session.id %}">Edit</a>
+                        </li>
+
+                        <li class="nav-item">
                             <a class="nav-link" href="{% url 'retailer:retailer_distributors' retailer_id=request.session.id %}">Distributors</a>
                         </li>
 

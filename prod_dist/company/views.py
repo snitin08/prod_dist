@@ -7,20 +7,20 @@ from functools import wraps
 def CompanyAuthenticated(function):
   
     def wrap(request, *args, **kwargs):   
-        try:     
-            if request.session['user']:
-                company = Company.objects.filter(company_name=kwargs['company_name']).first()
-                if company:
-                    if company.email == request.session['user']:           
-                        return function(request, *args, **kwargs)
-                    else:
-                        return render(request,'general/404.html',{})
+        #try:     
+        if request.session['user']:
+            company = Company.objects.filter(company_name=kwargs['company_name']).first()
+            if company:
+                if company.email == request.session['user']:           
+                    return function(request, *args, **kwargs)
                 else:
-                    return redirect('mainApp:404')
+                    return render(request,'general/404.html',{})
             else:
-                return redirect('mainApp:login')
-        except:
+                return redirect('mainApp:404')
+        else:
             return redirect('mainApp:login')
+        # except:
+        #     return redirect('mainApp:login')
     return wrap
 
 @CompanyAuthenticated
@@ -28,26 +28,12 @@ def company_edit(request,company_name):
     company = Company.objects.get(company_name=company_name)
     if company.email==request.session['user']:
         if request.method=='POST':
-            data = request.POST
+            data = request.POST.dict()
             print(data)
-            company_name = data.get('company name')
-            mobile = data.get('Mobile')
-            address = data.get('address')
-            state = data.get('state')
-            city = data.get('city')
-            pincode = data.get('pincode')              
-
-            collected_data = {
-                "company_name":company_name,            
-                "mobile":mobile,
-                "address":address,
-                "state":state,
-                "city":city,
-                "pincode":pincode,                       
-            }
+            del data['csrfmiddlewaretoken']
+            company_name = data['company_name']
             company = Company.objects.filter(company_name = company_name)
-            company.update(company_name=company_name,mobile=mobile,address=address,state=state, city=city, pincode=pincode)
-
+            company.update(**data)
             return HttpResponse('<h1>Update success</h1>')
             
             
@@ -62,8 +48,8 @@ def company_edit(request,company_name):
                 data['state'] = company.state 
                 data['city'] = company.city
                 data['pincode'] = company.pincode
+                data['gst_number'] = company.gst_number
 
-                print(request.session.company_name)
                 return render(request,'company/company_edit.html',{"data":data})
             """
             else:
@@ -128,17 +114,13 @@ def company_product_list(request,company_name):
             else:
                 return HttpResponse('<h1>No company found</h1>')
         else:
-            data = request.POST
+            data = request.POST.dict()
+            del data['csrfmiddlewaretoken']
             print(data)        
             company = Company.objects.get(company_name=company_name)
-            
+            total_tax = float(data['cg_gst'])+float(data['sg_gst'])
             CompanyProducts.objects.create(
-                product_name=data.get('product name'),
-                product_distributor_price=data.get('product distributor price'),
-                product_mrp=data.get('product MRP'),
-                product_tax=data.get('product tax'),
-                product_discount=data.get('product discount'),
-                product_company=company
+                **data,product_company=company,total_tax=total_tax
             )
             return redirect('company:company_product_list',company_name=company_name)
     else:
@@ -171,7 +153,8 @@ def company_product_detail(request,company_name,product_id):
         else:
             return HttpResponse("<h1>No product found</h1>")
     else:
-        data = request.POST
+        data = request.POST.dict()
+        del data['csrfmiddlewaretoken']
         print(data)
 
         product = CompanyProducts.objects.filter(id=product_id)
@@ -181,12 +164,10 @@ def company_product_detail(request,company_name,product_id):
             if not str(product.first().product_company)==company_name:
                 return HttpResponse("<h1>Access denied</h1>")
             else:
+                sg = float(data['sg_gst'])
+                cg = float(data['cg_gst'])
                 product.update(
-                    product_name = data['product name'],
-                    product_distributor_price = data['product distributor price'],
-                    product_mrp = data['product mrp'],
-                    product_tax = data['product tax'],
-                    product_discount = data['product discount'],
+                    **data,total_tax=sg+cg
                 )
                 return redirect('company:company_product_list',company_name=company_name)
         else:

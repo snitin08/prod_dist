@@ -10,3 +10,5 @@ SQL commands/Lab_part_B_shortened.sql
 /.idea/inspectionProfiles/profiles_settings.xml
 /.idea/vcs.xml
 .idea/.gitignore
+Normalized database/company_queries.sql
+Normalized database/distribution.db

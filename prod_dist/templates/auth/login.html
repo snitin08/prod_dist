@@ -26,13 +26,15 @@
                         {% csrf_token %}
                         <div class="form-group">
                           <label for="email">Email</label>
-                          <input type="text" name="email" id="email" class="form-control" placeholder="Email" aria-describedby="email-help" value="{{data.email}}">
+                          <input type="text" name="email" id="email" class="form-control" required="required"
+                          placeholder="Email" aria-describedby="email-help" value="{{data.email}}">
                           <small id="email-help" class="text-danger">{{messages.email}}</small>
                         </div>
 
                         <div class="form-group">
                             <label for="password">Password</label>
-                            <input type="password" name="password" id="password" class="form-control" placeholder="password" aria-describedby="password-help">
+                            <input type="password" name="password" id="password" required="required"
+                            class="form-control" placeholder="password" aria-describedby="password-help">
                             <small id="password-help" class="text-danger">{{messages.password}}</small>
                         </div>
 

@@ -79,6 +79,10 @@
                         </li>
 
                         <li class="nav-item">
+                            <a class="nav-link" href="{% url 'company:company_edit' company_name=request.session.company_name %}">Edit profile</a>
+                        </li>
+
+                        <li class="nav-item">
                             <a class="nav-link" href="{% url 'company:company_distributors' company_name=request.session.company_name %}">Distributors</a>
                         </li>
 

@@ -28,3 +28,28 @@ def retailer_distributors(request,retailer_id):
     return render(request,"retailer/retailer_distributors.html",{
         "associated_distributors":associated_distributors,
     })
+
+@retailerAuthenticated
+def retailer_edit(request,retailer_id):
+    if request.method=='GET':
+        retailer = Retailer.objects.filter(id=retailer_id).first()
+        data = {
+            "first_name":retailer.first_name,
+            "last_name":retailer.last_name,
+            "gst_number":retailer.gst_number,
+            "mobile":retailer.mobile,
+            "address":retailer.address,
+            "state":retailer.state,
+            "city":retailer.city,
+            "pincode":retailer.pincode,            
+        }
+        return render(request,'retailer/retailer_edit.html',{"data":data})
+    else:
+        retailer = Retailer.objects.filter(id=retailer_id)
+        data = request.POST.dict()        
+        del data['csrfmiddlewaretoken']     
+        print(data)   
+        retailer.update(
+            **data
+        )
+        return redirect('retailer:index',retailer_id=retailer_id)

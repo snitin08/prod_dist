@@ -52,6 +52,7 @@ def create_receipt(request):
                 quantity = int(product['product_quantity'])
             )
             products_list.append(p)
+        
         r = Receipt(
             from_id=from_id,
             to_id=to_id,

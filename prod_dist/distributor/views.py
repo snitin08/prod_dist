@@ -29,25 +29,12 @@ def distributor_edit(request,distributor_id):
             "data":distributor
         })
     else:
-        data = request.POST
+        data = request.POST.dict()
         #print(data)
-        first_name = data.get('first name')
-        last_name = data.get('Last name')
-        mobile = data.get('Mobile')
-        address = data.get('address')
-        state = data.get('state')
-        city = data.get('city')
-        pincode = data.get('pincode')
-
+        del data['csrfmiddlewaretoken']
         distributor = Distributor.objects.filter(id=distributor_id)
         distributor.update(
-            first_name=first_name,
-            last_name=last_name,
-            mobile=mobile,
-            address=address,
-            state=state,
-            city=city,
-            pincode=pincode
+            **data
         )
 
         return redirect('distributor:distributor_edit',distributor_id=distributor_id)
