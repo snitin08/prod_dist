@@ -235,3 +235,19 @@ class CompanyProducts(models.Model):
 
     def __str__(self):
         return self.product_name
+
+class Company1(models.Model):
+    name = models.CharField(max_length=20)
+    address = models.CharField(max_length=50)
+
+class Company2(models.Model):
+    address = models.CharField(max_length=50,primary_key=True)
+    pincode = models.CharField(max_length=10)
+
+class Company3(models.Model):
+    pincode = models.CharField(max_length=10,primary_key=True)
+    city = models.CharField(max_length=20)
+
+class Company4(models.Model):
+    city = models.CharField(max_length=20,primary_key=True)
+    state = models.CharField(max_length=20)

@@ -13,12 +13,12 @@
         {% if request.session.type == "distributor" %}
                 <div class="form-group">
                     <label for="user_to" style="display: block; font-size: 24px; text-align: left;">Select a company</label>
-                    <select name="user_to" id="user_to" onchange="get_products();">
+                    <select name="user_to" id="user_to" onchange="get_products();" >
                         {% for user in users %}
                             {% if selected_id == user.id %}                            
-                                <option value="{{user.id}}" selected="selected">{{user.company_name}} {{selected_id}}</option>
+                                <option value="{{user.id}}" selected="selected">{{user.company_name}}</option>
                             {% else %}                            
-                                <option value="{{user.id}}">{{user.company_name}} {{selected_id}}</option>
+                                <option value="{{user.id}}">{{user.company_name}}</option>
                             {% endif %}
                         {% endfor %}
                     </select>
@@ -29,23 +29,23 @@
                 <select name="user_to" id="user_to" onchange="get_products();">
                     {% for user in users %}
                         {% if selected_id == user.id %}                            
-                            <option value="{{user.id}}" selected="selected">{{user.first_name}} {{user.last_name}} {{selected_id}}</option>
+                            <option value="{{user.id}}" selected="selected">{{user.first_name}} {{user.last_name}}</option>
                         {% else %}                            
-                            <option value="{{user.id}}">{{user.first_name}} {{user.last_name}} {{selected_id}}</option>
+                            <option value="{{user.id}}">{{user.first_name}} {{user.last_name}}</option>
                         {% endif %}
                     {% endfor %}
-                </select>                            
+                </select>
             </div>
         {% endif %}
         
         <form onsubmit="event.preventDefault();">
             <div class="form-inline my-5" style="text-align: center;">
                 
-                <input type="text" id="product-name" name="product-name" class="form-control m-1" placeholder="Product name" list="productList" onchange="fillProductDetails();">
-                <input type="number" min="0" required="required" id="product-quantity" name="product-quantity" class="form-control m-1" placeholder="Product quantity">
-                <input type="number" step="0.01" min="0" max="100" id="product-tax" name="product-tax" class="form-control m-1" placeholder="Product tax">
-                <input type="number" step="0.01" min="0" id="product-price" name="product-price" class="form-control m-1" placeholder="Product price">
-                <input type="number" step="0.01" min="0" id="product-discount" name="product-discount" class="form-control m-1" placeholder="Product discount">                                
+                <input type="text" id="product-name" name="product-name" class="form-control m-1" placeholder="Product name" list="productList" onchange="fillProductDetails();"/>
+                <input type="number" min="0" required="required" id="product-quantity" name="product-quantity" class="form-control m-1" placeholder="Product quantity"/>
+                <input type="number" required="required" step="0.01" min="0" max="100" id="product-tax" name="product-tax" class="form-control m-1" placeholder="Product tax"/>
+                <input type="number" required="required" step="0.01" min="0" id="product-price" name="product-price" class="form-control m-1" placeholder="Product price"/>
+                <input type="number" required="required" step="0.01" min="0" id="product-discount" name="product-discount" class="form-control m-1" placeholder="Product discount"/>                                
                 <button id="add-product" type="submit">
                     <i class="fa fa-plus" aria-hidden="true"></i>                    
                 </button>
@@ -53,16 +53,16 @@
         </form>
 
 
-        {% if request.session.type == "company" %}
+        {% if request.session.type == "distributor" %}
             <datalist id="productList" onchange="fillProductDetails();">
                 {% for product in products %}
                     <option price="{{product.product_distributor_price}}" value="{{product.product_name}}" tax="{{product.total_tax}}" discount="{{product.product_discount}}"/>           
                 {% endfor %}
             </datalist>
-        {% elif request.session.type == "distributor" %}
+        {% elif request.session.type == "retailer" %}
             <datalist id="productList" onchange="fillProductDetails();">
                 {% for product in products %}
-                    <option price="{{product.product_mrp}}" value="{{product.product_name}}" tax="{{product.total_tax}}" discount="{{product.product_discount}}"/>           
+                    <option price="{{product.product_retailer_price}}" value="{{product.product_name}}" tax="{{product.total_tax}}" discount="{{product.product_discount}}"/>           
                 {% endfor %}
             </datalist>
         {% endif %}
@@ -101,6 +101,16 @@
                 <input id="create-receipt" type="submit" value="SUBMIT" onclick="event.preventDefault();" class="btn btn-lg btn-success m-5" style="text-align: center;">
             </div>
         </form>
+
+        <div class="toast" data-autohide="false" id="request_success">
+            <div class="toast-header">
+              <strong class="mr-auto text-primary">Request Products</strong>            
+              <button type="button" class="ml-2 mb-1 close" data-dismiss="toast">&times;</button>
+            </div>
+            <div class="toast-body">
+              The products are successfully requested. The invoice will be generated once the user approves.
+            </div>
+        </div>
     
     </div>
 
@@ -190,7 +200,13 @@
         function get_products()
         {
             var selectedUser = document.getElementById("user_to").value;
-            console.log(selectedUser);
+            var user_type="{{request.session.type}}"
+            if(user_type=="retailer")
+                window.location="{% url 'receipt:distributor_products' distributor_id=0 %}".replace('0',selectedUser);
+            else
+            {
+                window.location="{% url 'receipt:company_products' company_id=0 %}".replace('0',selectedUser);
+            }
         }
 
         $(document).ready(function () {
@@ -266,7 +282,13 @@
                 resultArray['total_discount']=document.getElementById("total-discount").innerHTML;
                 console.log(resultArray);
 
-                $.post("{%  url 'receipt:request_receipt' %}" , 
+                var selectedUser = document.getElementById('user_to').value;
+                var user_type = "{{request.session.type}}";
+                if(user_type=='distributor')
+                    var url = '{% url "receipt:company_products" company_id=0 %}'.replace('0',selectedUser);
+                else
+                    var url = '{% url "receipt:distributor_products" distributor_id=0 %}'.replace('0',selectedUser);
+                $.post(url.toString() , 
                     { 
                     arr: JSON.stringify(resultArray), // <-----------
                     csrfmiddlewaretoken :  '{{ csrf_token }}' 
@@ -275,6 +297,13 @@
                         if(data.status == 1){ // meaning that everyhting went ok
                            // do something
                            //window.location='{% url "mainApp:index" %}';
+                           $('.toast').toast('show');
+                           var timer = setTimeout(function() {
+                            if(user_type=='distributor')
+                                window.location="{% url 'distributor:index' distributor_id=request.session.id %}"
+                            else
+                                window.location="{% url 'retailer:index' retailer_id=request.session.id %}"
+                        }, 3000);
                         }
                         else{
                            alert(data.message)

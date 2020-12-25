@@ -1,5 +1,6 @@
 {% extends 'receipt/receipt_base.html'%}
 {% load static %}
+{% load receipt_extras %}
 
 {% block title_block %}
     Receipt list
@@ -9,83 +10,145 @@
 
     <link rel="stylesheet" href="{% static 'css/receipt/receipt_list.css' %}">
     <div class="container">
-        <h1>Sent receipts</h1>
-        <div id="sent_receipts">
-            <table class="table">
-                <thead>
-                    <tr class="bg-primary">
-                        <th>Sl. No.</th>
-                        <th>Receipt number</th>
-                        <th>Receipt date</th>
-                        <th>Distributor name</th>
-                        <th>Subtotal</th>
-                        <th>Tax</th>
-                        <th>Total</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-                <tbody style="overflow: scroll; max-height: 10px;">
-                    <tr>
-                        <td scope="row">1</td>
-                        <td>943436</td>
-                        <td>02/11/2020</td>
-                        <td>Rajesh</td>
-                        <td>&#8377 20</td>
-                        <td>&#8377 2</td>
-                        <td>&#8377 22</td>
-                        <td class="product_status_accepted">
-                            <i class="fa fa-check non-defective" aria-hidden="true"></i> Accepted
-                        </td>                        
-                    </tr> 
-                    <tr>
-                        <td scope="row">1</td>
-                        <td>943436</td>
-                        <td>02/11/2020</td>
-                        <td>Rajesh</td>
-                        <td>&#8377 20</td>
-                        <td>&#8377 2</td>
-                        <td>&#8377 22</td>
-                        <td class="product_status_defective">
-                            <i class="fa fa-times defective" aria-hidden="true"></i> Defective
-                        </td>                        
-                    </tr>  
-                       
-                    
-                </tbody>
-            </table>
-        </div>
+        {% if request.session.type != 'retailer' %}
+            <h1>Sent receipts</h1>
+            <div id="sent_receipts">
+                <table class="table">
+                    <thead>
+                        <tr class="bg-primary">
+                            <th>Sl. No.</th>
+                            <th>Receipt number</th>
+                            <th>Receipt date</th>
+                            {% if request.session.type == 'company' %}
+                                <th>Distributor name</th>
+                            {% else %}
+                                <th>Retailer name</th>
+                            {% endif %}
+                            <th>Subtotal</th>
+                            <th>Tax</th>
+                            <th>Total</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody style="overflow: scroll; max-height: 10px;">
+                        {% for receipt in sent_receipts %}
+                            <tr>
+                                <td scope="row">1</td>
+                                <td>
+                                    <a href="{% url 'receipt:receipt_detail' receipt_id=receipt.id %}">
+                                        {{receipt.id}}
+                                    </a>
+                                </td>
+                                <td>{{receipt.day}}/{{receipt.month}}{{receipt.year}}</td>
+                                <td>{{receipt.to_name}}</td>
+                                <td>&#8377 {{receipt.sub_total}}</td>
+                                <td>&#8377 {{receipt.taxes}}</td>
+                                <td>&#8377 {{receipt.total}}</td>
+                                <td class="product_status_accepted">
+                                    <i class="fa fa-check non-defective" aria-hidden="true"></i> Accepted
+                                </td>                        
+                            </tr> 
+                        {% endfor %}                    
+                    </tbody>
+                </table>
+            </div>
+        {% endif %}
 
-        <h1>Received receipts</h1>
-        <div id="received_receipts">
-            <table class="table">
-                <thead>
-                    <tr class="bg-primary">
-                        <th>Sl. No.</th>
-                        <th>Receipt number</th>
-                        <th>Receipt date</th>
-                        <th>Distributor name</th>
-                        <th>Subtotal</th>
-                        <th>Tax</th>
-                        <th>Total</th>
-                    </tr>
-                </thead>
-                <tbody style="overflow: scroll; max-height: 400px;">
+        {% if request.session.type != 'company' %}
+            <h1>Received receipts</h1>
+            <div id="received_receipts">
+                <table class="table">
+                    <thead>
+                        <tr class="bg-primary">
+                            <th>Sl. No.</th>
+                            <th>Receipt number</th>
+                            <th>Receipt date</th>
+                            {% if request.session.type == 'distributor' %}
+                                <th>Company name</th>
+                            {% else %}
+                                <th>Distributor name</th>
+                            {% endif %}
+                            <th>Subtotal</th>
+                            <th>Tax</th>
+                            <th>Total</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody style="overflow: scroll; max-height: 400px;">
 
 
-                    <tr>
-                        <td scope="row">1</td>
-                        <td>943436</td>
-                        <td>02/11/2020</td>
-                        <td>Rahul</td>
-                        <td>&#8377 20</td>
-                        <td>&#8377 2</td>
-                        <td>&#8377 22</td>
-                    </tr>    
-                                        
-                </tbody>
-            </table>
+                        {% for receipt in received_receipts %}
+                            <tr>
+                                <td scope="row">1</td>
+                                <td>
+                                    <a href="{% url 'receipt:receipt_detail' receipt_id=receipt.id %}">
+                                        {{receipt.id}}
+                                    </a>
+                                </td>
+                                <td>{{receipt.day}}/{{receipt.month}}{{receipt.year}}</td>
+                                <td>{{receipt.from_name}}</td>
+                                <td>&#8377 {{receipt.sub_total}}</td>
+                                <td>&#8377 {{receipt.taxes}}</td>
+                                <td>&#8377 {{receipt.total}}</td>
+                                <td class="product_status_accepted">
+                                    <i class="fa fa-check non-defective" aria-hidden="true"></i> Accepted
+                                </td>                        
+                            </tr> 
+                        {% endfor %}
+                                            
+                    </tbody>
+                </table>
 
-        </div>
+            </div>
+        {% endif %}
+
+        {% if requested_receipts and request.session.type != 'company' %}
+            <h1>Requested receipts</h1>
+            <div id="received_receipts">
+                <table class="table">
+                    <thead>
+                        <tr class="bg-primary">
+                            <th>Sl. No.</th>
+                            <th>Receipt number</th>
+                            <th>Receipt date</th>
+                            {% if request.session.type == 'distributor' %}
+                                <th>Company name</th>
+                            {% else %}
+                                <th>Distributor name</th>
+                            {% endif %}
+                            <th>Subtotal</th>
+                            <th>Tax</th>
+                            <th>Total</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody style="overflow: scroll; max-height: 400px;">
+
+
+                        {% for receipt in requested_receipts %}
+                            <tr>
+                                <td scope="row">1</td>
+                                <td>
+                                    <a href="{% url 'receipt:receipt_detail' receipt_id=receipt.id %}">
+                                        {{receipt.id}}
+                                    </a>
+                                </td>
+                                <td>{{receipt.day}}/{{receipt.month}}{{receipt.year}}</td>
+                                <td>{{receipt.to_name}}</td>
+                                <td>&#8377 {{receipt.sub_total}}</td>
+                                <td>&#8377 {{receipt.taxes}}</td>
+                                <td>&#8377 {{receipt.total}}</td>
+                                <td class="product_status_accepted">
+                                    <i class="fa fa-check non-defective" aria-hidden="true"></i> Accepted
+                                </td>                        
+                            </tr> 
+                        {% endfor %}
+                                            
+                    </tbody>
+                </table>
+
+            </div>
+        {% endif %}
     </div>
 
 {% endblock %}

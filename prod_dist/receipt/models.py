@@ -29,6 +29,10 @@ class Receipt(Document):
     discount = DecimalField(min_value=0, max_value=100.00, precision=2, rounding='ROUND_HALF_UP')
     total = DecimalField(min_value=0, max_value=1000000.00, precision=2, rounding='ROUND_HALF_UP')
     date_created = DateTimeField(default=datetime.datetime.utcnow)
+    year = IntField(default=datetime.datetime.utcnow().year)
+    month = IntField(default=datetime.datetime.utcnow().month)
+    day = IntField(default=datetime.datetime.utcnow().day)
+    requested = BooleanField(default=False)
     
 
 # p1 = Products(prod_id = 1, prod_name = 'shamshampoo', price = 449.45, quantity = 5)

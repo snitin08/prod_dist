@@ -15,54 +15,35 @@
             <h1 style="text-align: center;"> Receipt details</h1>
 
             <div class="receipt_info">
-                <p>From: abc </p>
-                <p>To: Rajesh</p>
-                <p>Tax: &#8377 2</p>
-                <p>Subtotal: &#8377 20</p>
-                <p>Amount: &#8377 22</p>
+                <p>From: {{receipt.from_name}} </p>
+                <p>To: {{receipt.to_name}}</p>
+                <p>Tax: &#8377 {{receipt.taxes}}</p>
+                <p>Subtotal: &#8377 {{receipt.sub_total}}</p>
+                <p>Amount: &#8377 {{receipt.total}}</p>
             </div>
 
             <div id="receipt_product_list" class="mt-3">
 
                 <table class="table mt-3">
                     <thead class="receipt_product_list_header">
-                        <tr class="bg-primary">
-                            <th>No.</th>
-                            <th>ID</th>
+                        <tr class="bg-primary">                            
                             <th>Name</th>
                             <th>Quantity</th>
                             <th>Price</th>
                             <th>Tax</th>
-                            <th>Dicount</th>
-                            <th>Status</th>
+                            <th>Dicount</th>                            
                         </tr>
                     </thead>
                     <tbody class="receipt_product_list_body">
-                        <tr>
-                            <td scope="row">1.</td>
-                            <td>463746</td>
-                            <td>Tomato chips</td>
-                            <td>&#8377 2</td>
-                            <td>&#8377 20</td>
-                            <td>&#8377 2</td>
-                            <td>&#8377 0</td>
-                            <td class="non-defective">
-                                <i class="fa fa-check non-defective" aria-hidden="true"></i> Accepted
-                            </td>
-                        </tr>
-                        <tr>
-                            <td scope="row">1.</td>
-                            <td>463746</td>
-                            <td>Tomato chips</td>
-                            <td>&#8377 2</td>
-                            <td>&#8377 20</td>
-                            <td>&#8377 2</td>
-                            <td>&#8377 0</td>                            
-                            <td class="defective">
-                                <i class="fa fa-times defective" aria-hidden="true"></i> Defective
-                            </td>
-                        </tr>
-                        
+                        {% for product in receipt.products %}
+                            <tr>
+                                <td>{{product.prod_name}}</td>
+                                <td>{{product.quantity}}</td>
+                                <td>{{product.price}}</td>
+                                <td>{{product.tax}}</td>
+                                <td>{{product.discount}}</td>      
+                            </tr> 
+                        {% endfor %}                                             
                     </tbody>
                 </table>
 
