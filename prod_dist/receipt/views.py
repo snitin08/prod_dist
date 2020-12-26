@@ -120,25 +120,113 @@ def request_receipt(request):
             else:
                 return HttpResponse("<h1>There are no distributors</h1>")
 
+def search(data,session):
+    year = int(data.get('year') or '0')
+    month = int(data.get('month') or '0')
+    day = int(data.get('day') or '0')
+    search_type = data.get('search_type')
+
+    if search_type=='sent_receipts':
+        query = Q(requested=False) & Q(from_id=int(session['id'])) & Q(from_type=session['type'])
+        if year!=0:
+            query = query & Q(year=year)
+        if month!=0:
+            query = query & Q(month=month)
+        if day!=0:
+            query = query & Q(day=day)
+        sent_receipts = Receipt.objects(query)
+        received_receipts = Receipt.objects(Q(requested=False) & Q(to_id=int(session['id'])) & Q(to_type=session['type']))
+        sent_requests = Receipt.objects(Q(requested=True) & Q(to_id=int(session['id'])) & Q(to_type=session['type']))
+        received_requests = Receipt.objects(Q(requested=True) & Q(from_id=int(session['id'])) & Q(from_type=session['type']))
+        return {
+            "sent_receipts":sent_receipts,
+            "received_receipts":received_receipts,
+            "sent_requests":sent_requests,
+            "received_requests":received_requests,
+        }
+    elif search_type=='received_receipts':
+        query = Q(requested=False) & Q(to_id=int(session['id'])) & Q(to_type=session['type'])
+        if year!=0:
+            query = query & Q(year=year)
+        if month!=0:
+            query = query & Q(month=month)
+        if day!=0:
+            query = query & Q(day=day)
+        sent_receipts = Receipt.objects(Q(requested=False) & Q(from_id=int(session['id'])) & Q(from_type=session['type']))
+        received_receipts = Receipt.objects(query)
+        sent_requests = Receipt.objects(Q(requested=True) & Q(to_id=int(session['id'])) & Q(to_type=session['type']))
+        received_requests = Receipt.objects(Q(requested=True) & Q(from_id=int(session['id'])) & Q(from_type=session['type']))
+        return {
+            "sent_receipts":sent_receipts,
+            "received_receipts":received_receipts,
+            "sent_requests":sent_requests,
+            "received_requests":received_requests,
+        }
+
+    elif search_type=='sent_requests':
+        query = Q(requested=True) & Q(to_id=int(session['id'])) & Q(to_type=session['type'])
+        if year!=0:
+            query = query & Q(year=year)
+        if month!=0:
+            query = query & Q(month=month)
+        if day!=0:
+            query = query & Q(day=day)
+        sent_receipts = Receipt.objects(Q(requested=False) & Q(from_id=int(session['id'])) & Q(from_type=session['type']))
+        received_receipts = Receipt.objects(Q(requested=False) & Q(to_id=int(session['id'])) & Q(to_type=session['type']))
+        sent_requests = Receipt.objects(query)
+        received_requests = Receipt.objects(Q(requested=True) & Q(from_id=int(session['id'])) & Q(from_type=session['type']))
+        return {
+            "sent_receipts":sent_receipts,
+            "received_receipts":received_receipts,
+            "sent_requests":sent_requests,
+            "received_requests":received_requests,
+        }
+    else:
+        query = Q(requested=True) & Q(from_id=int(session['id'])) & Q(from_type=session['type'])
+        if year!=0:
+            query = query & Q(year=year)
+        if month!=0:
+            query = query & Q(month=month)
+        if day!=0:
+            query = query & Q(day=day)
+        sent_receipts = Receipt.objects(Q(requested=False) & Q(from_id=int(session['id'])) & Q(from_type=session['type']))
+        received_receipts = Receipt.objects(Q(requested=False) & Q(to_id=int(session['id'])) & Q(to_type=session['type']))
+        sent_requests = Receipt.objects(Q(requested=True) & Q(to_id=int(session['id'])) & Q(to_type=session['type']))
+        received_requests = Receipt.objects(query)
+        return {
+            "sent_receipts":sent_receipts,
+            "received_receipts":received_receipts,
+            "sent_requests":sent_requests,
+            "received_requests":received_requests,
+        }
+    
 
 def receipt_list(request):
-    if request.session['type']=='company':
-        extend_page = 'company/company_base.html'
-    elif request.session['type']=='distributor':
-        extend_page = 'distributor/distributor_base.html'
-    else:
-        extend_page = 'retailer/retailer_base.html'
-    sent_receipts = Receipt.objects(Q(requested=False) & Q(from_id=int(request.session['id'])) & Q(from_type=request.session['type']))
-    received_receipts = Receipt.objects(Q(requested=False) & Q(to_id=int(request.session['id'])) & Q(to_type=request.session['type']))
-    requested_receipts = Receipt.objects(Q(requested=True) & Q(to_id=int(request.session['id'])) & Q(to_type=request.session['type']))
+    if request.method=='GET':
+        data = request.GET.dict()
+        print(data)
+        
+        if request.session['type']=='company':
+            extend_page = 'company/company_base.html'
+        elif request.session['type']=='distributor':
+            extend_page = 'distributor/distributor_base.html'
+        else:
+            extend_page = 'retailer/retailer_base.html'
+        
+        search_result = search(data,request.session)
+        print(search_result)
+        
+        sent_receipts = search_result['sent_receipts']
+        received_receipts = search_result['received_receipts']
+        sent_requests = search_result['sent_requests']
+        received_requests = search_result['received_requests']
 
-    print(sent_receipts,received_receipts,requested_receipts)
-    return render(request,'receipt/receipt_list.html',{
-        "extend_page":extend_page,
-        "sent_receipts":sent_receipts,
-        "received_receipts":received_receipts,
-        "requested_receipts":requested_receipts,
-    })
+        return render(request,'receipt/receipt_list.html',{
+            "extend_page":extend_page,
+            "sent_receipts":sent_receipts,
+            "sent_requests":sent_requests,
+            "received_requests":received_requests,
+        })
 
 def receipt_detail(request,receipt_id):
     if request.session['type']=='company':

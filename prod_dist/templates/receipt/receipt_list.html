@@ -10,8 +10,28 @@
 
     <link rel="stylesheet" href="{% static 'css/receipt/receipt_list.css' %}">
     <div class="container">
-        {% if request.session.type != 'retailer' %}
-            <h1>Sent receipts</h1>
+        {% if request.session.type != 'retailer' and sent_receipts %}
+            <h1>Sent invoices</h1>
+            <form class="form-inline my-5" method="GET" action="{% url 'receipt:receipt_list' %}">
+                <div class="form-group mx-2">
+                    <label for="year">Year</label>
+                    <input type="number" pattern="[0-9]{4}" title="yyyy" name="year" id="year" class="form-control" placeholder="yyyy">                    
+                </div>
+
+                <div class="form-group mx-2">
+                    <label for="month">Month</label>
+                    <input type="number" name="month" min="1" max="12" step="1" id="month" class="form-control" placeholder="mm">                    
+                </div>
+
+                <div class="form-group mx-2">
+                    <label for="day">Day</label>
+                    <input type="number" name="day" min="1" max="31" step="1" id="day" class="form-control" placeholder="dd">                    
+                </div>
+
+                <input type="hidden" value="sent_receipts" name="search_type">
+
+                <button type="submit" class="btn btn-md btn-outline-success mt-4">SEARCH</button>
+            </form>
             <div id="sent_receipts">
                 <table class="table">
                     <thead>
@@ -54,8 +74,28 @@
             </div>
         {% endif %}
 
-        {% if request.session.type != 'company' %}
-            <h1>Received receipts</h1>
+        {% if request.session.type != 'company' and received_receipts %}
+            <h1>Received invoices</h1>
+            <form class="form-inline my-5" method="GET" action="{% url 'receipt:receipt_list' %}">
+                <div class="form-group mx-2">
+                    <label for="year">Year</label>
+                    <input type="number" pattern="[0-9]{4}" title="yyyy" name="year" id="year" class="form-control" placeholder="yyyy">                    
+                </div>
+
+                <div class="form-group mx-2">
+                    <label for="month">Month</label>
+                    <input type="number" name="month" min="1" max="12" step="1" id="month" class="form-control" placeholder="mm">                    
+                </div>
+
+                <div class="form-group mx-2">
+                    <label for="day">Day</label>
+                    <input type="number" name="day" min="1" max="31" step="1" id="day" class="form-control" placeholder="dd">                    
+                </div>
+
+                <input type="hidden" value="received_receipts" name="search_type">
+
+                <button type="submit" class="btn btn-md btn-outline-success mt-4">SEARCH</button>
+            </form>
             <div id="received_receipts">
                 <table class="table">
                     <thead>
@@ -102,9 +142,29 @@
             </div>
         {% endif %}
 
-        {% if requested_receipts and request.session.type != 'company' %}
-            <h1>Requested receipts</h1>
-            <div id="received_receipts">
+        {% if sent_requests and request.session.type != 'company' %}
+            <h1>Sent Purchase orders</h1>
+            <form class="form-inline my-5" method="GET" action="{% url 'receipt:receipt_list' %}">
+                <div class="form-group mx-2">
+                    <label for="year">Year</label>
+                    <input type="number" pattern="[0-9]{4}" title="yyyy" name="year" id="year" class="form-control" placeholder="yyyy">                    
+                </div>
+
+                <div class="form-group mx-2">
+                    <label for="month">Month</label>
+                    <input type="number" name="month" min="1" max="12" step="1" id="month" class="form-control" placeholder="mm">                    
+                </div>
+
+                <div class="form-group mx-2">
+                    <label for="day">Day</label>
+                    <input type="number" name="day" min="1" max="31" step="1" id="day" class="form-control" placeholder="dd">                    
+                </div>
+
+                <input type="hidden" value="sent_requests" name="search_type">
+
+                <button type="submit" class="btn btn-md btn-outline-success mt-4">SEARCH</button>
+            </form>
+            <div id="sent_requests">
                 <table class="table">
                     <thead>
                         <tr class="bg-primary">
@@ -125,7 +185,7 @@
                     <tbody style="overflow: scroll; max-height: 400px;">
 
 
-                        {% for receipt in requested_receipts %}
+                        {% for receipt in sent_requests %}
                             <tr>
                                 <td scope="row">1</td>
                                 <td>
@@ -149,6 +209,76 @@
 
             </div>
         {% endif %}
+
+
+
+        {% if received_requests and request.session.type != 'retailer' %}
+        <h1>Received Purchase orders</h1>
+        <form class="form-inline my-5" method="GET" action="{% url 'receipt:receipt_list' %}">
+            <div class="form-group mx-2">
+                <label for="year">Year</label>
+                <input type="number" pattern="[0-9]{4}" title="yyyy" name="year" id="year" class="form-control" placeholder="yyyy">                    
+            </div>
+
+            <div class="form-group mx-2">
+                <label for="month">Month</label>
+                <input type="number" name="month" min="1" max="12" step="1" id="month" class="form-control" placeholder="mm">                    
+            </div>
+
+            <div class="form-group mx-2">
+                <label for="day">Day</label>
+                <input type="number" name="day" min="1" max="31" step="1" id="day" class="form-control" placeholder="dd">                    
+            </div>
+
+            <input type="hidden" value="received_requests" name="search_type">
+
+            <button type="submit" class="btn btn-md btn-outline-success mt-4">SEARCH</button>
+        </form>
+        <div id="received_requests">
+            <table class="table">
+                <thead>
+                    <tr class="bg-primary">
+                        <th>Sl. No.</th>
+                        <th>Receipt number</th>
+                        <th>Receipt date</th>
+                        {% if request.session.type == 'distributor' %}
+                            <th>Company name</th>
+                        {% else %}
+                            <th>Distributor name</th>
+                        {% endif %}
+                        <th>Subtotal</th>
+                        <th>Tax</th>
+                        <th>Total</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody style="overflow: scroll; max-height: 400px;">
+
+
+                    {% for receipt in received_requests %}
+                        <tr>
+                            <td scope="row">1</td>
+                            <td>
+                                <a href="{% url 'receipt:receipt_detail' receipt_id=receipt.id %}">
+                                    {{receipt.id}}
+                                </a>
+                            </td>
+                            <td>{{receipt.day}}/{{receipt.month}}{{receipt.year}}</td>
+                            <td>{{receipt.to_name}}</td>
+                            <td>&#8377 {{receipt.sub_total}}</td>
+                            <td>&#8377 {{receipt.taxes}}</td>
+                            <td>&#8377 {{receipt.total}}</td>
+                            <td class="product_status_accepted">
+                                <i class="fa fa-check non-defective" aria-hidden="true"></i> Accepted
+                            </td>                        
+                        </tr> 
+                    {% endfor %}
+                                        
+                </tbody>
+            </table>
+
+        </div>
+    {% endif %}
     </div>
 
 {% endblock %}

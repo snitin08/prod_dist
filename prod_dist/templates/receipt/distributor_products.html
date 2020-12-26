@@ -8,6 +8,9 @@
 {% block body_block %}
 
     <link rel="stylesheet" href="{% static 'css/receipt/create_receipt.css' %}" type="text/css">
+
+    <div class="alert alert-success" id="success-alert" style="display:none"></div>
+
     <div class="container my-5" style="text-align: center;">
 
         {% if request.session.type == "distributor" %}
@@ -297,8 +300,8 @@
                         if(data.status == 1){ // meaning that everyhting went ok
                            // do something
                            //window.location='{% url "mainApp:index" %}';
-                           $('.toast').toast('show');
-                           var timer = setTimeout(function() {
+                           
+                            var timer = setTimeout(function() {
                             if(user_type=='distributor')
                                 window.location="{% url 'distributor:index' distributor_id=request.session.id %}"
                             else

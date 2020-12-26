@@ -39,6 +39,16 @@
                 
             }
 
+            .dropdown-item {
+                background-color: rgba(137,46,226,0.8);
+                color: white;
+                border-bottom: 2px;
+                border-color: rgb(56, 17, 92);
+                border-style: solid;
+                padding: 10px;
+            }
+
+
 
         </style>
 
@@ -58,8 +68,15 @@
                 <div class="collapse navbar-collapse" id="navbarNavDropdown">
                     <ul class="nav navbar-nav navbar-right" style="margin-left: auto; margin-right: 5em; font-size: 1.8rem;">
                                             
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Scan receipt</a>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                              Invoice and Purchase orders
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                              <a class="dropdown-item" href="{% url 'receipt:request_receipt' %}">Create Purchase order</a>
+                              <a class="dropdown-item" href="#">Scan invoice</a>
+                              <a class="dropdown-item" href="{% url 'receipt:receipt_list' %}">View Receipts</a>
+                            </div>
                         </li>
 
                         <li class="nav-item">
