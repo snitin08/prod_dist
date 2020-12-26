@@ -100,6 +100,8 @@ def create_receipt(request):
             "extend_page":extend_page,
             "users":users,
         })
+def approve_purchase_order(receipt_id,session):
+    pass
 
 def request_receipt(request):
     if request.method=='GET':
@@ -119,6 +121,8 @@ def request_receipt(request):
                 return redirect('receipt:distributor_products',distributor_id=users[0].id)
             else:
                 return HttpResponse("<h1>There are no distributors</h1>")
+    
+
 
 def search(data,session):
     year = int(data.get('year') or '0')
@@ -224,6 +228,7 @@ def receipt_list(request):
         return render(request,'receipt/receipt_list.html',{
             "extend_page":extend_page,
             "sent_receipts":sent_receipts,
+            "received_receipts":received_receipts,
             "sent_requests":sent_requests,
             "received_requests":received_requests,
         })
@@ -235,18 +240,48 @@ def receipt_detail(request,receipt_id):
         extend_page = 'distributor/distributor_base.html'
     else:
         extend_page = 'retailer/retailer_base.html'
-    receipt = Receipt.objects(id=receipt_id).first()
-    user_id = int(request.session['id'])
-    user_type = request.session['type']
-    saisfy = (receipt.from_id==user_id and receipt.from_type==user_type) or (receipt.to_id==user_id and receipt.to_type==user_type)
-    if saisfy:
-        print(receipt)
-        return render(request,'receipt/receipt_detail.html',{
-            "extend_page":extend_page,
-            "receipt":receipt,
-        })
+    if request.method=='GET':
+        
+        receipt = Receipt.objects(id=receipt_id).first()
+        user_id = int(request.session['id'])
+        user_type = request.session['type']
+        saisfy = (receipt.from_id==user_id and receipt.from_type==user_type) or (receipt.to_id==user_id and receipt.to_type==user_type)
+        if saisfy:
+            print(receipt)
+            return render(request,'receipt/receipt_detail.html',{
+                "extend_page":extend_page,
+                "receipt":receipt,
+            })
+        else:
+            return render(request,"general/404.html",{})
     else:
-        return render(request,"general/404.html",{})
+        data = request.POST.dict()
+        receipt = Receipt.objects(id=receipt_id).first()
+        if data.get("post_type")=="approve":
+            
+            user_id = int(request.session['id'])
+            user_type = request.session['type']
+            satisfy = (receipt.from_id==user_id and receipt.from_type==user_type) or (receipt.to_id==user_id and receipt.to_type==user_type)
+            if satisfy:
+                receipt.modify(requested=False)
+                return redirect('receipt:receipt_list')
+        else:
+            print(data)
+            defects = eval(data['defects'])
+            comments = data['comments']
+            defective = False
+            products = receipt.products
+            for i in range(len(defects)):
+                n = int(defects[i])
+                if n>=1:
+                    defective = True
+                    receipt.products[i].defective = n
+            receipt.comments = comments
+            receipt.defective = defective
+            receipt.save()            
+            response = {'status': 1, 'message': "Ok"} # for ok
+            return HttpResponse(json.dumps(response), content_type='application/json')
+
 
 def receipt_product_detail(request):
     if request.session['type']=='company':

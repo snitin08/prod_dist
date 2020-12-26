@@ -10,6 +10,7 @@ class Products(EmbeddedDocument):
     tax = DecimalField(min_value=0, max_value=1000000.00, precision=2, rounding='ROUND_HALF_UP')
     discount = DecimalField(min_value=0, max_value=1000000.00, precision=2, rounding='ROUND_HALF_UP')
     quantity = IntField(required=True)
+    defective = IntField(default=0)
 
 
 
@@ -33,6 +34,9 @@ class Receipt(Document):
     month = IntField(default=datetime.datetime.utcnow().month)
     day = IntField(default=datetime.datetime.utcnow().day)
     requested = BooleanField(default=False)
+    defective = BooleanField(default=False)
+    status = StringField(max_length=50,default="pending")
+    comments = StringField(max_length=500,default="")
     
 
 # p1 = Products(prod_id = 1, prod_name = 'shamshampoo', price = 449.45, quantity = 5)

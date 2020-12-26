@@ -93,6 +93,8 @@
                 <input id="create-receipt" type="submit" value="SUBMIT" onclick="event.preventDefault();" class="btn btn-lg btn-success m-5" style="text-align: center;">
             </div>
         </form>
+
+        <div class="alert alert-success" id="success-alert" style="display:none"></div>
     
     </div>
 
@@ -260,10 +262,16 @@
                     function(data) {
                         console.log(data);
                         if(data.status == 1){ // meaning that everyhting went ok
+                            var success_element = document.getElementById("success-alert");
+                            success_element.innerHTML = "Purchase request created successfully."
+                            $("#success-alert").show();
+                            setTimeout(function() { $("#success-alert").hide(); }, 5000);
+                            var timer = setTimeout(function() {
                             if(user_type=='company')
                                 window.location="{% url 'company:index' company_name=request.session.company_name %}"
                             else
                                 window.location="{% url 'distributor:index' distributor_id=request.session.id %}"
+                            },3000);
                         }
                         else{
                            alert(data.message)

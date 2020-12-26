@@ -7,7 +7,7 @@
 
 {% block body_block %}
 
-
+    <script src="{% static 'js/receipt/receipt_detail.js' %}"></script>
     <link rel="stylesheet" href="{% static 'css/receipt/receipt_detail.css' %}">
     <div class="container">
         <div id="receipt_detail">
@@ -31,7 +31,8 @@
                             <th>Quantity</th>
                             <th>Price</th>
                             <th>Tax</th>
-                            <th>Dicount</th>                            
+                            <th>Dicount</th>                               
+                            <th>Number of defective products</th>                                                              
                         </tr>
                     </thead>
                     <tbody class="receipt_product_list_body">
@@ -42,6 +43,15 @@
                                 <td>{{product.price}}</td>
                                 <td>{{product.tax}}</td>
                                 <td>{{product.discount}}</td>      
+                                {% if request.session.id == receipt.to_id and request.session.type == receipt.to_type and receipt.requested == False %}
+                                    <form class="defective_form" method="dialog">
+                                        <td>
+                                            <input type="number" min="0" max="{{product.quantity}}" name="defective" value="{{product.defective}}">
+                                        </td>
+                                    </form>
+                                {% else %}
+                                    <td>{{product.defective}}</td>
+                                {% endif %}
                             </tr> 
                         {% endfor %}                                             
                     </tbody>
@@ -49,7 +59,94 @@
 
             </div>
 
+            {% if receipt.requested == False and receipt.to_id == request.session.id and request.session.type == receipt.to_type%}
+                    <div class="form-group">
+                        <label for="comments">comments</label>
+                        <textarea name="comments" id="comments" class="form-control" placeholder="comments" aria-describedby="comments-help">
+                            {{receipt.comments}}
+                        </textarea>
+                        <small id="comments-help" class="text-muted">Send your feedback (explain about defects if any)</small>
+                    </div>
+                {% elif receipt.requested == False %}
+                    <h3>Comments</h3>
+                    <p class="my-2">{{receipt.comments}}</p>
+                {% endif %}
+
+                {% if receipt.requested == False and receipt.to_id == request.session.id and receipt.to_type == request.session.type %}
+                    <form id="send_fedback"  action="{% url 'receipt:receipt_detail' receipt_id=receipt.id %}" method="post" onsubmit="event.preventDefault(); update_receipt();">
+                        {% csrf_token %}
+
+                        <button type="submit" class="btn btn-lg btn-warning mt-3">SEND FEEDBACK</button>
+                    </form>
+                {% endif %}
+
+            {% if receipt.requested == True and receipt.from_id == request.session.id and receipt.from_type == request.session.type %}
+                <form action="{% url 'receipt:receipt_detail' receipt_id=receipt.id %}" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="post_type" value="approve">
+                    <button type="submit" class="btn mt-5 p-4 btn-success">APPROVE PURCHASE ORDER</button>
+                </form>
+            {% endif %}
+
+            <div class="alert alert-success" id="success-alert" style="display:none"></div>
         </div>
     </div>
+
+
+    <script>
+
+        function update_receipt(url)
+{
+    var comments = document.getElementById("comments").value;
+    var defects = document.querySelectorAll("input[name='defective']");
+    var form = document.getElementById("send_fedback");
+    var url = form.getAttribute("action");
+    defective_forms = document.querySelectorAll(".defective_form");
+    var satisfy = true;
+    for(var i=0;i<defective_forms.length;i++)
+    {
+        satisfy = defective_forms[i].checkValidity();
+        if(!satisfy)
+        {
+            defective_forms[i].reportValidity();
+            break;
+        }
+    }
+
+    if(satisfy)
+    {
+        var csrf_token = document.querySelector("input[name='csrfmiddlewaretoken']").value;
+        var defect_numbers = [];
+        data = {};
+        for(var i=0;i<defects.length;i++)
+        {
+            defect_numbers[i] = defects[i].value;
+        }
+        data["defects"] = JSON.stringify(defect_numbers);
+        data["comments"] = comments;
+        data["csrfmiddlewaretoken"] = csrf_token;
+        
+        console.log(data)
+        $.post(url, data,function(data){
+            console.log(data);
+            if(data.status==1)
+            {    
+                var success_element = document.getElementById("success-alert");
+                success_element.innerHTML = "Feedback sent successfully."
+                $("#success-alert").show();
+                setTimeout(function() { $("#success-alert").hide(); }, 5000);
+                var timer = setTimeout(function() {
+                    window.location = "{% url 'receipt:receipt_list' %}";
+                }, 3000);
+            }
+        });
+    }    
+    
+}
+
+
+    </script>
+
+
 
 {% endblock %}

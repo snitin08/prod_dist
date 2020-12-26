@@ -10,7 +10,7 @@
 
     <link rel="stylesheet" href="{% static 'css/receipt/receipt_list.css' %}">
     <div class="container">
-        {% if request.session.type != 'retailer' and sent_receipts %}
+        {% if request.session.type != 'retailer' %}
             <h1>Sent invoices</h1>
             <form class="form-inline my-5" method="GET" action="{% url 'receipt:receipt_list' %}">
                 <div class="form-group mx-2">
@@ -32,7 +32,7 @@
 
                 <button type="submit" class="btn btn-md btn-outline-success mt-4">SEARCH</button>
             </form>
-            <div id="sent_receipts">
+            <div id="sent_receipts" style="max-height: 400px; overflow-y: auto;">
                 <table class="table">
                     <thead>
                         <tr class="bg-primary">
@@ -64,9 +64,15 @@
                                 <td>&#8377 {{receipt.sub_total}}</td>
                                 <td>&#8377 {{receipt.taxes}}</td>
                                 <td>&#8377 {{receipt.total}}</td>
-                                <td class="product_status_accepted">
-                                    <i class="fa fa-check non-defective" aria-hidden="true"></i> Accepted
-                                </td>                        
+                                {% if receipt.defective == False %}
+                                    <td class="product_status_accepted">
+                                        <i class="fa fa-check non-defective" aria-hidden="true"></i> Accepted 
+                                    </td>  
+                                {% else %}
+                                    <td class="product_status_defective">
+                                        <i class="fa fa-times defective" aria-hidden="true"></i> Defective
+                                    </td>                                  
+                                {% endif %}  
                             </tr> 
                         {% endfor %}                    
                     </tbody>
@@ -74,7 +80,8 @@
             </div>
         {% endif %}
 
-        {% if request.session.type != 'company' and received_receipts %}
+       
+        {% if request.session.type != 'company' %}
             <h1>Received invoices</h1>
             <form class="form-inline my-5" method="GET" action="{% url 'receipt:receipt_list' %}">
                 <div class="form-group mx-2">
@@ -96,7 +103,7 @@
 
                 <button type="submit" class="btn btn-md btn-outline-success mt-4">SEARCH</button>
             </form>
-            <div id="received_receipts">
+            <div id="received_receipts" style="max-height: 400px; overflow-y: auto;">
                 <table class="table">
                     <thead>
                         <tr class="bg-primary">
@@ -130,9 +137,15 @@
                                 <td>&#8377 {{receipt.sub_total}}</td>
                                 <td>&#8377 {{receipt.taxes}}</td>
                                 <td>&#8377 {{receipt.total}}</td>
-                                <td class="product_status_accepted">
-                                    <i class="fa fa-check non-defective" aria-hidden="true"></i> Accepted
-                                </td>                        
+                                {% if receipt.defective == False %}
+                                    <td class="product_status_accepted">
+                                        <i class="fa fa-check non-defective" aria-hidden="true"></i> Accepted 
+                                    </td>  
+                                {% else %}
+                                    <td class="product_status_defective">
+                                        <i class="fa fa-times defective" aria-hidden="true"></i> Defective
+                                    </td>                                  
+                                {% endif %}                    
                             </tr> 
                         {% endfor %}
                                             
@@ -142,7 +155,7 @@
             </div>
         {% endif %}
 
-        {% if sent_requests and request.session.type != 'company' %}
+        {% if request.session.type != 'company' %}
             <h1>Sent Purchase orders</h1>
             <form class="form-inline my-5" method="GET" action="{% url 'receipt:receipt_list' %}">
                 <div class="form-group mx-2">
@@ -164,7 +177,7 @@
 
                 <button type="submit" class="btn btn-md btn-outline-success mt-4">SEARCH</button>
             </form>
-            <div id="sent_requests">
+            <div id="sent_requests" style="max-height: 400px; overflow-y: auto;">
                 <table class="table">
                     <thead>
                         <tr class="bg-primary">
@@ -178,8 +191,7 @@
                             {% endif %}
                             <th>Subtotal</th>
                             <th>Tax</th>
-                            <th>Total</th>
-                            <th>Status</th>
+                            <th>Total</th>                            
                         </tr>
                     </thead>
                     <tbody style="overflow: scroll; max-height: 400px;">
@@ -194,13 +206,11 @@
                                     </a>
                                 </td>
                                 <td>{{receipt.day}}/{{receipt.month}}{{receipt.year}}</td>
-                                <td>{{receipt.to_name}}</td>
+                                <td>{{receipt.from_name}}</td>
                                 <td>&#8377 {{receipt.sub_total}}</td>
                                 <td>&#8377 {{receipt.taxes}}</td>
                                 <td>&#8377 {{receipt.total}}</td>
-                                <td class="product_status_accepted">
-                                    <i class="fa fa-check non-defective" aria-hidden="true"></i> Accepted
-                                </td>                        
+                                                       
                             </tr> 
                         {% endfor %}
                                             
@@ -212,7 +222,7 @@
 
 
 
-        {% if received_requests and request.session.type != 'retailer' %}
+        {% if request.session.type != 'retailer' %}
         <h1>Received Purchase orders</h1>
         <form class="form-inline my-5" method="GET" action="{% url 'receipt:receipt_list' %}">
             <div class="form-group mx-2">
@@ -234,7 +244,7 @@
 
             <button type="submit" class="btn btn-md btn-outline-success mt-4">SEARCH</button>
         </form>
-        <div id="received_requests">
+        <div id="received_requests" style="max-height: 400px; overflow-y: auto;">
             <table class="table">
                 <thead>
                     <tr class="bg-primary">
@@ -248,8 +258,7 @@
                         {% endif %}
                         <th>Subtotal</th>
                         <th>Tax</th>
-                        <th>Total</th>
-                        <th>Status</th>
+                        <th>Total</th>                        
                     </tr>
                 </thead>
                 <tbody style="overflow: scroll; max-height: 400px;">
@@ -267,10 +276,7 @@
                             <td>{{receipt.to_name}}</td>
                             <td>&#8377 {{receipt.sub_total}}</td>
                             <td>&#8377 {{receipt.taxes}}</td>
-                            <td>&#8377 {{receipt.total}}</td>
-                            <td class="product_status_accepted">
-                                <i class="fa fa-check non-defective" aria-hidden="true"></i> Accepted
-                            </td>                        
+                            <td>&#8377 {{receipt.total}}</td>                                                  
                         </tr> 
                     {% endfor %}
                                         

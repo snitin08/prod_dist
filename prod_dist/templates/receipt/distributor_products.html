@@ -9,7 +9,7 @@
 
     <link rel="stylesheet" href="{% static 'css/receipt/create_receipt.css' %}" type="text/css">
 
-    <div class="alert alert-success" id="success-alert" style="display:none"></div>
+    
 
     <div class="container my-5" style="text-align: center;">
 
@@ -105,15 +105,7 @@
             </div>
         </form>
 
-        <div class="toast" data-autohide="false" id="request_success">
-            <div class="toast-header">
-              <strong class="mr-auto text-primary">Request Products</strong>            
-              <button type="button" class="ml-2 mb-1 close" data-dismiss="toast">&times;</button>
-            </div>
-            <div class="toast-body">
-              The products are successfully requested. The invoice will be generated once the user approves.
-            </div>
-        </div>
+        <div class="alert alert-success" id="success-alert" style="display:none"></div>
     
     </div>
 
@@ -300,7 +292,10 @@
                         if(data.status == 1){ // meaning that everyhting went ok
                            // do something
                            //window.location='{% url "mainApp:index" %}';
-                           
+                           var success_element = document.getElementById("success-alert");
+                           success_element.innerHTML = "Purchase request created successfully."
+                           $("#success-alert").show();
+                           setTimeout(function() { $("#success-alert").hide(); }, 5000);
                             var timer = setTimeout(function() {
                             if(user_type=='distributor')
                                 window.location="{% url 'distributor:index' distributor_id=request.session.id %}"
