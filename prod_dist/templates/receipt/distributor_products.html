@@ -106,6 +106,9 @@
         </form>
 
         <div class="alert alert-success" id="success-alert" style="display:none"></div>
+        <div class="alert alert-danger" id="no_products" role="alert" style="display:none">
+            <strong>Cannot create purchase order without any products.</strong>
+        </div>
     
     </div>
 
@@ -222,7 +225,7 @@
                      $("#product-list").append(
                         '<div class="form-inline my-5">\
                             <input type="text" id="list-product-name-' + checkCount + '" name="list-product-name" class="form-control m-2" placeholder="Product Name" value="'+product_name+'" onchange="productListFill('+checkCount+'); calculate();" list="productList" onChange="productListFill('+checkCount+');"/>\
-                            <input name="list-product-quantity" id="list-product-quantity-'+ checkCount+ '" class="form-control m-2" required="required" type="number" min="0" value="'+product_quantity+'"  placeholder="Product quantity">\
+                            <input name="list-product-quantity" min="1" id="list-product-quantity-'+ checkCount+ '" class="form-control m-2" required="required" type="number" min="0" value="'+product_quantity+'"  placeholder="Product quantity">\
                             <input name="list-product-tax" readonly id="list-product-tax-'+ checkCount+ '" class="form-control m-2" required="required" type="number" min="0" max="100" step="any" value="'+product_tax+'"  placeholder="Product Tax">\
                             <input name="list-product-price" id="list-product-price-'+ checkCount+ '" class="form-control m-2" required="required" type="number" min="0" step="any" value="'+product_price+'"  placeholder="Product Price">\
                             <input name="list-product-discount" id="list-product-discount-'+ checkCount+ '" class="form-control m-2" required="required" type="number" min="0" step="any" value="'+product_discount+'"  placeholder="Product discount">\
@@ -283,7 +286,9 @@
                     var url = '{% url "receipt:company_products" company_id=0 %}'.replace('0',selectedUser);
                 else
                     var url = '{% url "receipt:distributor_products" distributor_id=0 %}'.replace('0',selectedUser);
-                $.post(url.toString() , 
+                if(resultArray['products'].length>0)
+                {
+                    $.post(url.toString() , 
                     { 
                     arr: JSON.stringify(resultArray), // <-----------
                     csrfmiddlewaretoken :  '{{ csrf_token }}' 
@@ -309,7 +314,12 @@
                            
                         }   
                     });
-
+                }
+                else
+                {
+                    $("#no_products").show();
+                    setTimeout(function() { $("#no_products").hide(); }, 5000);
+                }
 
             });
         });

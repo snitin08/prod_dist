@@ -12,12 +12,24 @@
     <div class="container">
         <div id="receipt_detail">
 
-            <h1 style="text-align: center;"> Receipt details</h1>
+            {% if receipt.requested == True %}
+                <h1 style="text-align: center;"> Purchase order </h1>
+            {% else %}
+                <h1 style="text-align: center;"> Invoice </h1>
+            {% endif %}
 
             <div class="receipt_info">
-                <p>From: {{receipt.from_name}} </p>
-                <p>To: {{receipt.to_name}}</p>
-                <p>Tax: &#8377 {{receipt.taxes}}</p>
+                {% if receipt.requested == False %}
+                    <h3>{{receipt.from_name}} </h3>
+                    <p>{{receipt.from_address}}</p>
+                    <br><br>    
+                    <h2 style="margin-top: 10px;">Bill to:</h2>
+                    <hr>
+                {% endif %}
+                <h3>{{receipt.to_name}}</h3>                
+                <p>{{receipt.to_address}}</p>
+
+                <p style="margin-top: 10px;">Tax: &#8377 {{receipt.taxes}}</p>
                 <p>Subtotal: &#8377 {{receipt.sub_total}}</p>
                 <p>Amount: &#8377 {{receipt.total}}</p>
             </div>

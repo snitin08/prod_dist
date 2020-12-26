@@ -95,11 +95,16 @@ def create_receipt(request):
             extend_page="distributor/distributor_base.html"
         else:
             return render(request,'general/404.html',{})
-        return render(request,'receipt/create_receipt.html',{
-            "products":products,
-            "extend_page":extend_page,
-            "users":users,
-        })
+        if products:
+            return render(request,'receipt/create_receipt.html',{
+                "products":products,
+                "extend_page":extend_page,
+                "users":users,
+            })
+        else:
+            return render(request,"receipt/access_denied.html",{
+                "extend_page":extend_page
+            })
 def approve_purchase_order(receipt_id,session):
     pass
 
@@ -113,14 +118,18 @@ def request_receipt(request):
             if users:
                 return redirect('receipt:company_products',company_id=users[0].id)
             else:
-                return HttpResponse("<h1>There are no companies</h1>")
+                return render(request,"receipt/access_denied.html",{
+                    "extend_page":"distributor/distributor_base.html"
+                })
         elif request.session['type']=='retailer':            
             retailer = Retailer.objects.get(id = int(request.session['id']))
             users = retailer.distributor_set.all()
             if users:
                 return redirect('receipt:distributor_products',distributor_id=users[0].id)
             else:
-                return HttpResponse("<h1>There are no distributors</h1>")
+                return render(request,"receipt/access_denied.html",{
+                    "extend_page":"retailer/retailer_base.html"
+                })
     
 
 
@@ -314,12 +323,17 @@ def distributor_products(request,distributor_id):
                 users = retailer.distributor_set.all()
                 extend_page = 'retailer/retailer_base.html'
                 print(distributor_id)
-                return render(request,'receipt/distributor_products.html',{
-                    "products":products,
-                    "users":users,
-                    "extend_page":extend_page,
-                    "selected_id":distributor_id,
-                })
+                if products:
+                    return render(request,'receipt/distributor_products.html',{
+                        "products":products,
+                        "users":users,
+                        "extend_page":extend_page,
+                        "selected_id":distributor_id,
+                    })
+                else:
+                    return render(request,"receipt/access_denied.html",{
+                        "extend_page":extend_page
+                    })
             else:
                 return render(request,"general/404.html",{})
         else:

@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="{% static 'css/receipt/receipt_list.css' %}">
     <div class="container">
         {% if request.session.type != 'retailer' %}
-            <h1>Sent invoices</h1>
+            <h1>Sent Invoices</h1>
             <form class="form-inline my-5" method="GET" action="{% url 'receipt:receipt_list' %}">
                 <div class="form-group mx-2">
                     <label for="year">Year</label>
@@ -82,7 +82,7 @@
 
        
         {% if request.session.type != 'company' %}
-            <h1>Received invoices</h1>
+            <h1>Received Invoices</h1>
             <form class="form-inline my-5" method="GET" action="{% url 'receipt:receipt_list' %}">
                 <div class="form-group mx-2">
                     <label for="year">Year</label>
@@ -156,7 +156,7 @@
         {% endif %}
 
         {% if request.session.type != 'company' %}
-            <h1>Sent Purchase orders</h1>
+            <h1>Sent Purchase Orders</h1>
             <form class="form-inline my-5" method="GET" action="{% url 'receipt:receipt_list' %}">
                 <div class="form-group mx-2">
                     <label for="year">Year</label>
@@ -223,7 +223,7 @@
 
 
         {% if request.session.type != 'retailer' %}
-        <h1>Received Purchase orders</h1>
+        <h1>Received Purchase Orders</h1>
         <form class="form-inline my-5" method="GET" action="{% url 'receipt:receipt_list' %}">
             <div class="form-group mx-2">
                 <label for="year">Year</label>

@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.shortcuts import render, HttpResponse, redirect
 from mainApp.models import Company, Distributor, Retailer, CompanyProducts
 from functools import wraps
+from django.db import IntegrityError
 
 # Create your views here.
 def CompanyAuthenticated(function):
@@ -33,8 +34,20 @@ def company_edit(request,company_name):
             del data['csrfmiddlewaretoken']
             company_name = data['company_name']
             company = Company.objects.filter(company_name = company_name)
-            company.update(**data)
-            return HttpResponse('<h1>Update success</h1>')
+            try:
+                company.update(**data)
+            except IntegrityError as e:
+                messages = {}
+                messages['gst'] = "GST number must be unique. Check your GST number."
+                return render(request,'company/company_edit.html',{
+                    "data":data,
+                    "messages":messages,
+                })
+
+            return render(request,"company/company_edit.html",{
+                "data":data,
+                "success":True
+            })
             
             
         else:

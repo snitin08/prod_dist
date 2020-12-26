@@ -10,6 +10,11 @@
     <script src="{% static 'js/register_retailer.js' %}"></script>
     <div class="row">
         <div class="col-sm-12 col-md-6 col-lg-6 ml-auto mr-auto">
+            {% if success == True %}
+                <div class="alert alert-success" role="alert">
+                    <strong>Company details edited successfully</strong> 
+                </div>
+            {% endif %}
             <h1 class="text-primary">Company edit</h1>
             
             <form id="company_edit" action="{% url 'company:company_edit' company_name=data.company_name %}" class="ml-auto mr-auto" method="POST" onsubmit="event.preventDefault(); update();">

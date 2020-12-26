@@ -1,23 +1,24 @@
 from django.shortcuts import render, HttpResponse, redirect
 from mainApp.models import Distributor, Retailer, Company, CompanyProducts
+from django.db import IntegrityError
 # Create your views here.
 def distributorAuthenticated(function):
   
     def wrap(request, *args, **kwargs):   
-        try:     
-            if request.session['user']:            
-                distributor = Distributor.objects.filter(id=kwargs['distributor_id']).first()
-                if distributor:
-                    if distributor.email == request.session['user']:           
-                        return function(request, *args, **kwargs)
-                    else:
-                        return render(request,'general/404.html',{})
+        #try:     
+        if request.session['user']:            
+            distributor = Distributor.objects.filter(id=kwargs['distributor_id']).first()
+            if distributor:
+                if distributor.email == request.session['user']:           
+                    return function(request, *args, **kwargs)
                 else:
                     return render(request,'general/404.html',{})
             else:
-                return redirect('mainApp:login')
-        except:
+                return render(request,'general/404.html',{})
+        else:
             return redirect('mainApp:login')
+        # except:
+        #     return redirect('mainApp:login')
     return wrap
 
 @distributorAuthenticated
@@ -30,14 +31,26 @@ def distributor_edit(request,distributor_id):
         })
     else:
         data = request.POST.dict()
-        #print(data)
+        print(data)
         del data['csrfmiddlewaretoken']
         distributor = Distributor.objects.filter(id=distributor_id)
-        distributor.update(
-            **data
-        )
-
-        return redirect('distributor:distributor_edit',distributor_id=distributor_id)
+        try:
+            distributor.update(
+                **data
+            )
+        except IntegrityError as e:
+            messages = {}
+            messages['gst'] = "GST number must be unique."
+            return render(request,"distributor/distributor_edit.html",{
+                "data":data,
+                "messages":messages,
+            })
+        
+        return render(request,"distributor/distributor_edit.html",{
+                "data":data,
+                "success":True,
+            })
+        
 
 
 @distributorAuthenticated

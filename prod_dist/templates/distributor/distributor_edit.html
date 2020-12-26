@@ -14,10 +14,15 @@
     <div class="container">
         <div class="row">
             <div class="col-sm-12 col-md-6 col-lg-6 ml-auto mr-auto">
+                {% if success == True %}
+                    <div class="alert alert-success" role="alert">
+                        <strong>Distributor details edited successfully</strong> 
+                    </div>
+                {% endif %}
                 <h1 class="text-primary">Distributor Edit</h1>
                 <p class="lead">Edit the necessary details</p>
                 
-                    <form method="POST" id="distributor_edit_form" onsubmit="event.preventDefault(); validate_form();" action="{% url 'distributor:distributor_edit' distributor_id=data.id %}">
+                    <form method="POST" id="distributor_edit_form" onsubmit="event.preventDefault(); validate_form();" action="{% url 'distributor:distributor_edit' distributor_id=request.session.id %}">
                         
                         {% csrf_token %}
                         <div class="form-group">

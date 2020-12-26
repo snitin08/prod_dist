@@ -1,5 +1,6 @@
 from django.shortcuts import render, HttpResponse, redirect
 from mainApp.models import Distributor, Retailer, Company
+from django.db import IntegrityError
 # Create your views here.
 def retailerAuthenticated(function):
   
@@ -49,7 +50,19 @@ def retailer_edit(request,retailer_id):
         data = request.POST.dict()        
         del data['csrfmiddlewaretoken']     
         print(data)   
-        retailer.update(
-            **data
-        )
-        return redirect('retailer:index',retailer_id=retailer_id)
+        try:
+            retailer.update(
+                **data            
+            )
+        except IntegrityError as e:
+            messages = {}
+            messages['gst'] = "GST number must be unique."
+            return render(request,"retailer/retailer_edit.html",{
+                "messages":messages,
+                "data":data
+            })
+        return render(request,"retailer/retailer_edit.html",{
+                "success":True,
+                "data":data
+            })
+        
