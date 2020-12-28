@@ -244,3 +244,8 @@ def logout_user(request):
     return redirect('mainApp:index')
 
 
+def test_page(request):
+    from mainApp.models import Company1
+    c = Company1.objects.filter(id=2)
+    return HttpResponse("success")
+

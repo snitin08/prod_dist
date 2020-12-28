@@ -53,13 +53,13 @@
                     <tbody style="overflow: scroll; max-height: 10px;">
                         {% for receipt in sent_receipts %}
                             <tr>
-                                <td scope="row">1</td>
+                                <td scope="row">{{forloop.counter}}</td>
                                 <td>
                                     <a href="{% url 'receipt:receipt_detail' receipt_id=receipt.id %}">
                                         {{receipt.id}}
                                     </a>
                                 </td>
-                                <td>{{receipt.day}}/{{receipt.month}}{{receipt.year}}</td>
+                                <td>{{receipt.day}}/{{receipt.month}}/{{receipt.year}}</td>
                                 <td>{{receipt.to_name}}</td>
                                 <td>&#8377 {{receipt.sub_total}}</td>
                                 <td>&#8377 {{receipt.taxes}}</td>
@@ -126,13 +126,13 @@
 
                         {% for receipt in received_receipts %}
                             <tr>
-                                <td scope="row">1</td>
+                                <td scope="row">{{forloop.counter}}</td>
                                 <td>
                                     <a href="{% url 'receipt:receipt_detail' receipt_id=receipt.id %}">
                                         {{receipt.id}}
                                     </a>
                                 </td>
-                                <td>{{receipt.day}}/{{receipt.month}}{{receipt.year}}</td>
+                                <td>{{receipt.day}}/{{receipt.month}}/{{receipt.year}}</td>
                                 <td>{{receipt.from_name}}</td>
                                 <td>&#8377 {{receipt.sub_total}}</td>
                                 <td>&#8377 {{receipt.taxes}}</td>
@@ -199,13 +199,13 @@
 
                         {% for receipt in sent_requests %}
                             <tr>
-                                <td scope="row">1</td>
+                                <td scope="row">{{forloop.counter}}</td>
                                 <td>
                                     <a href="{% url 'receipt:receipt_detail' receipt_id=receipt.id %}">
                                         {{receipt.id}}
                                     </a>
                                 </td>
-                                <td>{{receipt.day}}/{{receipt.month}}{{receipt.year}}</td>
+                                <td>{{receipt.day}}/{{receipt.month}}/{{receipt.year}}</td>
                                 <td>{{receipt.from_name}}</td>
                                 <td>&#8377 {{receipt.sub_total}}</td>
                                 <td>&#8377 {{receipt.taxes}}</td>
@@ -266,13 +266,13 @@
 
                     {% for receipt in received_requests %}
                         <tr>
-                            <td scope="row">1</td>
+                            <td scope="row">{{forloop.counter}}</td>
                             <td>
                                 <a href="{% url 'receipt:receipt_detail' receipt_id=receipt.id %}">
                                     {{receipt.id}}
                                 </a>
                             </td>
-                            <td>{{receipt.day}}/{{receipt.month}}{{receipt.year}}</td>
+                            <td>{{receipt.day}}/{{receipt.month}}/{{receipt.year}}</td>
                             <td>{{receipt.to_name}}</td>
                             <td>&#8377 {{receipt.sub_total}}</td>
                             <td>&#8377 {{receipt.taxes}}</td>

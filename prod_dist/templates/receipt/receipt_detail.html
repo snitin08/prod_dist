@@ -19,15 +19,30 @@
             {% endif %}
 
             <div class="receipt_info">
-                {% if receipt.requested == False %}
-                    <h3>{{receipt.from_name}} </h3>
-                    <p>{{receipt.from_address}}</p>
-                    <br><br>    
-                    <h2 style="margin-top: 10px;">Bill to:</h2>
-                    <hr>
+                {% if receipt.requested == True %}
+                    <p class="text-muted"> Purchase order No:  </p>
+                    <strong>{{receipt.id}}</strong>
+                    
+                {% else %}
+                    <p class="text-muted"> Purchase order No:  </p>
+                    <strong>{{receipt.id}}</strong>
                 {% endif %}
-                <h3>{{receipt.to_name}}</h3>                
-                <p>{{receipt.to_address}}</p>
+
+                <p style="margin-top: 10px;">Date: {{receipt.day}}/{{receipt.month}}/{{receipt.year}}</p>
+                <hr>
+
+                {% if receipt.requested == False %}
+                    <strong style="font-size: 1.5em;">{{receipt.from_name}} </strong>
+                    <p class="text-muted">{{receipt.from_address}}</p>
+                    <hr>
+                    <p>Bill to:</p> 
+                {% else %}
+                    <p class="text-muted">Ship to:</p>                                 
+                {% endif %}
+                                
+                <strong style="font-size: 1.5em;">{{receipt.to_name}}</strong>                
+                <p class="text-muted">{{receipt.to_address}}</p>
+                <hr>
 
                 <p style="margin-top: 10px;">Tax: &#8377 {{receipt.taxes}}</p>
                 <p>Subtotal: &#8377 {{receipt.sub_total}}</p>

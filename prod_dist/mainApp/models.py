@@ -236,18 +236,55 @@ class CompanyProducts(models.Model):
     def __str__(self):
         return self.product_name
 
-class Company1(models.Model):
-    name = models.CharField(max_length=20)
-    address = models.CharField(max_length=50)
+class Company1Manager(BaseUserManager):
+    def create_company(self,email,company_name,mobile,
+                        address,state,city,pincode,password):
+        if not email:
+            raise ValueError('Users must have an email address')
 
-class Company2(models.Model):
-    address = models.CharField(max_length=50,primary_key=True)
-    pincode = models.CharField(max_length=10)
+        c,_ = City.objects.get_or_create(city=city,state=state)
+        p,_ = Pincode.objects.get_or_create(pincode=pincode,city=c)
+        a,_ = Address.objects.get_or_create(address=address,pincode=p)
+        
+        user = self.model(
+            email=self.normalize_email(email),
+            company_name=company_name,            
+            address=a
+        )
 
-class Company3(models.Model):
-    pincode = models.CharField(max_length=10,primary_key=True)
-    city = models.CharField(max_length=20)
+        user.set_password(password)
+        user.save(using=self._db)
 
-class Company4(models.Model):
+        return user
+    
+    def get_queryset(self):
+        return super().get_queryset().select_related('address__pincode').all()
+    
+
+
+
+
+
+class City(models.Model):
     city = models.CharField(max_length=20,primary_key=True)
     state = models.CharField(max_length=20)
+
+class Pincode(models.Model):
+    pincode = models.CharField(max_length=20,primary_key=True)
+    city = models.ForeignKey(City,on_delete=models.CASCADE)
+
+
+class Address(models.Model):
+    address = models.CharField(max_length=50,primary_key=True)
+    pincode = models.ForeignKey(Pincode,on_delete=models.CASCADE)
+
+class Company1(AbstractBaseUser):
+    company_name = models.CharField(max_length=20,unique=True)
+    email = models.EmailField(
+        verbose_name='email address',
+        max_length=255,
+        unique=True,
+    )
+    USERNAME_FIELD = 'email'
+    address = models.OneToOneField('Address',on_delete=models.CASCADE)
+    objects = Company1Manager()
