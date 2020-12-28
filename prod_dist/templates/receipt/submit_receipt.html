@@ -6,98 +6,103 @@ Display receipt
 {% endblock %}
 
 {% block body_block %}
-<div class="container my-3" >
-    <form method="POST" enctype="multipart/form-data" action="{% url 'receipt:submit_receipt' %}" class="form-group">
-        {% csrf_token %}
-        {% if request.session.type == "company" %}
+<div class="container my-3" style="display: flex;" >
+    <div>
+        <form method="POST" enctype="multipart/form-data" action="{% url 'receipt:submit_receipt' %}" class="form-group">
+            {% csrf_token %}
+            {% if request.session.type == "company" %}
+                    <div class="form-group">
+                        <label for="user_to" style="display: block; font-size: 24px; text-align: left;">Select a distributor</label>
+                        <select name="user_to" id="user_to" class="form-control" style="width: 250px;">
+                            {% for user in users %}
+                                <option value="{{user.id}}">{{user.first_name}} {{user.last_name}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+            {% else %}
                 <div class="form-group">
-                    <label for="user_to" style="display: block; font-size: 24px; text-align: left;">Select a distributor</label>
+                    <label for="user_to" style="display: block; font-size: 24px;">Select a retailer</label>
                     <select name="user_to" id="user_to" class="form-control" style="width: 250px;">
                         {% for user in users %}
                             <option value="{{user.id}}">{{user.first_name}} {{user.last_name}}</option>
                         {% endfor %}
                     </select>
                 </div>
-        {% else %}
-            <div class="form-group">
-                <label for="user_to" style="display: block; font-size: 24px;">Select a retailer</label>
-                <select name="user_to" id="user_to" class="form-control" style="width: 250px;">
-                    {% for user in users %}
-                        <option value="{{user.id}}">{{user.first_name}} {{user.last_name}}</option>
-                    {% endfor %}
-                </select>
-            </div>
-        {% endif %}
-        {% for k,v in annotations.items %}
-            <div class="form-group">
-                <label for="d">{{k}}</label><br>
-                <input type="text" id="d" name="{{k}}" value="{{v}}" style="width: 400px;">
-            </div>
-            <!-- <textarea id="d" name="ann-{{forloop.counter}}" rows="4" cols="25">
-                {{v}}
-            </textarea><br> -->
-            
-        {% endfor %}
-        <h3>Table</h3>
-        <div id="table-header" class="form-inline">
-            
-                <select name="tableHeader[]" required="required" style="width: 250px;" class="form-control m-1 bg-primary text-white">
-                    <option value="quantity" style="padding: 5px;">Quantity</option>
-                    <option value="price" style="padding: 5px;">Price</option>
-                    <option value="prod_name" style="padding: 5px;">Product Name</option>
-                </select>
+            {% endif %}
+            {% for k,v in annotations.items %}
+                <div class="form-group">
+                    <label for="d">{{k}}</label><br>
+                    <input type="text" id="d" name="{{k}}" value="{{v}}" style="width: 400px;">
+                </div>
+                <!-- <textarea id="d" name="ann-{{forloop.counter}}" rows="4" cols="25">
+                    {{v}}
+                </textarea><br> -->
+                
+            {% endfor %}
+            <h3>Table</h3>
+            <div id="table-header" class="form-inline">
+                
+                    <select name="tableHeader[]" required="required" style="width: 250px;" class="form-control m-1 bg-primary text-white">
+                        <option value="quantity" style="padding: 5px;">Quantity</option>
+                        <option value="price" style="padding: 5px;">Price</option>
+                        <option value="prod_name" style="padding: 5px;">Product Name</option>
+                    </select>
 
-                <select name="tableHeader[]" required="required" style="width: 250px;" class="form-control m-1 bg-primary text-white">
-                    <option value="quantity" style="padding: 5px;">Quantity</option>
-                    <option value="price" style="padding: 5px;">Price</option>
-                    <option value="prod_name" style="padding: 5px;">Product Name</option>
-                </select>
+                    <select name="tableHeader[]" required="required" style="width: 250px;" class="form-control m-1 bg-primary text-white">
+                        <option value="quantity" style="padding: 5px;">Quantity</option>
+                        <option value="price" style="padding: 5px;">Price</option>
+                        <option value="prod_name" style="padding: 5px;">Product Name</option>
+                    </select>
 
-                <select name="tableHeader[]" required="required" style="width: 250px;" class="form-control m-1 bg-primary text-white">
-                    <option value="quantity" style="padding: 5px;">Quantity</option>
-                    <option value="price" style="padding: 5px;">Price</option>
-                    <option value="prod_name" style="padding: 5px;">Product Name</option>
-                </select>
-            
-        </div>
-        <br>
-        {% for k in table %}
-            <div class="form-inline">
-
-                {% for v in k %}
-                    <input type="text" class="form-control m-1" id="f" value="{{v}}" style="width: 250px;" required="required" name="tableColumn-{{forloop.counter}}[]">
-                {% endfor %}
+                    <select name="tableHeader[]" required="required" style="width: 250px;" class="form-control m-1 bg-primary text-white">
+                        <option value="quantity" style="padding: 5px;">Quantity</option>
+                        <option value="price" style="padding: 5px;">Price</option>
+                        <option value="prod_name" style="padding: 5px;">Product Name</option>
+                    </select>
+                
             </div>
             <br>
-        {% endfor %}
-        <br>
-        <h3>Fields Below Table</h3>
-        {% for t in below_table %}
-            <p><b>
-                {{t}}
-            </p>
-        {% endfor %}
-        <div class="form-group">
-            <label for = 'subtot'>Enter the Sub-Total</label>
-            <input type="number" min="0" id = "subtot" name = "sub_total" required="required" class="form-control" style="width: 250px;"><br>
-        </div>
+            {% for k in table %}
+                <div class="form-inline">
 
-        <div class="form-group">
-            <label for = 'tax'>Enter the Tax % </label>
-            <input type="number" min="0" id = "tax" name = "taxes" required="required" class="form-control" style="width: 250px;"><br>
-        </div>
-        <div class="form-group">
-            <label for = 'dis'>Enter the Discount %</label>
-            <input type="number" min="0" id = "dis" name = "discount" required="required" class="form-control" style="width: 250px;"><br>
-        </div>
-        <div class="form-group">
-            <label for = 'tot'>Enter the Total</label>
-            <input type="number" min="0" id = "tot" name = "total" required="required" class="form-control" style="width: 250px;"><br>
-        </div>
-        
-        <input type="submit" class="btn btn-success">
+                    {% for v in k %}
+                        <input type="text" class="form-control m-1" id="f" value="{{v}}" style="width: 250px;" required="required" name="tableColumn-{{forloop.counter}}[]">
+                    {% endfor %}
+                </div>
+                <br>
+            {% endfor %}
+            <br>
+            <h3>Fields Below Table</h3>
+            {% for t in below_table %}
+                <p><b>
+                    {{t}}
+                </p>
+            {% endfor %}
+            <div class="form-group">
+                <label for = 'subtot'>Enter the Sub-Total</label>
+                <input type="number" min="0" id = "subtot" name = "sub_total" required="required" class="form-control" style="width: 250px;"><br>
+            </div>
 
-    </form>
+            <div class="form-group">
+                <label for = 'tax'>Enter the Tax % </label>
+                <input type="number" min="0" id = "tax" name = "taxes" required="required" class="form-control" style="width: 250px;"><br>
+            </div>
+            <div class="form-group">
+                <label for = 'dis'>Enter the Discount %</label>
+                <input type="number" min="0" id = "dis" name = "discount" required="required" class="form-control" style="width: 250px;"><br>
+            </div>
+            <div class="form-group">
+                <label for = 'tot'>Enter the Total</label>
+                <input type="number" min="0" id = "tot" name = "total" required="required" class="form-control" style="width: 250px;"><br>
+            </div>
+            
+            <input type="submit" class="btn btn-success">
+
+        </form>
+    </div>
+    <div id="image" style="float: right;">
+        <img src="/media/page_1.jpeg" height="500px" width="500px"/>
+    </div>
     <!-- <img src="C:/Users/nishith/prod_dist/prod_dist/media/page_1.jpeg" class="rounded float-right" alt="..."> -->
 </div>
 

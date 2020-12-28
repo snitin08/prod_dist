@@ -25,4 +25,4 @@ urlpatterns = [
     path('company/',include('company.urls')),
     path('distributor/',include('distributor.urls')),
     path('retailer/',include('retailer.urls')),
-]+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+]+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)+static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
