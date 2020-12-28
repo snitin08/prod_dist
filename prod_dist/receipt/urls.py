@@ -15,4 +15,6 @@ urlpatterns = [
     path('receipt_list/',views.receipt_list,name='receipt_list'),
     path('receipt_stats',views.receipt_stats,name='receipt_stats'),
     path('access_denied/',views.access_denied,name='access_denied'),
+    path('process_receipt/', views.process_receipt,name='process_receipt'),
+    path('submit_receipt/', views.submit_receipt,name='submit_receipt')
 ]

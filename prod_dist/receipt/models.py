@@ -7,8 +7,8 @@ import datetime
 class Products(EmbeddedDocument):    
     prod_name = StringField(max_length=200)
     price = DecimalField(min_value=0, max_value=1000000.00, precision=2, rounding='ROUND_HALF_UP')
-    tax = DecimalField(min_value=0, max_value=1000000.00, precision=2, rounding='ROUND_HALF_UP')
-    discount = DecimalField(min_value=0, max_value=1000000.00, precision=2, rounding='ROUND_HALF_UP')
+    tax = DecimalField(min_value=0, max_value=1000000.00, precision=2, rounding='ROUND_HALF_UP', null=True, blank=True)
+    discount = DecimalField(min_value=0, max_value=1000000.00, precision=2, rounding='ROUND_HALF_UP', null=True, blank=True)
     quantity = IntField(required=True)
     defective = IntField(default=0)
 

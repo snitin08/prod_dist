@@ -143,3 +143,6 @@ MONGO_DATABASE_HOST = \
 'mongodb://%s:%s@%s/%s' \
 % (MONGO_USER, MONGO_PASS, MONGO_HOST, MONGO_NAME)
 mongoengine.connect(MONGO_NAME)
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
