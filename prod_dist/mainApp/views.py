@@ -20,7 +20,7 @@ def notAuthenticated(function):
             return function(request,*args,**kwargs)
     return wrap
 
-# Create your views here.
+#Create your views here.
 def createData(request):
     createCompany(5)
     createDistributor(5)

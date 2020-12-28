@@ -1,6 +1,11 @@
 from django.shortcuts import render, HttpResponse, redirect
 from django.http import JsonResponse
 import json
+import pytesseract
+pytesseract.pytesseract.tesseract_cmd = "E:\\Downloads\\Tesseract OCR\\tesseract.exe"
+
+import subprocess
+from .table_detect import table_detect, colfilter, get_text, get_annotations_xlsx, find_table, find_below_table
 
 from numpy.core.numeric import normalize_axis_tuple
 from mongoengine.queryset.visitor import Q
@@ -13,8 +18,6 @@ import pytesseract
 from pytesseract import Output
 import numpy as np
 import cv2
-import subprocess
-from .table_detect import table_detect, colfilter, get_text, get_annotations_xlsx, find_table, find_below_table
 from django.urls import reverse
 
 pytesseract.pytesseract.tesseract_cmd = 'C:\\Program Files\\Tesseract-OCR\\tesseract.exe'
@@ -270,15 +273,18 @@ def receipt_detail(request,receipt_id):
         receipt = Receipt.objects(id=receipt_id).first()
         user_id = int(request.session['id'])
         user_type = request.session['type']
-        saisfy = (receipt.from_id==user_id and receipt.from_type==user_type) or (receipt.to_id==user_id and receipt.to_type==user_type)
-        if saisfy:
-            print(receipt)
-            return render(request,'receipt/receipt_detail.html',{
-                "extend_page":extend_page,
-                "receipt":receipt,
-            })
+        if receipt:
+            saisfy = (receipt.from_id==user_id and receipt.from_type==user_type) or (receipt.to_id==user_id and receipt.to_type==user_type)
+            if saisfy:
+                print(receipt)
+                return render(request,'receipt/receipt_detail.html',{
+                    "extend_page":extend_page,
+                    "receipt":receipt,
+                })
+            else:
+                return render(request,"general/404.html",{})
         else:
-            return render(request,"general/404.html",{})
+                return render(request,"general/404.html",{})
     else:
         data = request.POST.dict()
         receipt = Receipt.objects(id=receipt_id).first()
@@ -539,23 +545,27 @@ def process_receipt(request):
         return render(request, 'receipt/receipt_process.html',{"extend_page":extend_page})
 
 def process_invoice(filename, templatename):
-    images = convert_from_path(filename, size = (901,1200))
+    images = convert_from_path(filename, 200,fmt="jpeg")
     annotate_dict = get_annotations_xlsx(templatename)
     tab_result = list()
+    print(len(images))
     start_of_table = annotate_dict['page 1']['Start Of Table'][1]
     result = get_text(annotate_dict, np.copy(images[0]), 901, 1200)
     flg = False
     below_tab_result = list()
+    
     for image in images:
-        image.save(BASE_DIR+'/media/page_1.jpeg', 'JPEG')  
-        cmd = 'convert '+BASE_DIR+'\\media\\page_1.jpeg'+' -type Grayscale -negate -define morphology:compose=darken -morphology Thinning "Rectangle:1x15+0+0<" -negate '+BASE_DIR+'\\media\\page_1-t.jpeg'
+        image.save(str(BASE_DIR)+'\\media\\page_1.jpeg', 'JPEG')  
+        cmd = '"E:\Downloads\ImageMagic\ImageMagick-6.9.11-Q16-20201228T144714Z-001\ImageMagick-6.9.11-Q16\convert.exe" "E:/Nitin/RVCE/5 Sem/DBMS/Self Study Lab/prod_dist/media/page_1.jpeg" -type Grayscale -negate -define morphology:compose=darken -morphology Thinning "Rectangle:1x80+0+0<" -negate "E:/Nitin/RVCE/5 Sem/DBMS/Self Study Lab/prod_dist/media/page_1-t.jpeg"'
+        print(cmd)
         subprocess.call(cmd, shell=True)
-        new_img = cv2.imread(BASE_DIR+'/media/page_1-t.jpeg')
-        new_img2 = cv2.imread(BASE_DIR+'/media/page_1.jpeg')
+        new_img = cv2.imread(str(BASE_DIR)+'\\media\\page_1-t.jpeg')
+        new_img2 = cv2.imread(str(BASE_DIR)+'\\media\\page_1.jpeg')
         new_img2 = cv2.bilateralFilter(new_img2,5,75,75)
 #        print(annotate_dict)
 #        print(new_img.shape[0],new_img.shape)
         rgb = np.copy(new_img)
+        print("RGB",rgb.shape)
         new_crd = table_detect(rgb)
         NO_OF_COLS = annotate_dict['ncols']
         new_lst = list()
@@ -568,17 +578,156 @@ def process_invoice(filename, templatename):
             else:
                 pass
         tmp3 = np.copy(rgb)
+        if len(new_lst)>=1:
+            new_lst = new_lst[1:]
         tab_result += find_table(tmp3, new_img2, new_lst)
         if flg==False:
             below_tab_result = find_below_table(np.copy(new_img2), below_table)
             flg = True
     return result, tab_result, below_tab_result
 
+# def submit_receipt(request):
+#     if request.method == 'POST':
+#         data = request.POST.dict()
+#         del data['csrfmiddlewaretoken']
+#         print(data)
+#         from_type = request.session['type']
+#         user_to = int(data['user_to'])
+#         if request.session['type']=='company':
+#             from_model = Company.objects.get(
+#                 id=int(request.session['id'])
+#             )
+#             to_model = Distributor.objects.get(id=user_to)
+#             from_name = from_model.company_name
+#             to_type = 'distributor'
+#             to_name = to_model.first_name+" "+to_model.last_name
+            
+#         else:
+#             from_model = Distributor.objects.get(
+#                 id=int(request.session['id'])
+#             )
+#             to_model = Retailer
+#             from_name = from_model.first_name+" "+from_model.last_name
+#             to_type = 'retailer'
+#             to_model = Retailer.objects.get(id=user_to)
+#             to_name = to_model.first_name+" "+to_model.last_name
+
+        
+#         to_id = int(data['user_to'])
+#         from_address = from_model.address
+#         to_address = to_model.address
+#         from_id = request.session['id']
+        
+#         i = '1'
+#         j = '1'
+#         products = list()
+#         while i in data:
+#             j = '1'
+#             product = dict()
+#             while j in data:
+#                 key = 'row-'+str(i)+'-'+str(j)
+#                 product.update({data[j]:data[key]})
+#                 j = str(int(j)+1)
+#             products.append(product)
+#             i = str(int(i)+1)
+#         print(products)
+#         products_list = list() 
+#         for product in products:
+#             pname = product['Product Name']
+#             price = float(product['Product Price'].split('$')[1])
+#             quantity = int(product['Quantity'])
+#             tax = None
+#             discount = None
+#             if 'Taxes' in product:
+#                 tax = float(product['Taxes'])
+#             if 'Discount' in product:
+#                 discount = float(product['Discount'])    
+#             p = Products(
+#                 prod_name=pname,
+#                 price = price,
+#                 tax = tax,
+#                 discount = discount,
+#                 quantity = quantity
+#             )
+#             products_list.append(p)
+#         sub_total = data['sub-total']
+#         taxes = data['taxes']
+#         total = data['total']
+#         discount = data['discount']
+#         r = Receipt(
+#             from_id=from_id,
+#             to_id=to_id,
+#             from_type=from_type,
+#             to_type=to_type,
+#             from_name=from_name,
+#             to_name=to_name,
+#             from_address=from_address,
+#             to_address=to_address,
+#             products=products_list,
+#             sub_total=sub_total,
+#             taxes=taxes,
+#             discount=discount,
+#             total=total
+#         )
+#         r.save()
+#         return redirect('receipt:receipt_list')
+#     else:
+#         if request.session['type']=='company':
+#             email = request.session['user']
+#             company = Company.objects.get(email=email)
+#             company_id = Company.objects.get(email=email).id
+#             products = CompanyProducts.objects.filter(product_company=company_id)
+#             extend_page="company/company_base.html"
+#             users = company.company_distributors.all()
+#             print(users)
+#             print(products)
+#         elif request.session['type']=='distributor':
+#             email = request.session['user']
+#             distributor = Distributor.objects.get(email=email)
+#             companies = distributor.company_set.all()
+#             products = CompanyProducts.objects.filter(product_company__in=companies)
+#             users = distributor.distributor_retailers.all()
+#             print(products)
+#             extend_page="distributor/distributor_base.html"
+#         else:
+#             return render(request,'general/404.html',{})
+#         if products:
+#             annotation = request.session['annotations']
+#             table = request.session['table']
+#             below_table = request.session['below_table']
+#             print(annotation)
+#             print(table)
+#             print(below_table) 
+#             return render(request,'receipt/submit_receipt.html',{
+#                 "extend_page":extend_page,
+#                 "users":users,
+#                 'annotations' : annotation,
+#                 'table' : table,
+#                 'below_table' : below_table
+#                 })
+#         else:
+#             return render(request,"receipt/access_denied.html",{
+#                 "extend_page":extend_page
+#             })
+
 def submit_receipt(request):
     if request.method == 'POST':
-        data = request.POST.dict()
+        data = request.POST
+        tableHeader = data.getlist('tableHeader[]')
+        tableColumn_1 = data.getlist('tableColumn-1[]')
+        tableColumn_2 = data.getlist('tableColumn-2[]')
+        tableColumn_3 = data.getlist('tableColumn-3[]')
+        print(tableHeader)
+        print(tableColumn_1,tableColumn_2,tableColumn_3)
+        data = data.dict()
         del data['csrfmiddlewaretoken']
+        del data['tableHeader[]']
+        del data['tableColumn-1[]']
+        del data['tableColumn-2[]']
+        del data['tableColumn-3[]']
         print(data)
+        
+        # return HttpResponse("success")
         from_type = request.session['type']
         user_to = int(data['user_to'])
         if request.session['type']=='company':
@@ -606,42 +755,36 @@ def submit_receipt(request):
         to_address = to_model.address
         from_id = request.session['id']
         
-        i = '1'
-        j = '1'
-        products = list()
-        while i in data:
-            j = '1'
-            product = dict()
-            while j in data:
-                key = 'row-'+i+'-'+j
-                product.update({data[j]:data[key]})
-                j = str(int(j)+1)
-            products.append(product)
-            i = str(int(i)+1)
-        print(products)
-        products_list = list() 
-        for product in products:
-            pname = product['Product Name']
-            price = float(product['Product Price'].split('$')[1])
-            quantity = int(product['Quantity'])
-            tax = None
-            discount = None
-            if 'Taxes' in product:
-                tax = float(product['Taxes'])
-            if 'Discount' in product:
-                discount = float(product['Discount'])    
-            p = Products(
-                prod_name=pname,
-                price = price,
-                tax = tax,
-                discount = discount,
-                quantity = quantity
-            )
+        
+        products = []
+        products_list = []
+
+        for i in range(len(tableColumn_1)):
+            p = {}
+            if tableHeader[0]=='quantity':
+                p[tableHeader[0]] = int(tableColumn_1[i])
+            elif tableHeader[0]=='price':
+                p[tableHeader[0]] = float(tableColumn_1[i])
+            else:
+                p[tableHeader[0]] = tableColumn_2[i]
+            if tableHeader[1]=='quantity':
+                p[tableHeader[1]] = int(tableColumn_2[i])
+            elif tableHeader[1]=='price':
+                p[tableHeader[1]] = float(tableColumn_2[i])
+            else:
+                p[tableHeader[1]] = tableColumn_2[i]
+            if tableHeader[2]=='quantity':
+                p[tableHeader[2]] = int(tableColumn_3[i])
+            elif tableHeader[2]=='price':
+                p[tableHeader[2]] = float(tableColumn_3[i])
+            else:
+                p[tableHeader[2]] = tableColumn_3[i]
+            p = Products(**p)
             products_list.append(p)
-        sub_total = data['sub-total']
-        taxes = data['taxes']
-        total = data['total']
-        discount = data['discount']
+        sub_total = float(data['sub_total'])
+        taxes = float(data['taxes'])
+        total = float(data['total'])
+        discount = float(data['discount'])
         r = Receipt(
             from_id=from_id,
             to_id=to_id,
@@ -658,7 +801,8 @@ def submit_receipt(request):
             total=total
         )
         r.save()
-        return HttpResponse('<h1>Data Successfully saved</h1>')
+        # return HttpResponse('success')
+        return redirect('receipt:receipt_list')
     else:
         if request.session['type']=='company':
             email = request.session['user']
@@ -679,7 +823,7 @@ def submit_receipt(request):
             extend_page="distributor/distributor_base.html"
         else:
             return render(request,'general/404.html',{})
-        if products:
+        if products and users:
             annotation = request.session['annotations']
             table = request.session['table']
             below_table = request.session['below_table']

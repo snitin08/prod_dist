@@ -6,7 +6,7 @@ import pandas as pd
 import ast
 import regex as re
 
-pytesseract.pytesseract.tesseract_cmd = 'C:\\Program Files\\Tesseract-OCR\\tesseract.exe'
+pytesseract.pytesseract.tesseract_cmd = "E:\\Downloads\\Tesseract OCR\\tesseract.exe"
 
 def colfilter(crds, image, NO_OF_COLS, ye):
     x,y,x1,y1 = crds
@@ -122,34 +122,44 @@ def table_detect(rgb):
 
 def get_text(annotate_dict, tmp_image, w, h):
     tmp3 = tmp_image
+    print("tmp3",len(tmp3))
 #    tmp4 = np.copy(tmp3)
 #    print(tmp3.shape)
     ind = 0
     result = dict()
     for ind in range(len(annotate_dict)-1):
+        
         del annotate_dict['page '+str(ind+1)]['Start Of Table']
+        
         coord = list(annotate_dict['page '+str(ind+1)].values())
         labels = list(annotate_dict['page '+str(ind+1)].keys())
         for crds,label in zip(coord,labels):
             x,y,x1,y1 = crds
-            sb_img = tmp3[y-4:y1+4, x-4:x1+4]
-#            sb_img = cv2.resize(sb_img,(sb_img.shape[1]*2, sb_img.shape[0]*2), 
-#                               interpolation = cv2.INTER_NEAREST)
-            sb_img = cv2.bilateralFilter(sb_img,10,95,95)
-            #cv2.imshow("TMP_IMG", sb_img)
-            #cv2.waitKey()
-            d = pytesseract.image_to_data(sb_img, output_type=Output.DICT, lang='eng', config='--psm 6')
-#            cv2.rectangle(tmp4, (x-2, y-2), (x1+2, y1+2), (0, 0, 255), 1)
-            text = ''
-            for t in d['text']:
-                text += t + ' '
-#                print(t, end='  ')
-            result.update({label : clean_text(text)})
+            try:
+                sb_img = tmp3[y-4:y1+4, x-4:x1+4]
+                print("sb_img",sb_img.shape)
+    #            sb_img = cv2.resize(sb_img,(sb_img.shape[1]*2, sb_img.shape[0]*2), 
+    #                               interpolation = cv2.INTER_NEAREST)
+                sb_img = cv2.bilateralFilter(sb_img,10,95,95)
+                #cv2.imshow("TMP_IMG", sb_img)
+                #cv2.waitKey()
+                pytesseract.pytesseract.tesseract_cmd = "E:\\Downloads\\Tesseract OCR\\tesseract.exe"
+                d = pytesseract.image_to_data(sb_img, output_type=Output.DICT, lang='eng', config='--psm 6')
+    #            cv2.rectangle(tmp4, (x-2, y-2), (x1+2, y1+2), (0, 0, 255), 1)
+                text = ''
+                for t in d['text']:
+                    text += t + ' '
+    #                print(t, end='  ')
+                result.update({label : clean_text(text)})
+            except:
+                print("result",result)
+                return result
 #            print()
             
 #    cv2.imshow("Img", tmp4)
 #    cv2.waitKey()
 #    cv2.imwrite('output.png', tmp4)
+    print(result)
     return result
     
 def get_annotations_xlsx(path):
@@ -162,13 +172,16 @@ def get_annotations_xlsx(path):
         #print(curr_row)
         annotate_dict['page '+str(r+1)] = dict()
         for i in range(1,len(curr_row)):
-            res = ast.literal_eval(curr_row[i])
-            label = res['label']
-            x1 = int(res['left'])
-            x2 = x1 + int(res['width'])
-            y1 = int(res['top'])
-            y2 = y1 + int(res['height'])
-            annotate_dict['page '+str(r+1)][label] = (x1,y1,x2,y2)
+            try:
+                res = ast.literal_eval(curr_row[i])
+                label = res['label']
+                x1 = int(res['left'])
+                x2 = x1 + int(res['width'])
+                y1 = int(res['top'])
+                y2 = y1 + int(res['height'])
+                annotate_dict['page '+str(r+1)][label] = (x1,y1,x2,y2)
+            except:
+                break
     annotate_dict['ncols'] = df.iloc[number_of_rows-1,1]
     return annotate_dict
 

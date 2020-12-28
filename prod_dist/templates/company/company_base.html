@@ -85,13 +85,8 @@
                             </a>
                             <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                               <a class="dropdown-item" href="{% url 'receipt:create_receipt' %}">Create invoice</a>        
-<<<<<<< HEAD
-                              <a class="dropdown-item" href="#">Scan receipt</a>                                                   
-                              <a class="dropdown-item" href="http://127.0.0.1:8050/" target="_blank" rel="noopener noreferrer">Annotate</a>                                                   
-=======
                               <a class="dropdown-item" href="{% url 'receipt:process_receipt' %}">Scan receipt</a>       
                               <a class="dropdown-item" href="http://127.0.0.1:8050" target="_blank">Annotate</a>                                            
->>>>>>> 25dc3f5830b05c78562da0bcd699e0a383a5664a
                               <a class="dropdown-item" href="{% url 'receipt:receipt_list' %}">View invoices and orders</a>
                             </div>
                         </li> 

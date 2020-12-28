@@ -12,7 +12,7 @@ Display receipt
         {% if request.session.type == "company" %}
                 <div class="form-group">
                     <label for="user_to" style="display: block; font-size: 24px; text-align: left;">Select a distributor</label>
-                    <select name="user_to" id="user_to" >
+                    <select name="user_to" id="user_to" class="form-control" style="width: 250px;">
                         {% for user in users %}
                             <option value="{{user.id}}">{{user.first_name}} {{user.last_name}}</option>
                         {% endfor %}
@@ -21,7 +21,7 @@ Display receipt
         {% else %}
             <div class="form-group">
                 <label for="user_to" style="display: block; font-size: 24px;">Select a retailer</label>
-                <select name="user_to" id="user_to" >
+                <select name="user_to" id="user_to" class="form-control" style="width: 250px;">
                     {% for user in users %}
                         <option value="{{user.id}}">{{user.first_name}} {{user.last_name}}</option>
                     {% endfor %}
@@ -29,24 +29,45 @@ Display receipt
             </div>
         {% endif %}
         {% for k,v in annotations.items %}
-            <label for="d">{{k}}</label><br>
-            <input type="text" id="d" name="{{k}}" value="{{v}}" style="width: 400px;">
+            <div class="form-group">
+                <label for="d">{{k}}</label><br>
+                <input type="text" id="d" name="{{k}}" value="{{v}}" style="width: 400px;">
+            </div>
             <!-- <textarea id="d" name="ann-{{forloop.counter}}" rows="4" cols="25">
                 {{v}}
             </textarea><br> -->
-            <br><br>
+            
         {% endfor %}
         <h3>Table</h3>
-        <label for="col">Header </label>
-        {% for k in table %}
-            <input id = "col" type="text" name = "{{ forloop.counter }}" placeholder="Column Name" style="width: 250px;">
-        {% endfor %}
+        <div id="table-header" class="form-inline">
+            
+                <select name="tableHeader[]" required="required" style="width: 250px;" class="form-control m-1 bg-primary text-white">
+                    <option value="quantity" style="padding: 5px;">Quantity</option>
+                    <option value="price" style="padding: 5px;">Price</option>
+                    <option value="prod_name" style="padding: 5px;">Product Name</option>
+                </select>
+
+                <select name="tableHeader[]" required="required" style="width: 250px;" class="form-control m-1 bg-primary text-white">
+                    <option value="quantity" style="padding: 5px;">Quantity</option>
+                    <option value="price" style="padding: 5px;">Price</option>
+                    <option value="prod_name" style="padding: 5px;">Product Name</option>
+                </select>
+
+                <select name="tableHeader[]" required="required" style="width: 250px;" class="form-control m-1 bg-primary text-white">
+                    <option value="quantity" style="padding: 5px;">Quantity</option>
+                    <option value="price" style="padding: 5px;">Price</option>
+                    <option value="prod_name" style="padding: 5px;">Product Name</option>
+                </select>
+            
+        </div>
         <br>
         {% for k in table %}
-        <label for="f">Row  {{ forloop.counter }}</label>
-            {% for v in k %}
-                <input type="text" id="f" name="row-{{forloop.parentloop.counter}}-{{ forloop.counter }}" value="{{v}}" style="width: 250px;">
-            {% endfor %}
+            <div class="form-inline">
+
+                {% for v in k %}
+                    <input type="text" class="form-control m-1" id="f" value="{{v}}" style="width: 250px;" required="required" name="tableColumn-{{forloop.counter}}[]">
+                {% endfor %}
+            </div>
             <br>
         {% endfor %}
         <br>
@@ -56,18 +77,45 @@ Display receipt
                 {{t}}
             </p>
         {% endfor %}
-        <label for = 'subtot'>Enter the Sub-Total</label>
-        <input type="text" id = "subtot" name = "sub-total"><br>
-        <label for = 'tax'>Enter the Tax % </label>
-        <input type="text" id = "tax" name = "taxes"><br>
-        <label for = 'dis'>Enter the Discount %</label>
-        <input type="text" id = "dis" name = "discount"><br>
-        <label for = 'tot'>Enter the Total</label>
-        <input type="text" id = "tot" name = "total"><br>
+        <div class="form-group">
+            <label for = 'subtot'>Enter the Sub-Total</label>
+            <input type="number" min="0" id = "subtot" name = "sub_total" required="required" class="form-control" style="width: 250px;"><br>
+        </div>
+
+        <div class="form-group">
+            <label for = 'tax'>Enter the Tax % </label>
+            <input type="number" min="0" id = "tax" name = "taxes" required="required" class="form-control" style="width: 250px;"><br>
+        </div>
+        <div class="form-group">
+            <label for = 'dis'>Enter the Discount %</label>
+            <input type="number" min="0" id = "dis" name = "discount" required="required" class="form-control" style="width: 250px;"><br>
+        </div>
+        <div class="form-group">
+            <label for = 'tot'>Enter the Total</label>
+            <input type="number" min="0" id = "tot" name = "total" required="required" class="form-control" style="width: 250px;"><br>
+        </div>
         
         <input type="submit" class="btn btn-success">
 
     </form>
     <!-- <img src="C:/Users/nishith/prod_dist/prod_dist/media/page_1.jpeg" class="rounded float-right" alt="..."> -->
 </div>
+
+<script>
+    
+    function changeHeader(id)
+    {
+        console.log("Inside function")
+        var columnNumber = parseInt(id);
+        var header = document.getElementById("tableHeader-"+id);
+        headerValue = header.value;
+        
+        var columnRows = document.querySelectorAll("input[name='tableColumn-"+id+"[]'");
+        for(var i=0;i<columnRows.length;i++)
+        {
+            var element = columnRows[i];
+            element.setAttribute("name",headerValue+"[]");
+        }
+    }
+</script>
 {% endblock %}

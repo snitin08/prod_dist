@@ -21,7 +21,7 @@
             <h1 class="text-primary">Retailer edit</h1>
             <p class="lead">Edit the details if required</p>
             
-                <form method="POST" id="retailer edit" onsubmit="event.preventDefault(); validate_form();" action="{% url 'retailer:retailer_edit' retailer_id=request.session.id %}">
+                <form method="POST" id="retailer edit" action="{% url 'retailer:retailer_edit' retailer_id=request.session.id %}">
                     
                     {% csrf_token %}
                     <div class="form-group">
@@ -30,7 +30,7 @@
                                 <label for="first name">
                                     First name
                                 </label>
-                                <input type="text" id = "first name" name = "first_name" placeholder="First Name" class="form-control" value="{{data.first_name}}">
+                                <input type="text" required="required" id = "first name" name = "first_name" placeholder="First Name" class="form-control" value="{{data.first_name}}">
                                 <small id="first_name_help" class="text-danger"></small>
                             </div>
 
@@ -49,7 +49,7 @@
                         <div class="col-lg-6 col-md-6 col-sm-12">
                             <div class="form-group">
                                 <label for="gst number">GST Number</label>
-                                <input type="text" name="gst_number" id="gst number" class="form-control" placeholder="GST number" value="{{data.gst_number}}" aria-describedby="gst-help">                  
+                                <input type="text" name="gst_number" required="required" id="gst number" class="form-control" placeholder="GST number" value="{{data.gst_number}}" aria-describedby="gst-help">                  
                                 <small class="text-danger" id='gst-help'>{{messages.gst}}</small>                  
                             </div>
                         </div>
@@ -59,7 +59,7 @@
                         <div class="col-lg-6 col-md-6 col-sm-12">
                             <div class="form-group">
                                 <label for="Mobile">Mobile</label>
-                                <input type="text" name="mobile" id="Mobile" class="form-control" placeholder="Mobile" aria-describedby="mobile-help" value="{{data.mobile}}">
+                                <input type="text" name="mobile" required="required" pattern="[0-9]{10}" title="Mobile number will have 10 digits" id="Mobile" class="form-control" placeholder="Mobile" aria-describedby="mobile-help" value="{{data.mobile}}">
                                 <small class="text-danger" style="display: none;" id='mobile-help'></small>                  
                             </div>
                         </div>
@@ -68,29 +68,29 @@
                     
                     <div class="form-group">
                         <label for="address" style="display: block;">Address</label>                                    
-                        <textarea class="form-control" name="address" id="address" wrap="soft" cols="50" rows="3" placeholder="address">{{data.address}}</textarea>
+                        <textarea class="form-control" name="address" required="required" id="address" wrap="soft" cols="50" rows="3" placeholder="address">{{data.address}}</textarea>
                         <small id="address_help" class="text-danger"></small>
                     </div>                  
 
                     <div class="form-group">
                         <label for="state">State</label>
-                        <input type="text" name="state" id="state" class="form-control" placeholder="State" value="{{data.state}}">                
+                        <input type="text" name="state" id="state" required="required" class="form-control" placeholder="State" value="{{data.state}}">                
                         <small id="state_help" class="text-danger"></small>
                     </div>
 
                     <div class="form-group">
                         <label for="city">City</label>
-                        <input type="text" name="city" id="city" class="form-control" placeholder="City" value="{{data.city}}">                
+                        <input type="text" name="city" id="city" class="form-control" required="required" placeholder="City" value="{{data.city}}">                
                         <small id="city_help" class="text-danger"></small>
                     </div>
 
                     <div class="form-group">
                         <label for="pincode">Pincode</label>
-                        <input type="text" name="pincode" id="pincode" class="form-control" placeholder="PIN code" value="{{data.pincode}}">                
+                        <input type="text" name="pincode" id="pincode" pattern="[0-9]{6}" title="Pincode will have 6 digits" class="form-control" required="required" placeholder="PIN code" value="{{data.pincode}}">                
                         <small id="pincode_help" class="text-danger"></small>
                     </div>
                                                    
-                    <button class="btn-lg btn-warning" type="submit" onclick="event.preventDefault(); validate_form();">
+                    <button class="btn-lg btn-warning" type="submit">
                         EDIT
                     </button>
 
