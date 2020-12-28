@@ -1,0 +1,73 @@
+{% extends 'receipt/receipt_base.html' %}
+{% load static %}
+
+{% block title_block %}
+Display receipt
+{% endblock %}
+
+{% block body_block %}
+<div class="container my-3" >
+    <form method="POST" enctype="multipart/form-data" action="{% url 'receipt:submit_receipt' %}" class="form-group">
+        {% csrf_token %}
+        {% if request.session.type == "company" %}
+                <div class="form-group">
+                    <label for="user_to" style="display: block; font-size: 24px; text-align: left;">Select a distributor</label>
+                    <select name="user_to" id="user_to" >
+                        {% for user in users %}
+                            <option value="{{user.id}}">{{user.first_name}} {{user.last_name}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+        {% else %}
+            <div class="form-group">
+                <label for="user_to" style="display: block; font-size: 24px;">Select a retailer</label>
+                <select name="user_to" id="user_to" >
+                    {% for user in users %}
+                        <option value="{{user.id}}">{{user.first_name}} {{user.last_name}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        {% endif %}
+        {% for k,v in annotations.items %}
+            <label for="d">{{k}}</label><br>
+            <input type="text" id="d" name="{{k}}" value="{{v}}" style="width: 400px;">
+            <!-- <textarea id="d" name="ann-{{forloop.counter}}" rows="4" cols="25">
+                {{v}}
+            </textarea><br> -->
+            <br><br>
+        {% endfor %}
+        <h3>Table</h3>
+        <label for="col">Header </label>
+        {% for k in table %}
+            <input id = "col" type="text" name = "{{ forloop.counter }}" placeholder="Column Name" style="width: 250px;">
+        {% endfor %}
+        <br>
+        {% for k in table %}
+        <label for="f">Row  {{ forloop.counter }}</label>
+            {% for v in k %}
+                <input type="text" id="f" name="row-{{forloop.parentloop.counter}}-{{ forloop.counter }}" value="{{v}}" style="width: 250px;">
+            {% endfor %}
+            <br>
+        {% endfor %}
+        <br>
+        <h3>Fields Below Table</h3>
+        {% for t in below_table %}
+            <p><b>
+                {{t}}
+            </p>
+        {% endfor %}
+        <label for = 'subtot'>Enter the Sub-Total</label>
+        <input type="text" id = "subtot" name = "sub-total"><br>
+        <label for = 'tax'>Enter the Tax % </label>
+        <input type="text" id = "tax" name = "taxes"><br>
+        <label for = 'dis'>Enter the Discount %</label>
+        <input type="text" id = "dis" name = "discount"><br>
+        <label for = 'tot'>Enter the Total</label>
+        <input type="text" id = "tot" name = "total"><br>
+        
+        <input type="submit" class="btn btn-success">
+
+    </form>
+    <!-- <img src="C:/Users/nishith/prod_dist/prod_dist/media/page_1.jpeg" class="rounded float-right" alt="..."> -->
+</div>
+{% endblock %}
