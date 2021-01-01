@@ -13,7 +13,9 @@
 
         <link rel="stylesheet" href="{% static 'css/font-awesome-4.7.0/font-awesome-4.7.0/css/font-awesome.min.css' %}">
 
-        <div class="row">
+        {% include 'auth/navbar.html' %}
+
+        <div class="row" style="margin-top:75px;">
             <div class="col-sm-12 col-md-6 col-lg-4 ml-auto mr-auto">
                 <h1 class="text-primary">Company register</h1>
                 <p class="lead">Enter all the details to register for the website</p>

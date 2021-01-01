@@ -15,9 +15,11 @@
 
         <script src="{% static 'js/login.js' %}"></script>
 
-        <div class="container" style="justify-content: center;">
+        {% include 'auth/navbar.html' %}
 
-            <div class="row m-5">
+        <div class="container" style="justify-content: center;" >
+
+            <div class="row" style="margin-top: 75px;">
 
                 <div class="col-lg-4 col-md-6 col-sm-12 ml-auto mr-auto">
 

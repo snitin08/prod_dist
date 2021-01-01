@@ -13,9 +13,11 @@
         <script src="{% static 'js/register_retailer.js' %}"></script>
         <link rel="stylesheet" href="{% static 'css/auth/register_distributor.css' %}">
 
-        <div class="container col-lg-6 col-md-8 col-sm-12 mb-5 mt-5">
+        {% include 'auth/navbar.html' %}
+
+        <div class="container col-lg-6 col-md-8 col-sm-12 mb-5 mt-5" >
             
-            <div class="row ml-5 mr-5">
+            <div class="row ml-5 mr-5" style="margin-top: 75px;">
                 <h1 class="text-primary">Distributor register</h1>
                 <p class="lead">Enter all the details to register for the website</p>
                 <form method="POST" id="retailer register" onsubmit="event.preventDefault(); validate_form();" action="{% url 'mainApp:register_distributor' %}">

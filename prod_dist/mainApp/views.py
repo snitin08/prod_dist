@@ -31,7 +31,7 @@ def createData(request):
 def index(request):
     if not request.session.get('user'):
         print(request.session.get('user'))
-        return render(request,'auth/register.html',{})
+        return render(request,'auth/index.html',{})
         
 @notAuthenticated
 def register_retailer(request):
