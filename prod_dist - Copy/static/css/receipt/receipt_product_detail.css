@@ -1,0 +1,12 @@
+p {
+  font-size: 1.75em;
+}
+
+.non-defective {
+  color: green;
+}
+
+.defective {
+  color: red;
+}
+/*# sourceMappingURL=receipt_product_detail.css.map */

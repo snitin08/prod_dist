@@ -1,0 +1,316 @@
+{% extends 'receipt/receipt_base.html'%}
+{% load static %}
+{% load receipt_extras %}
+
+{% block title_block %}
+    Receipt list
+{% endblock %}
+
+{% block body_block %}
+
+    <link rel="stylesheet" href="{% static 'css/receipt/receipt_list.css' %}">
+    <div class="container">
+        {% if request.session.type != 'retailer' %}
+            <h1>Sent Invoices</h1>
+            
+            <form class="form-inline my-5" method="GET" action="{% url 'receipt:receipt_list' %}">
+                <div class="form-group mx-2">
+                    <label for="year">Year</label>
+                    <input type="number" pattern="[0-9]{4}" title="yyyy" name="year" id="year" class="form-control" placeholder="yyyy">                    
+                </div>
+
+                <div class="form-group mx-2">
+                    <label for="month">Month</label>
+                    <input type="number" name="month" min="1" max="12" step="1" id="month" class="form-control" placeholder="mm">                    
+                </div>
+
+                <div class="form-group mx-2">
+                    <label for="day">Day</label>
+                    <input type="number" name="day" min="1" max="31" step="1" id="day" class="form-control" placeholder="dd">                    
+                </div>
+
+                <input type="hidden" value="sent_receipts" name="search_type">
+
+                <button type="submit" class="btn btn-md btn-outline-success mt-4">SEARCH</button>
+            </form>
+            {% if sent_receipts %}
+                <div id="sent_receipts" style="max-height: 400px; overflow-y: auto;">
+                    <table class="table">
+                        <thead>
+                            <tr class="bg-primary">
+                                <th>Sl. No.</th>
+                                <th>Receipt number</th>
+                                <th>Receipt date</th>
+                                {% if request.session.type == 'company' %}
+                                    <th>Distributor name</th>
+                                {% else %}
+                                    <th>Retailer name</th>
+                                {% endif %}
+                                <th>Subtotal</th>
+                                <th>Tax</th>
+                                <th>Total</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody style="overflow: scroll; max-height: 10px;">
+                            {% for receipt in sent_receipts %}
+                                <tr>
+                                    <td scope="row">{{forloop.counter}}</td>
+                                    <td>
+                                        <a href="{% url 'receipt:receipt_detail' receipt_id=receipt.id %}">
+                                            {{receipt.id}}
+                                        </a>
+                                    </td>
+                                    <td>{{receipt.day}}/{{receipt.month}}/{{receipt.year}}</td>
+                                    <td>{{receipt.to_name}}</td>
+                                    <td>&#8377 {{receipt.sub_total}}</td>
+                                    <td>&#8377 {{receipt.taxes}}</td>
+                                    <td>&#8377 {{receipt.total}}</td>
+                                    {% if receipt.defective == False %}
+                                        <td class="product_status_accepted">
+                                            <i class="fa fa-check non-defective" aria-hidden="true"></i> Accepted 
+                                        </td>  
+                                    {% else %}
+                                        <td class="product_status_defective">
+                                            <i class="fa fa-times defective" aria-hidden="true"></i> Defective
+                                        </td>                                  
+                                    {% endif %}  
+                                </tr> 
+                            {% endfor %}                    
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="jumbotron text-danger">
+                    <h2><strong>No invoices sent</strong></h2>
+                </div>
+            {% endif %}
+        {% endif %}
+
+       
+        {% if request.session.type != 'company' %}
+            <h1>Received Invoices</h1>
+            
+            <form class="form-inline my-5" method="GET" action="{% url 'receipt:receipt_list' %}">
+                <div class="form-group mx-2">
+                    <label for="year">Year</label>
+                    <input type="number" pattern="[0-9]{4}" title="yyyy" name="year" id="year" class="form-control" placeholder="yyyy">                    
+                </div>
+
+                <div class="form-group mx-2">
+                    <label for="month">Month</label>
+                    <input type="number" name="month" min="1" max="12" step="1" id="month" class="form-control" placeholder="mm">                    
+                </div>
+
+                <div class="form-group mx-2">
+                    <label for="day">Day</label>
+                    <input type="number" name="day" min="1" max="31" step="1" id="day" class="form-control" placeholder="dd">                    
+                </div>
+
+                <input type="hidden" value="received_receipts" name="search_type">
+
+                <button type="submit" class="btn btn-md btn-outline-success mt-4">SEARCH</button>
+            </form>
+            {% if received_receipts %}
+                <div id="received_receipts" style="max-height: 400px; overflow-y: auto;">
+                    <table class="table">
+                        <thead>
+                            <tr class="bg-primary">
+                                <th>Sl. No.</th>
+                                <th>Receipt number</th>
+                                <th>Receipt date</th>
+                                {% if request.session.type == 'distributor' %}
+                                    <th>Company name</th>
+                                {% else %}
+                                    <th>Distributor name</th>
+                                {% endif %}
+                                <th>Subtotal</th>
+                                <th>Tax</th>
+                                <th>Total</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody style="overflow: scroll; max-height: 400px;">
+
+
+                            {% for receipt in received_receipts %}
+                                <tr>
+                                    <td scope="row">{{forloop.counter}}</td>
+                                    <td>
+                                        <a href="{% url 'receipt:receipt_detail' receipt_id=receipt.id %}">
+                                            {{receipt.id}}
+                                        </a>
+                                    </td>
+                                    <td>{{receipt.day}}/{{receipt.month}}/{{receipt.year}}</td>
+                                    <td>{{receipt.from_name}}</td>
+                                    <td>&#8377 {{receipt.sub_total}}</td>
+                                    <td>&#8377 {{receipt.taxes}}</td>
+                                    <td>&#8377 {{receipt.total}}</td>
+                                    {% if receipt.defective == False %}
+                                        <td class="product_status_accepted">
+                                            <i class="fa fa-check non-defective" aria-hidden="true"></i> Accepted 
+                                        </td>  
+                                    {% else %}
+                                        <td class="product_status_defective">
+                                            <i class="fa fa-times defective" aria-hidden="true"></i> Defective
+                                        </td>                                  
+                                    {% endif %}                    
+                                </tr> 
+                            {% endfor %}
+                                                
+                        </tbody>
+                    </table>
+
+                </div>
+            {% else %}
+                <div class="jumbotron text-danger">
+                    <h2><strong>No invoices received</strong></h2>
+                </div>
+            {% endif %}    
+        {% endif %}
+
+        {% if request.session.type != 'company' %}
+            <h1>Sent Purchase Orders</h1>
+            <form class="form-inline my-5" method="GET" action="{% url 'receipt:receipt_list' %}">
+                <div class="form-group mx-2">
+                    <label for="year">Year</label>
+                    <input type="number" pattern="[0-9]{4}" title="yyyy" name="year" id="year" class="form-control" placeholder="yyyy">                    
+                </div>
+
+                <div class="form-group mx-2">
+                    <label for="month">Month</label>
+                    <input type="number" name="month" min="1" max="12" step="1" id="month" class="form-control" placeholder="mm">                    
+                </div>
+
+                <div class="form-group mx-2">
+                    <label for="day">Day</label>
+                    <input type="number" name="day" min="1" max="31" step="1" id="day" class="form-control" placeholder="dd">                    
+                </div>
+
+                <input type="hidden" value="sent_requests" name="search_type">
+
+                <button type="submit" class="btn btn-md btn-outline-success mt-4">SEARCH</button>
+            </form>
+            {% if sent_requests %}
+                <div id="sent_requests" style="max-height: 400px; overflow-y: auto;">
+                    <table class="table">
+                        <thead>
+                            <tr class="bg-primary">
+                                <th>Sl. No.</th>
+                                <th>Receipt number</th>
+                                <th>Receipt date</th>
+                                {% if request.session.type == 'distributor' %}
+                                    <th>Company name</th>
+                                {% else %}
+                                    <th>Distributor name</th>
+                                {% endif %}
+                                <th>Subtotal</th>
+                                <th>Tax</th>
+                                <th>Total</th>                            
+                            </tr>
+                        </thead>
+                        <tbody style="overflow: scroll; max-height: 400px;">
+
+
+                            {% for receipt in sent_requests %}
+                                <tr>
+                                    <td scope="row">{{forloop.counter}}</td>
+                                    <td>
+                                        <a href="{% url 'receipt:receipt_detail' receipt_id=receipt.id %}">
+                                            {{receipt.id}}
+                                        </a>
+                                    </td>
+                                    <td>{{receipt.day}}/{{receipt.month}}/{{receipt.year}}</td>
+                                    <td>{{receipt.from_name}}</td>
+                                    <td>&#8377 {{receipt.sub_total}}</td>
+                                    <td>&#8377 {{receipt.taxes}}</td>
+                                    <td>&#8377 {{receipt.total}}</td>
+                                                        
+                                </tr> 
+                            {% endfor %}
+                                                
+                        </tbody>
+                    </table>
+
+                </div>
+            {% else %}
+                <div class="jumbotron text-danger">
+                    <h2><strong>No purchase orders sent</strong></h2>
+                </div>
+            {% endif %}  
+        {% endif %}
+
+
+
+        {% if request.session.type != 'retailer' %}
+        <h1>Received Purchase Orders</h1>
+        <form class="form-inline my-5" method="GET" action="{% url 'receipt:receipt_list' %}">
+            <div class="form-group mx-2">
+                <label for="year">Year</label>
+                <input type="number" pattern="[0-9]{4}" title="yyyy" name="year" id="year" class="form-control" placeholder="yyyy">                    
+            </div>
+
+            <div class="form-group mx-2">
+                <label for="month">Month</label>
+                <input type="number" name="month" min="1" max="12" step="1" id="month" class="form-control" placeholder="mm">                    
+            </div>
+
+            <div class="form-group mx-2">
+                <label for="day">Day</label>
+                <input type="number" name="day" min="1" max="31" step="1" id="day" class="form-control" placeholder="dd">                    
+            </div>
+
+            <input type="hidden" value="received_requests" name="search_type">
+
+            <button type="submit" class="btn btn-md btn-outline-success mt-4">SEARCH</button>
+        </form>
+        {% if received_requests %}
+            <div id="received_requests" style="max-height: 400px; overflow-y: auto;">
+                <table class="table">
+                    <thead>
+                        <tr class="bg-primary">
+                            <th>Sl. No.</th>
+                            <th>Receipt number</th>
+                            <th>Receipt date</th>
+                            {% if request.session.type == 'distributor' %}
+                                <th>Company name</th>
+                            {% else %}
+                                <th>Distributor name</th>
+                            {% endif %}
+                            <th>Subtotal</th>
+                            <th>Tax</th>
+                            <th>Total</th>                        
+                        </tr>
+                    </thead>
+                    <tbody style="overflow: scroll; max-height: 400px;">
+
+
+                        {% for receipt in received_requests %}
+                            <tr>
+                                <td scope="row">{{forloop.counter}}</td>
+                                <td>
+                                    <a href="{% url 'receipt:receipt_detail' receipt_id=receipt.id %}">
+                                        {{receipt.id}}
+                                    </a>
+                                </td>
+                                <td>{{receipt.day}}/{{receipt.month}}/{{receipt.year}}</td>
+                                <td>{{receipt.to_name}}</td>
+                                <td>&#8377 {{receipt.sub_total}}</td>
+                                <td>&#8377 {{receipt.taxes}}</td>
+                                <td>&#8377 {{receipt.total}}</td>                                                  
+                            </tr> 
+                        {% endfor %}
+                                            
+                    </tbody>
+                </table>
+
+            </div>
+        {% else %}
+            <div class="jumbotron text-danger">
+                <h2><strong>No purchase orders receiced</strong></h2>
+            </div>
+        {% endif %}  
+    {% endif %}
+    </div>
+
+{% endblock %}

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+{% load static %}
+
+<html>
+
+    <head>
+
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+
+
+
+        <meta http-equiv="cache-control" content="no-cache">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <link rel="stylesheet" href="{% static 'css/font-awesome-4.7.0/font-awesome-4.7.0/css/font-awesome.min.css' %}">
+
+        <title>
+            {% block title_block %}
+
+            {% endblock %}
+        </title>
+    </head>
+
+    <body>
+
+        <style>
+            .nav-link,.navbar-brand{
+                color: white !important;
+            }
+            .nav-link:hover,.navbar-brand:hover {
+                background-color:  rgba(137,46,226,1) !important;
+            }
+
+            .navbar {
+                background-color: rgba(137,46,226,0.8);
+                
+            }
+
+            ::-webkit-scrollbar {
+                width: 10px;  /* Remove scrollbar space */
+                background: rgb(155, 152, 152);  /* Optional: just make scrollbar invisible */
+               border-radius: 5px;
+            }
+
+            .nav-active {
+                border-bottom: 5px solid white;                
+            }
+
+            .dropdown-item {
+                background-color: rgba(137,46,226,0.8);
+                color: white;
+                border-bottom: 2px;
+                border-color: rgb(56, 17, 92);
+                border-style: solid;
+                padding: 10px;
+            }
+
+
+        </style>
+
+        <div class="container-fluid p-5">
+            <nav class="navbar navbar-expand-lg">
+                <a class="navbar-brand" style="font-size: x-large;" href="{% url 'company:company_product_list' company_name=request.session.company_name %}">
+                    <i class="fa fa-home" style="color: white;"></i>
+                    {{request.session.company_name}}
+                </a>
+                
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon">
+                        <i class="fa fa-bars" style="font-size: x-large"></i>
+                    </span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navbarNavDropdown">
+                    <ul class="nav navbar-nav navbar-right" style="margin-left: auto; margin-right: 5em; font-size: 1.8rem;">
+                        
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                              Invoice and Purchase orders
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                              <a class="dropdown-item" href="{% url 'receipt:create_receipt' %}">Create invoice</a>        
+                              <a class="dropdown-item" href="{% url 'receipt:process_receipt' %}">Scan receipt</a>       
+                              <a class="dropdown-item" href="http://127.0.0.1:8050" target="_blank">Annotate</a>                                            
+                              <a class="dropdown-item" href="{% url 'receipt:receipt_list' %}">View invoices and orders</a>
+                            </div>
+                        </li> 
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'company:company_edit' company_name=request.session.company_name %}">Edit profile</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'company:company_distributors' company_name=request.session.company_name %}">Distributors</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'company:company_product_list' company_name=request.session.company_name %}">Products</a>
+                        </li>
+
+                        {% if request.session.user %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'mainApp:logout' %}">                                                               
+                                    <i class="fa fa-sign-out" style="color: white;"> </i>  
+                                    <span>Logout</span>                                                                               
+                                </a>
+                            </li>
+                        {% else %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'mainApp:login' %}">Login</a>
+                            </li>
+                        {% endif %}
+                        
+                    </ul>
+                </div>     
+            </nav>
+        </div>
+        {% block body_block %}
+
+        {% endblock %}
+
+    </body>
+</html>
+

@@ -1,0 +1,137 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+        <title>
+            Register company
+        </title>
+    </head>
+
+    <body>
+        <script src="{% static 'js/register_retailer.js' %}"></script>
+
+        <link rel="stylesheet" href="{% static 'css/font-awesome-4.7.0/font-awesome-4.7.0/css/font-awesome.min.css' %}">
+
+        {% include 'auth/navbar.html' %}
+
+        <div class="row" style="margin-top:75px;">
+            <div class="col-sm-12 col-md-6 col-lg-4 ml-auto mr-auto">
+                <h1 class="text-primary">Company register</h1>
+                <p class="lead">Enter all the details to register for the website</p>
+
+                <form id="retailer register" action="{% url 'mainApp:register_company' %}" class="ml-auto mr-auto" method="POST" onsubmit="event.preventDefault(); validate_form();">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="company name">Company name</label>
+                        <input type="text" name="company name" id="company name" required="required"
+                        class="form-control" placeholder="Company name" value="{{data.company_name}}" aria-describedby="company-help">                  
+                        <small class="text-danger" id='company-help'>{{messages.company}}</small>                  
+                    </div>
+
+                    <div class="form-group">
+                        <label for="gst number">GST Number</label>
+                        <input type="text" name="gst number" id="gst number" required="required"
+                        class="form-control" placeholder="GST number" value="{{data.gst_number}}" aria-describedby="gst-help">                  
+                        <small class="text-danger" id='gst-help'>{{messages.gst}}</small>                  
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-6 col-md-6 col-sm-12">
+                            <div class="form-group">
+                                <label for="Mobile">Mobile</label>                                
+                                <input type="text" name="Mobile" id="Mobile" required="required" pattern="[0-9]{10}"
+                                class="form-control" placeholder="Mobile" aria-describedby="mobile-help" value="{{data.mobile}}">                                
+                                <small class="text-muted" style="display: none;" id='mobile-help'></small>  
+                                <small class="text-danger" id='gst-help'>{{messages.mobile}}</small>                                  
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="address">Address</label>
+                        <br>                                    
+                        <textarea class="form-control" name="address" id="address" required="required"
+                        wrap="soft" cols="50" rows="3" placeholder="address">{{data.address}}</textarea>
+                        <small class="text-danger">{{messages.address}}</small>
+                    </div>   
+
+                    <div class="row">
+                        <div class="col-lg-4 col-md-4 col-sm-12">
+                            <div class="form-group">
+                                <label for="state">State</label>
+                                <input type="text" name="state" id="state" required="required"
+                                class="form-control" placeholder="State" value="{{data.state}}">   
+                                <small class="text-danger" id='gst-help'>{{messages.state}}</small>               
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4 col-md-4 col-sm-12">
+                            <div class="form-group">
+                                <label for="city">City</label>
+                                <input type="text" name="city" id="city" required="required"
+                                class="form-control" placeholder="City" value="{{data.city}}">
+                                <small class="text-danger" id='gst-help'>{{messages.city}}</small>                  
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4 col-md-4 col-sm-12">
+                            <div class="form-group">
+                                <label for="pincode">PIN code</label>
+                                <input type="text" name="pincode" id="pincode" required="required" pattern="[0-9]{6}"
+                                class="form-control" placeholder="PIN code" value="{{data.pincode}}"> 
+                                <small class="text-danger" id='gst-help'>{{messages.pincode}}</small>                 
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">                        
+                        
+                        <label for="Email">Email</label>
+                        
+                        <input type="text" name="Email" id="Email" class="form-control" required="required"
+                        pattern=".+@.+\..+" placeholder="Email" aria-describedby="email-help" value="{{data.email}}">
+                        
+                        <small class="text-danger" id='email-help'>{{messages.email}}</small>                                    
+                    </div>
+    
+                    <div class="form-group">
+                        <label for="Password">Enter Password</label>
+                        <input type="password" name="Password" id="Password" class="form-control" placeholder="Password" aria-describedby="pass-help">
+                        <small id="pass-help" class="text-muted">Should contain at least:
+                            <br>1 uppercase character
+                            <br>1 lowercase character
+                            <br>minimum length of 6 characters
+                            <br>1 number                        
+                        </small>                  
+                    </div>
+    
+                    <div class="form-group">
+                        <label for="re-password">Re-enter Password</label>
+                        <input type="password" name="re-password" id="re-password" class="form-control" placeholder="re-password" aria-describedby="repass-help"> 
+                        <small id="repass-help" class="text-muted">Should contain at least:
+                            <br>1 uppercase character
+                            <br>1 lowercase character
+                            <br>minimum length of 6 characters
+                            <br>1 number                        
+                        </small>                    
+                    </div>
+    
+                    <p class="lead text-danger" id='pass_not_match' style="display: none;"></p>
+
+                    <button class="btn-lg btn-primary" type="submit" style="width: 100%;">
+                        REGISTER
+                    </button>
+
+                    <h3 class="text-muted">
+                        Already have an account?
+                    </h3>
+                    <a class="btn-lg btn-success" style="width: 100%; display: block; text-align: center;" href="{% url 'mainApp:login' %}">
+                        LOGIN
+                    </a>
+
+                </form>
+            </div>
+        </div>
+    </body>
+</html>

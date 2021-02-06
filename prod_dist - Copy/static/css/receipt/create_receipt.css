@@ -1,0 +1,58 @@
+#add-product {
+    
+        background-color: blue; /* Blue background */
+        border: none; /* Remove borders */
+        color: white; /* White text */
+        font-size: large;
+        padding: 6px 6px;
+        cursor: pointer; /* Mouse pointer on hover */
+        
+            
+}
+
+#add-product:hover {
+    background-color: RoyalBlue;
+  }
+
+.fa-trash-alt{
+    border: none; /* Remove borders */
+    color: white; /* White text */
+    font-size: large;
+    
+    cursor: pointer; /* Mouse pointer on hover */
+    background-color: red;
+}
+
+.fa-trash-alt:hover{
+    background-color:crimson;
+}
+
+#product-list{
+    max-height: 300px;
+    overflow: hidden;
+} 
+
+#product-list:hover {
+    overflow-y: scroll;
+}
+
+select {
+    display: block; 
+    justify-content: center; 
+    padding: 5px;
+    outline-color: rgba(128, 128, 128,0.8);
+    outline-style: solid;
+    outline-width: 1px;
+    width: 100%;
+}
+
+
+
+#add-product {
+    display: block;
+    width: 100%; 
+    align-self: center;
+    margin: auto;
+    margin-top: 5px;
+}
+

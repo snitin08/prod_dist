@@ -1,0 +1,154 @@
+{% load static %}
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+        <title>
+            Register
+        </title>
+    </head>
+
+    <body>
+       
+        <script src="{% static 'js/register_retailer.js' %}"></script>
+
+        {% include 'auth/navbar.html' %}
+
+        <div class="container">
+            <div class="row" style="margin-top: 75px;">
+                <div class="col-sm-12 col-md-8 col-lg-4 ml-auto mr-auto">
+                <h1 class="text-primary">Retailer register</h1>
+                <p class="lead">Enter all the details to register for the website</p>
+                
+                    <form method="POST" id="retailer register" onsubmit="event.preventDefault(); validate_form();" action="{% url 'mainApp:register_retailer' %}">
+                        
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-lg-6 col-md-6 col-sm-12">
+                                    <label for="first name">
+                                        First name
+                                    </label>
+                                    <input type="text" id = "first name" name = "first name" required="required"
+                                    placeholder="First Name" class="form-control" value="{{data.first_name}}">
+                                </div>
+
+
+                                <div class="col-lg-6 col-md-6 col-sm-12">
+                                    <label for="Last name">
+                                        Last name
+                                    </label>
+                                    <input type="text" id = "Last name" name = "Last name" placeholder="Last Name" class="form-control" value="{{data.last_name}}">
+                                </div>
+
+                            </div>
+                        </div>  
+
+                        <div class="row">
+                            <div class="col-lg-6 col-md-6 col-sm-12">
+                                <div class="form-group">
+                                    <label for="gst number">GST Number</label>
+                                    <input type="text" name="gst number" id="gst number" required="required"
+                                    class="form-control" placeholder="GST number" value="{{data.gst_number}}" aria-describedby="gst-help">                  
+                                    <small class="text-danger" id='gst-help'>{{messages.gst}}</small>                  
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-6 col-md-6 col-sm-12">
+                                <div class="form-group">
+                                    <label for="Mobile">Mobile</label>
+                                    <input type="text" name="Mobile" id="Mobile" class="form-control" required="required"
+                                    pattern="[0-9]{10}" title="Mobile number should be 10 digits"
+                                    placeholder="Mobile" aria-describedby="mobile-help" value="{{data.mobile}}">
+                                    <small class="text-muted" style="display: none;" id='mobile-help'></small> 
+                                    <small class="text-danger" id='gst-help'>{{messages.mobile}}</small>                                   
+                                </div>
+                            </div>
+                        </div>
+                        
+                        
+                        <div class="form-group">
+                            <label for="address" style="display: block;">Address</label>                                    
+                            <textarea class="form-control" name="address" id="address" required="required"
+                            wrap="soft" cols="50" rows="3" placeholder="address">{{data.address}}</textarea>
+                            <small class="text-danger">{{messages.address}}</small>
+                        </div>                  
+
+                        <div class="form-group">
+                            <label for="state">State</label>
+                            <input type="text" name="state" id="state" class="form-control" required="required"
+                            placeholder="State" value="{{data.state}}"> 
+                            <small class="text-danger" id='gst-help'>{{messages.state}}</small>                                 
+                        </div>
+
+                        <div class="form-group">
+                            <label for="city">City</label>
+                            <input type="text" name="city" id="city" class="form-control" required="required"
+                            placeholder="City" value="{{data.city}}"> 
+                            <small class="text-danger" id='gst-help'>{{messages.city}}</small>                                 
+                        </div>
+
+                        <div class="form-group">
+                            <label for="pincode">Pincode</label>
+                            <input type="text" name="pincode" id="pincode" class="form-control" required="required"
+                            pattern="[0-9]{6}" title="Pincode should be 6 digits"
+                            placeholder="PIN code" value="{{data.pincode}}">
+                            <small class="text-danger" id='gst-help'>{{messages.pincode}}</small>                                  
+                        </div>
+
+                        <div class="form-group">
+                            <label for="Email">Email</label>
+                            <input type="text" name="Email" id="Email" class="form-control" required="required"
+                            pattern=".+@.+\..+"
+                            placeholder="Email" value="{{data.email}}" aria-describedby="email-help"> 
+                            <small id="email-help" class="text-danger">{{messages.email}}</small>                    
+                        </div>
+
+                        <div class="form-group">
+                            <label for="Password">Enter Password</label>
+                            <input type="password" name="Password" id="Password" class="form-control" placeholder="Password" aria-describedby="pass-help">
+                            <small id="pass-help" class="text-muted">Should contain at least:
+                                <br>1 uppercase character
+                                <br>1 lowercase character
+                                <br>minimum length of 6 characters
+                                <br>1 number
+                                <br>1 special character
+                            </small>                  
+                        </div>
+
+                        <div class="form-group">
+                            <label for="re-password">Re-enter Password</label>
+                            <input type="password" name="re-password" id="re-password" class="form-control" placeholder="re-password" aria-describedby="repass-help"> 
+                            <small id="repass-help" class="text-muted">Should contain at least:
+                                <br>1 uppercase character
+                                <br>1 lowercase character
+                                <br>minimum length of 6 characters
+                                <br>1 number
+                                <br>1 special character
+                            </small>                    
+                        </div>
+
+                        <p class="lead text-danger" id='pass_not_match' style="display: none;"></p>
+
+                        <button class="btn-lg btn-primary" type="submit" style="width: 100%;">
+                            REGISTER
+                        </button>
+
+                        <h3 class="text-muted">
+                            Already have an account?
+                        </h3>
+                        <a class="btn-lg btn-success" style="width: 100%; display: block; text-align: center;" href="{% url 'mainApp:login' %}">
+                            LOGIN
+                        </a>
+
+
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    </body>
+</html>

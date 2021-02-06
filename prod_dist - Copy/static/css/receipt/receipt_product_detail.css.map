@@ -1,0 +1,9 @@
+{
+    "version": 3,
+    "mappings": "AAAA,AAAA,CAAC,CAAC;EACE,SAAS,EAAE,MAAM;CACpB;;AAED,AAAA,cAAc,CAAC;EACX,KAAK,EAAE,KAAK;CACf;;AAED,AAAA,UAAU,CAAC;EACP,KAAK,EAAE,GAAG;CACb",
+    "sources": [
+        "receipt_product_detail.scss"
+    ],
+    "names": [],
+    "file": "receipt_product_detail.css"
+}

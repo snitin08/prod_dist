@@ -1,0 +1,15 @@
+{% extends 'receipt/receipt_base.html' %}
+{% load static %}
+
+{% block title_block %}
+    Access denied
+{% endblock %}
+
+{% block body_block %}
+    <div class="container">
+        <div class="jumbotron">
+            <h1 class="display-3 text-danger">Cannot create or request receipt</h1>
+            <p class="lead">This is caused due to non-availability of products for creating receipt or there are no associated users to send or request receipts.</p>            
+        </div>
+    </div>
+{% endblock %}

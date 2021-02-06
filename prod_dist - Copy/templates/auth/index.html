@@ -1,0 +1,119 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About</title>
+</head>
+<body>
+
+    <!-- JQuery Link -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <!-- End JQuery link -->
+
+    <!-- Bootstrap -->
+        <!-- Latest compiled and minified CSS -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+
+        <!-- Optional theme -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
+
+        <!-- Latest compiled and minified JavaScript -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+    <!-- End bootstrap -->
+
+    
+
+    <!-- Link CSS -->
+        <link rel="stylesheet" href="{% static 'css/auth/index.css' %}">
+    <!-- end link CSS -->
+
+    
+
+    <div class="container-fluid">
+
+        <!-- Navbar -->
+            {% include 'auth/navbar.html' %}
+        <!-- End navbar -->
+
+        <div class="container">
+            <div class="about" id="about-us">
+                <h1>ABOUT US</h1>
+                <p>
+                    We are working towards simplifying the process of invoice extraction using latest technologies like OCR.
+                    Product distribution is a huge field and maintaining the invoices and purchase orders is of utmost importance.
+                    We are aimimg to simplify the process by storing the details of invoice digitally and provide filters to easily search the invoices.
+                </p>
+
+            </div>
+
+            <div class="features" id="features">
+                <h1>FEATURES</h1>
+                <div class="row">
+                    <div class="col-md-12 col-lg-4" style="margin-top: 20px;">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">Company</h5>
+                                <p class="card-text">
+                                    <ol>
+                                        <li>Create product catalogue</li>
+                                        <li>Create invoice</li>
+                                        <li>Approve purchase orders</li>
+                                        <li>View invoices and purchase orders</li>
+                                        <li>Use OCR to extract details from invoices</li>
+                                        <li>Create template file for extracting details from invoice using annotation tool</li>
+                                    </ol>
+                                </p>                                
+                                
+                            </div>
+                            <a href="{% url 'mainApp:register_company' %}" class="btn btn-primary">REGISTER</a>
+                        </div>
+                    </div>
+                    <div class="col-md-12 col-lg-4" style="margin-top: 20px;">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">Distributor</h5>
+                                <p class="card-text">
+                                    <ol>
+                                        <li>Create purchase</li>
+                                        <li>Create invoice</li>
+                                        <li>Approve purchase orders</li>
+                                        <li>View invoices and purchase orders</li>
+                                        <li>Use OCR to extract details from invoices</li>
+                                        <li>Create template file for extracting details from invoice using annotation tool</li>
+                                        <li>Send feedback about items received</li>
+                                    </ol>
+                                </p>                                
+                                
+                            </div>
+                            <a href="{% url 'mainApp:register_distributor' %}" class="btn btn-primary">REGISTER</a>
+                        </div>
+                    </div>
+
+                    <!-- Retauler -->
+                    <div class="col-md-12 col-lg-4" style="margin-top: 20px;">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">Retailer</h5>
+                                <p class="card-text">
+                                    <ol>
+                                        <li>Create purchase</li>                                    
+                                        <li>View invoices and purchase orders</li> 
+                                        <li>Send feedback about items received</li>                                                               
+                                    </ol>
+                                </p>                                
+                                
+                            </div>
+                            <a href="{% url 'mainApp:register_retailer' %}" class="btn btn-primary">REGISTER</a>
+                        </div>
+                    </div>
+                    <!-- End retailer -->
+                </div>
+            </div>
+        </div>
+    </div>
+    
+</body>
+</html>

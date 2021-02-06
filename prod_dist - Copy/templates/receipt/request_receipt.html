@@ -1,0 +1,292 @@
+{% extends 'receipt/receipt_base.html'%}
+{% load static %}
+
+{% block title_block %}
+    Request receipts
+{% endblock %}
+
+{% block body_block %}
+
+    <link rel="stylesheet" href="{% static 'css/receipt/create_receipt.css' %}" type="text/css">
+    <div class="container my-5" style="text-align: center;">
+
+        {% if request.session.type == "distributor" %}
+                <div class="form-group">
+                    <label for="user_to" style="display: block; font-size: 24px; text-align: left;">Select a company</label>
+                    <select name="user_to" id="user_to" onchange="get_products();">
+                        {% for user in users %}
+                            {% if selected_id == user.id %}                            
+                                <option value="{{user.id}}" selected="selected">{{user.company_name}} {{selected_id}}</option>
+                            {% else %}                            
+                                <option value="{{user.id}}">{{user.company_name}} {{selected_id}}</option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                </div>
+        {% else %}
+            <div class="form-group">
+                <label for="user_to" style="display: block; font-size: 24px;">Select a distributor</label>
+                <select name="user_to" id="user_to" onchange="get_products();">
+                    {% for user in users %}
+                        {% if selected_id == user.id %}                            
+                            <option value="{{user.id}}" selected="selected">{{user.first_name}} {{user.last_name}} {{selected_id}}</option>
+                        {% else %}                            
+                            <option value="{{user.id}}">{{user.first_name}} {{user.last_name}} {{selected_id}}</option>
+                        {% endif %}
+                    {% endfor %}
+                </select>                            
+            </div>
+        {% endif %}
+        
+        <form onsubmit="event.preventDefault();">
+            <div class="form-inline my-5" style="text-align: center;">
+                
+                <input type="text" id="product-name" name="product-name" class="form-control m-1" placeholder="Product name" list="productList" onchange="fillProductDetails();">
+                <input type="number" min="0" required="required" id="product-quantity" name="product-quantity" class="form-control m-1" placeholder="Product quantity">
+                <input type="number" step="0.01" min="0" max="100" id="product-tax" name="product-tax" class="form-control m-1" placeholder="Product tax">
+                <input type="number" step="0.01" min="0" id="product-price" name="product-price" class="form-control m-1" placeholder="Product price">
+                <input type="number" step="0.01" min="0" id="product-discount" name="product-discount" class="form-control m-1" placeholder="Product discount">                                
+                <button id="add-product" type="submit">
+                    <i class="fa fa-plus" aria-hidden="true"></i>                    
+                </button>
+            </div>
+        </form>
+
+
+        {% if request.session.type == "company" %}
+            <datalist id="productList" onchange="fillProductDetails();">
+                {% for product in products %}
+                    <option price="{{product.product_distributor_price}}" value="{{product.product_name}}" tax="{{product.total_tax}}" discount="{{product.product_discount}}"/>           
+                {% endfor %}
+            </datalist>
+        {% elif request.session.type == "distributor" %}
+            <datalist id="productList" onchange="fillProductDetails();">
+                {% for product in products %}
+                    <option price="{{product.product_mrp}}" value="{{product.product_name}}" tax="{{product.total_tax}}" discount="{{product.product_discount}}"/>           
+                {% endfor %}
+            </datalist>
+        {% endif %}
+        <h1 style="text-align: center;" class="my-5">Product list</h1>
+        
+        <form id="product_list_form" onsubmit="event.preventDefault(); calculate();">
+            <div id="product-list" class="my-5">
+            
+            </div>
+            <button class="btn btn-primary m-5"">
+                CALCULATE
+            </button>
+        </form>
+
+        <div style="text-align: center;">
+            
+            <p class="lead">
+                Subtotal: &#x20B9 <span id="subtotal">0.00</span>
+            </p>
+            <p class="lead">
+                Total tax: &#x20B9 <span id="total-tax">0.00</span>
+            </p>
+            <p class="lead">
+                Total Price: &#x20B9 <span id="total-price">0.00</span>
+            </p>
+            <p class="lead">
+                Total Discount: &#x20B9 <span id="total-discount">0.00</span>
+            </p>
+        </div>
+
+        
+        <form id="form-create-receipt" method="POST" action="{% url 'receipt:request_receipt' %}" onsubmit="event.preventDefault();">
+            {% csrf_token %}            
+
+            <div class="form-group" style="text-align: center;">
+                <input id="create-receipt" type="submit" value="SUBMIT" onclick="event.preventDefault();" class="btn btn-lg btn-success m-5" style="text-align: center;">
+            </div>
+        </form>
+    
+    </div>
+
+
+    <script>
+
+
+        function fillProductDetails()
+        {
+            const Value = document.getElementById('product-name').value;            
+            const selectedOption = document.querySelector('option[value="' + Value + '"]');
+            
+            var price = selectedOption.getAttribute("price");
+            var tax = selectedOption.getAttribute("tax");
+            var discount = selectedOption.getAttribute("discount");
+
+            var priceField = document.getElementById("product-price");
+            var taxField = document.getElementById("product-tax");
+            var discountField = document.getElementById("product-discount");
+
+            priceField.value = price;
+            taxField.value = tax;
+            discountField.value = discount;
+        }
+
+        
+
+        function productListFill(id)
+        {
+            const Value = document.getElementById('list-product-name-'+id).value;            
+            const selectedOption = document.querySelector('option[value="' + Value + '"]');
+            console.log(id,Value);
+            
+            var price = selectedOption.getAttribute("price");
+            var tax = selectedOption.getAttribute("tax");
+            var discount = selectedOption.getAttribute("discount");
+
+            var priceField = document.getElementById("list-product-price-"+id);
+            var taxField = document.getElementById("list-product-tax-"+id);
+            var discountField = document.getElementById("list-product-discount-"+id);
+            
+            priceField.value = price;
+            taxField.value = tax;
+            discountField.value = discount;
+        }
+
+        function calculate()
+        {
+            
+            console.log("Calculate function");
+           
+            product_list = $("#product-list").children('div');
+            product_list_quantity = product_list.children("input[name='list-product-quantity']");
+            product_list_tax = product_list.children("input[name='list-product-tax']");
+            product_list_price = product_list.children("input[name='list-product-price']");
+            product_list_discount = product_list.children("input[name='list-product-discount']");
+
+            console.log(product_list_quantity);
+            
+            var total_tax = 0;
+            var subtotal = 0;
+            var total_price = 0;
+            var total_discount = 0;
+
+            var i;
+            for(i=0;i<product_list_price.length;i++)
+            {
+                price = parseFloat(product_list_price[i].value);
+                tax = parseFloat(product_list_tax[i].value);
+                quantity = parseFloat(product_list_quantity[i].value);
+                discount = parseFloat(product_list_discount[i].value);
+
+                console.log(quantity,tax,price);
+
+                total_tax+=quantity*tax*price/100;
+                subtotal+=quantity*price;
+                total_discount+=discount*quantity;
+            }
+            total_price=total_tax+subtotal-total_discount;
+
+            $("#subtotal").text(""+subtotal);
+            $("#total-tax").text(""+total_tax);
+            $("#total-price").text(""+total_price);
+            $("#total-discount").text(""+total_discount);
+        }
+
+        function get_products()
+        {
+            var selectedUser = document.getElementById("user_to").value;
+            console.log(selectedUser);
+        }
+
+        $(document).ready(function () {
+            var checkCount = 1;
+            console.log(checkCount);
+
+            $("#add-product").click(function (e) {
+                var product_name = $('#product-name').val();
+                var product_quantity=$("#product-quantity").val();
+                var product_price=$("#product-price").val();
+                var product_tax=$("#product-tax").val();
+                var product_discount=$("#product-discount").val();
+                
+                checkCount++;
+                if(product_name!="" && product_price!="" && product_quantity!="" && product_tax!="")
+                {
+
+                     $("#product-list").append(
+                        '<div class="form-inline my-5">\
+                            <input type="text" id="list-product-name-' + checkCount + '" name="list-product-name" class="form-control m-2" placeholder="Product Name" value="'+product_name+'" onchange="productListFill('+checkCount+'); calculate();" list="productList" onChange="productListFill('+checkCount+');"/>\
+                            <input name="list-product-quantity" id="list-product-quantity-'+ checkCount+ '" class="form-control m-2" required="required" type="number" min="0" value="'+product_quantity+'"  placeholder="Product quantity">\
+                            <input name="list-product-tax" readonly id="list-product-tax-'+ checkCount+ '" class="form-control m-2" required="required" type="number" min="0" max="100" step="any" value="'+product_tax+'"  placeholder="Product Tax">\
+                            <input name="list-product-price" id="list-product-price-'+ checkCount+ '" class="form-control m-2" required="required" type="number" min="0" step="any" value="'+product_price+'"  placeholder="Product Price">\
+                            <input name="list-product-discount" id="list-product-discount-'+ checkCount+ '" class="form-control m-2" required="required" type="number" min="0" step="any" value="'+product_discount+'"  placeholder="Product discount">\
+                            <a href="#" id="list-product-remove" class="form-control m-2 bg-danger text-white">\
+                                <i class="fa fa-trash" aria-hidden="true"></i>\
+                            </a>\
+                        </div>'
+                    );
+                    $("#product-name").val("");
+                    $("#product-quantity").val("");
+                    $("#product-tax").val("");
+                    $("#product-price").val("");
+                    $("#product-discount").val("");
+
+                    calculate();
+                }
+            });
+    
+            $("#product-list").on("click", "#list-product-remove", function (e) { 
+                e.preventDefault();              
+                $(this).parent('div').remove();
+                checkCount--;
+                calculate();
+            });
+    
+            $("#create-receipt").click(function (e) {
+                var form = document.getElementById("product_list_form");
+                if(!form.checkValidity())
+                {
+                    form.reportValidity();
+                    return;
+                }
+                calculate();
+                var resultArray = {};
+                resultArray['products']= [];
+                $('#product-list').find('div.form-inline').each(function() {
+                    var rowData = {};
+                    
+                    rowData['product'] = $(this).find('[name="list-product-name"]').val();
+                    rowData['product_quantity'] = $(this).find('[name="list-product-quantity"]').val();
+                    rowData['product_tax'] = $(this).find('[name="list-product-tax"]').val();
+                    rowData['product_price'] = $(this).find('[name="list-product-price"]').val();
+                    rowData['product_discount'] = $(this).find('[name="list-product-discount"]').val();
+                    rowData['product_ID'] = $(this).find('input[type=text]').attr('id');
+                    resultArray['products'].push(rowData);
+                });
+                var user_to = document.getElementById("user_to").value;
+                resultArray['user_to'] = user_to;
+                resultArray['subtotal']=document.getElementById("subtotal").innerHTML;
+                resultArray['total_tax']=document.getElementById("total-tax").innerHTML;
+                resultArray['total_price']=document.getElementById("total-price").innerHTML;
+                resultArray['total_discount']=document.getElementById("total-discount").innerHTML;
+                console.log(resultArray);
+
+                $.post("{%  url 'receipt:request_receipt' %}" , 
+                    { 
+                    arr: JSON.stringify(resultArray), // <-----------
+                    csrfmiddlewaretoken :  '{{ csrf_token }}' 
+                    }, 
+                    function(data) {
+                        if(data.status == 1){ // meaning that everyhting went ok
+                           // do something
+                           //window.location='{% url "mainApp:index" %}';
+                        }
+                        else{
+                           alert(data.message)
+                           // do your redirect
+                           
+                        }   
+                    });
+
+
+            });
+        });
+    </script>
+
+{% endblock %}
+

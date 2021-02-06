@@ -1,0 +1,50 @@
+{% load static %}
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+        
+
+        <title>
+            Register
+        </title>
+    </head>
+
+    <body>
+        <div class="container col-lg-6 col-md-8 col-sm-12 mt-5 p-5" style="height: 100%;">
+            <h1 style="text-align: center;">Product distribution</h1>
+            <div class="jumbotron lead">
+                <h1 style="text-align: center;" class="lead">Welcome to the Product distribution management!!!</h1>
+                <h3 style="text-align: center;" class="lead">
+                    Create an account to get started with your distribution management
+                </h3>
+                <h3 style="text-align: center;" class="lead">
+                    Select the type of account.
+                </h3>
+                <div class="row mt-5">
+                    
+                    <div class="col-lg-4 col-md-4 col-sm-12">
+                        <a href="{% url 'mainApp:register_company' %}" class="btn-lg btn-primary">
+                            Company
+                        </a>
+                    </div>
+
+                    <div class="col-lg-4 col-md-4 col-sm-12">
+                        <a href="{% url 'mainApp:register_distributor' %}" class="btn-lg btn-primary">
+                            Distributor
+                        </a>
+                    </div>
+
+                    <div class="col-lg-4 col-md-4 col-sm-12">
+                        <a href="{% url 'mainApp:register_retailer' %}" class="btn-lg btn-primary">
+                            Retailer
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </body>
+</html>

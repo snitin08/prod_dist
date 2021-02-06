@@ -1,0 +1,81 @@
+{% extends 'company/company_base.html' %}
+{% load static %}
+
+{% block title_block %}
+    Product detail
+{% endblock %}
+
+{% block body_block %}
+
+    <div class="container">
+
+        <form id="form-add-product" method="POST" action="{% url 'company:company_product_detail' company_name=company_name product_id=product.id %}">
+
+            {% csrf_token %}
+            <p class="lead">Update the details if required</p>
+
+            <div class="form-group">
+                <label for="product_name">Product name</label>
+                <input type="text" name="product_name" required="required" id="product_name" class="form-control" placeholder="Product name" value="{{product.product_name}}">              
+            </div>
+
+            <div class="form-group">
+                <label for="product_distributor_price">Product distributor price</label>
+                <input type="number" min="0" step="any" name="product_distributor_price" class="form-control" required="required" value="{{product.product_distributor_price}}" id="product_distributor_price" placeholder="Distributor price">              
+            </div>
+
+            <div class="form-group">
+                <label for="product_distributor_margin">Product distributor margin (in %)</label>
+                <input type="number" min="0" max="100" step="any" name="product_distributor_margin" required="required" id="product_distributor_margin" value="{{product.product_distributor_margin}}" class="form-control" placeholder="Product distributor margin">              
+            </div>
+
+            <div class="form-group">
+                <label for="product_retailer_price">Product Retailer Price</label>
+                <input type="number" min="0" step="any" name="product_retailer_price" required="required" id="product_retailer_price" class="form-control" value="{{product.product_retailer_price}}" placeholder="Product Retailer price">              
+            </div>
+
+            <div class="form-group">
+                <label for="product_retailer_margin">Product Retailer Margin (in %)</label>
+                <input type="number" min="0" max="100" step="any" name="product_retailer_margin" required="required" id="product_retailer_margin" value="{{product.product_retailer_margin}}" class="form-control" placeholder="Product Retailer margin">              
+            </div>
+
+            <div class="form-group">
+                <label for="product_mrp">Product MRP</label>
+                <input type="number" min="0" step="any" name="product_mrp" required="required" id="product_mrp"  value="{{product.product_retailer_margin}}"class="form-control" placeholder="Product MRP">              
+            </div>                
+
+            <div class="form-group">
+                <label for="product_discount">Product Discount</label>
+                <input type="number" min="0" step="any" name="product_discount" required="required" value="{{product.product_discount}}" id="product_discount" class="form-control" placeholder="Product Discount">              
+            </div> 
+
+            <div class="form-group">
+                <label for="cg_gst">Central GST Tax</label>
+                <input type="number" min="0" max="100" step="any" name="cg_gst" required="required" id="cg_gst" value="{{product.cg_gst}}" class="form-control" placeholder="Central GST Tax">              
+            </div> 
+
+            <div class="form-group">
+                <label for="sg_gst">State GST Tax</label>
+                <input type="number" min="0" max="100" step="any" name="sg_gst" required="required" id="sg_gst" value="{{product.sg_gst}}" class="form-control" placeholder="State GST Tax">              
+            </div> 
+
+            <div class="form-group">
+                <label for="hsn_code">HSN code</label>
+                <input type="text" name="hsn_code" required="required" id="hsn_code" class="form-control" value="{{product.hsn_code}}" placeholder="HSN code">              
+            </div> 
+
+            <div class="form-group">
+                <label for="fssai_number">FSSAI number</label>
+                <input type="text" name="fssai_number" id="fssai_number" class="form-control" value="{{product.fssai_number}}" placeholder="FSSAI number">              
+            </div> 
+     
+
+            <button type="submit" class="btn btn-lg btn-warning">UPDATE PRODUCT</button>
+            <button class="btn btn-lg btn-danger">CANCEL</button>
+        </form>
+
+
+    </div>
+
+
+{% endblock %}

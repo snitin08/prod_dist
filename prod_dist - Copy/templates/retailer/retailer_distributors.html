@@ -1,0 +1,45 @@
+{% extends 'retailer/retailer_base.html' %}
+{% load static %}
+
+{% block title_block %}
+    Retailer distributors
+{% endblock %}
+
+{% block body_block %}
+    
+    <div class="container">
+
+        {% if associated_distributors %}
+            <h1>
+                Exisiting distributors
+            </h1>
+            <div id="company-table">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Contact</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for distributor in associated_distributors %}
+                            <tr>
+                                <td scope="row">{{distributor.first_name}} {{distributor.last_name}}</td>
+                                <td>{{distributor.email}}</td>
+                                <td>{{distributor.mobile}}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="jumbotron">
+                <h1 class="text-danger" style="text-align: center;">
+                    You have no associated distributors
+                </h1>
+            </div>
+        {% endif %}
+    </div>    
+               
+{% endblock %}
