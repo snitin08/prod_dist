@@ -28,7 +28,7 @@
                     <strong>{{receipt.id}}</strong>
                 {% endif %}
 
-                <p style="margin-top: 10px;">Date: {{receipt.day}}/{{receipt.month}}/{{receipt.year}}</p>
+                <p style="margin-top: 10px;"><strong>Date:</strong> {{receipt.day}}/{{receipt.month}}/{{receipt.year}}</p>
                 <hr>
 
                 {% if receipt.requested == False %}
@@ -44,9 +44,9 @@
                 <p class="text-muted">{{receipt.to_address}}</p>
                 <hr>
 
-                <p style="margin-top: 10px;">Tax: &#8377 {{receipt.taxes}}</p>
-                <p>Subtotal: &#8377 {{receipt.sub_total}}</p>
-                <p>Amount: &#8377 {{receipt.total}}</p>
+                <p style="margin-top: 10px;"><strong>Tax: </strong>&#8377 {{receipt.taxes}}</p>
+                <p><strong>Subtotal: </strong>&#8377 {{receipt.sub_total}}</p>
+                <p><strong>Amount: </strong>&#8377 {{receipt.total}}</p>
             </div>
 
             <div id="receipt_product_list" class="mt-3">

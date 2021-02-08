@@ -269,8 +269,10 @@ def receipt_detail(request,receipt_id):
     else:
         extend_page = 'retailer/retailer_base.html'
     if request.method=='GET':
-        
-        receipt = Receipt.objects(id=receipt_id).first()
+        try:
+            receipt = Receipt.objects(id=receipt_id).first()
+        except:
+            return render(request,"general/404.html",{})
         user_id = int(request.session['id'])
         user_type = request.session['type']
         if receipt:
@@ -504,9 +506,31 @@ def company_products(request,company_id):
 
 
 def receipt_stats(request):
-    return render(request,'receipt/receipt_stats.html',{
-        "extend_page":"company/company_base.html"
-    })
+    import datetime
+    if request.method=="GET":
+        i = request.session.get('id')
+        if not i:
+            return render(request,'general/404.html',{})
+        from_id = i
+        stats = Receipt.objects.aggregate([
+            {
+                "$match" : { "from_id":i ,"year":datetime.datetime.now().year},                
+            },
+            {
+                "$group":{
+                    "_id": "$month",                    
+                    "totalSales":{                         
+                            "$sum": "$total"                        
+                    }
+                }
+            }
+        ])
+        s = json.dumps(list(stats))     
+        print(s) 
+        return render(request,'receipt/receipt_stats.html',{
+            "extend_page":"company/company_base.html",
+            "stats": s
+        })
 
 def access_denied(request):
     if request.session['type']=='retailer':
@@ -532,7 +556,10 @@ def process_receipt(request):
         g = open(BASE_DIR + '/media/template.csv', 'wb')
         g.write(y)
         g.close()
+        # try:
         annotation, table, below_table = process_invoice(BASE_DIR + '/media/current.pdf', BASE_DIR + '/media/template.csv')
+        # except:
+        #     return HttpResponse("<h1>Error occured</h1>")
         print(annotation)
         print(table)
         print(below_table)
@@ -561,7 +588,7 @@ def process_invoice(filename, templatename):
     
     for image in images:
         image.save(str(BASE_DIR)+'\\media\\page_1.jpeg', 'JPEG')  
-        cmd = '"E:\Downloads\ImageMagic\ImageMagick-6.9.11-Q16-20201228T144714Z-001\ImageMagick-6.9.11-Q16\convert.exe" "E:/Nitin/RVCE/5 Sem/DBMS/Self Study Lab/prod_dist/media/page_1.jpeg" -type Grayscale -negate -define morphology:compose=darken -morphology Thinning "Rectangle:1x80+0+0<" -negate "E:/Nitin/RVCE/5 Sem/DBMS/Self Study Lab/prod_dist/media/page_1-t.jpeg"'
+        cmd = '"E:\Downloads\ImageMagic\ImageMagick-6.9.11-Q16-20201228T144714Z-001\ImageMagick-6.9.11-Q16\convert.exe" "E:/Nitin/RVCE/5 Sem/DBMS/Self Study Lab/prod_dist - Copy/media/page_1.jpeg" -type Grayscale -negate -define morphology:compose=darken -morphology Thinning "Rectangle:1x80+0+0<" -negate "E:/Nitin/RVCE/5 Sem/DBMS/Self Study Lab/prod_dist - Copy/media/page_1-t.jpeg"'
         print(cmd)
         subprocess.call(cmd, shell=True)
         new_img = cv2.imread(str(BASE_DIR)+'\\media\\page_1-t.jpeg')

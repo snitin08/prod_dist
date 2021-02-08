@@ -169,6 +169,8 @@ def register_company(request):
                     messages["city"] = "City cannot determine multiple states"
                 elif str(e)=="UNIQUE constraint failed: mainApp_address.address":
                     messages["address"] = "Address must be unique. Already taken"
+                elif str(e)=="UNIQUE constraint failed: mainApp_company.address_id":
+                    messages["address"] = "Address must be unique. Already taken"
                 
                 return render(request,'auth/register_company.html',{
                     "messages":messages,
